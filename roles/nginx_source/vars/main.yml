@@ -1,0 +1,71 @@
+home : /home/plat
+user : plat
+group: "{{user}}"
+deploy_home : /home/deploy
+nginx_version : 1.14.2
+pcre_version : 8.42
+zlib_version : 1.2.11
+openssl_version : 1.1.1a
+lua_nginx_module_version : 0.10.13
+luajit2_version : 2.1-20190115
+ngx_devel_kit_version : 0.3.1rc1
+jemalloc_version : 5.1.0
+naxsi_version : 0.56
+custom_server : xyzc
+custom_version : 9999
+
+nginx_compile:
+  - { option: "prefix", value: "{{home}}/nginx" }
+  - { option: "sbin-path", value: "{{home}}/nginx/sbin/nginx" }
+  - { option: "conf-path", value: "{{home}}/nginx/conf/nginx.conf" }
+  - { option: "error-log-path", value: "{{home}}/nginx/logs/error.log" }
+  - { option: "pid-path", value: "{{home}}/nginx/nginx.pid" }
+  - { option: "lock-path", value: "{{home}}/nginx/nginx.lock" }
+  - { option: "user", value: "{{user}}" }
+  - { option: "group", value: "{{group}}" }
+  - { option: "http-client-body-temp-path", value: "{{home}}/nginx/client_body " }
+  - { option: "http-proxy-temp-path", value: "{{home}}/nginx/proxy" }
+  - { option: "http-fastcgi-temp-path", value: "{{home}}/nginx/fastcgi" }
+  - { option: "http-uwsgi-temp-path", value: "{{home}}/nginx/uwsgi" }
+  - { option: "http-scgi-temp-path", value: "{{home}}/nginx/scgi" }
+
+nginx_mode:
+  - http_ssl_module  
+  - http_ssl_module  
+  - http_v2_module  
+  - http_dav_module  
+  - http_flv_module  
+  - http_mp4_module  
+  - http_realip_module  
+  - http_addition_module  
+  - http_xslt_module  
+  - http_stub_status_module  
+  - http_sub_module  
+  - http_random_index_module  
+  - http_degradation_module  
+  - http_secure_link_module  
+  - http_gzip_static_module  
+  - http_perl_module  
+  - file-aio  
+  - mail  
+  - mail_ssl_module  
+  - http_image_filter_module    
+  - debug
+  - stream
+  - pcre-jit
+  
+nginx_lib:
+  - { option: "pcre", value: "{{deploy_home}}/pcre-{{pcre_version}}" }   
+  - { option: "zlib", value: "{{deploy_home}}/zlib-{{zlib_version}}" } 
+  - { option: "openssl", value: "{{deploy_home}}/openssl-{{openssl_version}}" }     
+  - { option: "http_geoip_module", value: "dynamic" }   
+  - { option: "stream_geoip_module", value: "dynamic" }  
+
+nginx_ex:  
+  - '"-L /usr/local/lib/libjemalloc.so.2 -l jemalloc"'
+  - "-Wl,-rpath,/usr/local/lib"
+
+nginx_ex_moudle:
+  - "{{deploy_home}}/naxsi-{{naxsi_version}}/naxsi_src"
+  - "{{deploy_home}}/ngx_devel_kit-{{ngx_devel_kit_version}}"
+  - "{{deploy_home}}/lua-nginx-module-{{lua_nginx_module_version}}"

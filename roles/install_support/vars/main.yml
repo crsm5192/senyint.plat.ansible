@@ -1,0 +1,14 @@
+home : /home/plat
+user : plat
+deploy_home : /home/deploy
+nginx_version : 1.14.2
+pcre_version : 8.42
+zlib_version : 1.2.11
+openssl_version : 1.1.1a
+lua_nginx_module_version : 0.10.14rc3
+luajit2_version : 2.1-20190115
+ngx_devel_kit_version : 0.3.1rc1
+jemalloc_version : 5.1.0
+naxsi_version : 0.56
+custom_server : xyzc
+custom_version : 9999

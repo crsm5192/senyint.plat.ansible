@@ -1,0 +1,9 @@
+server {
+    listen   80 backlog=1024;
+    listen 8088 backlog=1024;
+    server_name    localhost;
+    charset            UTF-8;		
+    access_log   {{home}}/nginx/logs/access.log json buffer=32k flush=5s;	
+    rewrite ^/zy/(.*)$ /ui/saas/bc02994ec23341708e54c97f6b3f9f48/$1 last; 
+    include                            {{home}}/nginx/conf/location.conf;	
+}

@@ -1,0 +1,81 @@
+- name: add group for mysql
+  group: 
+    name: '{{group}}' 
+    gid: '{{gid}}'
+
+- name: add user for mysql
+  user: 
+    name: '{{user}}'
+    group: '{{group}}'    
+    uid: '{{uid}}' 
+    home: '{{home}}' 
+    shell: /bin/bash
+
+- name: make floder for use 
+  file: 
+    path: '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755 
+    state: directory
+  with_items:
+    - { path: '{{deploy_home}}/rpm',owner: 'root',group: 'root' }
+    - { path: '{{home}}/mysql/etc',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{home}}/mysql/data',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{home}}/mysql/pid',owner: '{{user}}',group: '{{group}}' }  
+    - { path: '{{home}}/mysql/src',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{home}}/mysql/log',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{home}}/mysql/binlog',owner: '{{user}}',group: '{{group}}' }    
+    - { path: '{{home}}/mysql/sock',owner: '{{user}}',group: '{{group}}' }     
+  
+- name: check jemalloc
+  shell: ls /usr/local/lib/libjemalloc.so.2
+  ignore_errors: yes
+  register: jemalloc_status
+  
+
+- include: make_jemalloc.yml
+  when: jemalloc_status is failed
+    
+- name: extract mysql source packages
+  unarchive: src=mysql-{{mysql_version}}.tar.gz dest={{deploy_home}}
+
+- name: mysql_compile_str
+  set_fact:
+    mysql_compile_str: "{{ mysql_compile_str | default('') }} {{ '-D' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ mysql_compile }}"   
+       
+- name: configure mysql 
+  command: cmake . {{ mysql_compile_str }}
+  args:
+    chdir: '{{deploy_home}}/mysql-{{mysql_version}}'
+
+- name: make mysql
+  make:
+    chdir: '{{deploy_home}}/mysql-{{mysql_version}}'
+    target: install
+ 
+- name: config mysql
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'my.cnf.j2',dest: '{{home}}/mysql/etc/my.cnf' }
+ 
+- name: initialization mysql db
+  command: ./mysql_install_db --user={{user}} --basedir={{home}}/mysql/mysql --datadir={{home}}/mysql/data
+  args:
+    chdir: '{home}}/mysql/mysql/scripts'
+
+- name: init service mysql
+  file: src='{{item.src}}' dest='{{item.dest}}' state=link
+  with_items:
+    - { src: '{home}}/mysql/mysql/bin/mysql',dest: '/usr/bin/mysql' }
+    - { src: '{home}}/mysql/mysql/bin/mysqladmin',dest: '/usr/bin/mysqladmin' }
+    - { src: '{home}}/mysql/mysql/bin/mysqldump',dest: '/usr/bin/mysqldump' }
+    - { src: '{home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
+
+#- name: add service mysql   
+#  template: src=mysql.service.j2 dest=/usr/lib/systemd/system/mysql.service backup=yes
+
+#- name: mysql on start up
+#  systemd: name=mysql state=started enabled=yes

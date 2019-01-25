@@ -1,0 +1,31 @@
+home: /home/plat
+user: plat
+uid: 8080
+group: "{{user}}"
+gid: "{{uid}}"
+mysql_port: 33066
+deploy_home: /home/deploy
+mysql_version: 5.6.42
+jemalloc_version: 5.1.0
+
+mysql_compile:
+  - { option: "CMAKE_INSTALL_PREFIX", value: "{{home}}/mysql/mysql" }
+  - { option: "CMAKE_EXE_LINKER_FLAGS", value: '"-ljemalloc"' }
+  - { option: "MYSQL_UNIX_ADDR", value: "{{home}}/mysql/sock/mysql.sock" }
+  - { option: "MYSQL_DATADIR", value: "{{home}}/mysql/data" }
+  - { option: "SYSCONFDIR", value: "{{home}}/mysql/etc" }
+  - { option: "WITH_EMBEDDED_SERVE", value: "1" }
+  - { option: "WITH_INNOBASE_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_MEMORY_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_PARTITION_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_FEDERATED_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_BLACKHOLE_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_MYISAM_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_DEBUG", value: "0" }
+  - { option: "WITH_SAFEMALLOC", value: "OFF" }
+  - { option: "ENABLE_LOCAL_INFILE", value: "1" }
+  - { option: "ENABLE_DTRACE", value: "0" }
+  - { option: "ENABLE_PROFILING", value: "1" }  
+  - { option: "DEFAULT_CHARSET", value: "utf8mb4" }
+  - { option: "DEFAULT_COLLATION", value: "utf8mb4_general_ci" }
+  - { option: "EXTRA_CHARSETS", value: "all" }

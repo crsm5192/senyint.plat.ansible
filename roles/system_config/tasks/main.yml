@@ -1,0 +1,8 @@
+- name: yum bakup repo
+  command: mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bk
+  
+- name: yum update repo
+  copy: src=CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo
+
+- name: yum make cache
+  yum: update_cache=yes state=latest

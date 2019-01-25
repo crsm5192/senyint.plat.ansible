@@ -1,0 +1,18 @@
+- name: make floder for use 
+  file: 
+    path: "{{deploy_home}}/rpm"
+    mode: 0755 
+    state: directory
+ 
+- name: copy support rpm to host
+  copy: 
+    src: rpm/
+    dest: "{{deploy_home}}/rpm"
+
+- name: install support rpm
+  yum: 
+    name: "{{deploy_home}}/rpm/"
+    state: "present"  
+ 
+#- name: install support rpm by localyum
+#  shell: /usr/bin/yum localinstall -y {{deploy_home}}/rpm/*.rpm

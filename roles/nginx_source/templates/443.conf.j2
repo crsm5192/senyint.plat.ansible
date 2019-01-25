@@ -1,0 +1,16 @@
+server {
+    listen             443          ssl;
+    server_name  localhost  senyint.com;
+    autoindex                       off;
+    ssl                              on;
+    ssl_certificate     {{home}}/nginx/conf/conf.d/ssl/senyint.com.crt;
+    ssl_certificate_key {{home}}/nginx/conf/conf.d/ssl/senyint.com.key;
+    ssl_session_timeout              5m;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE:ECDH:AES:HIGH:!NULL:!aNULL:!MD5:!ADH:!RC4;
+    ssl_prefer_server_ciphers        on;
+    client_max_body_size             5m;
+    client_body_timeout              60;   
+    rewrite ^/zy/(.*)$ /ui/saas/bc02994ec23341708e54c97f6b3f9f48/$1 last;
+    include                            {{home}}/nginx/conf/location.conf;
+}

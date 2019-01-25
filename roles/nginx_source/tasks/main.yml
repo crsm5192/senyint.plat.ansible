@@ -1,0 +1,125 @@
+- name: add group for nginx
+  group: 
+    name: '{{group}}' 
+    gid: 8080
+
+- name: add user for nginx
+  user: 
+    name: '{{user}}'
+    group: '{{group}}'    
+    uid: 8080 
+    home: '{{home}}' 
+    shell: /bin/bash
+
+- name: make floder for use 
+  file: 
+    path: '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755 
+    state: directory
+  with_items:
+    - { path: '{{deploy_home}}/rpm',owner: 'root',group: 'root' }
+    - { path: '{{home}}',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{home}}/nginx/conf/conf.d/ssl',owner: '{{user}}',group: '{{group}}' }
+    
+- name: check jemalloc
+  shell: ls /usr/local/lib/libjemalloc.so.2
+  ignore_errors: yes
+  register: jemalloc_status
+  
+- name: check luajit
+  shell: ls /usr/local/lib/libluajit-5.1.so.2
+  ignore_errors: yes
+  register: luajit_status
+
+- include: make_jemalloc.yml
+  when: jemalloc_status is failed
+    
+- include: make_luajit.yml
+  when: luajit_status is failed 
+    
+- name: extract nginx source packages
+  unarchive: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'nginx-{{nginx_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'pcre-{{pcre_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'zlib-{{zlib_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'openssl-{{openssl_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'ngx_devel_kit-{{ngx_devel_kit_version}}.tar.gz',dest: '{{deploy_home}}' }   
+    - { src: 'lua-nginx-module-{{lua_nginx_module_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'naxsi-{{naxsi_version}}.tar.gz',dest: '{{deploy_home}}' }
+ 
+- name: Clear nginx headers
+  lineinfile: 
+    dest: '{{deploy_home}}/nginx-{{nginx_version}}/src/http/ngx_http_header_filter_module.c' 
+    regexp: '{{item.regexp}}' 
+    line: '{{item.line}}' 
+    state: present 
+    backup: yes 
+    backrefs: yes
+  with_items:
+    - { regexp: 'static u_char ngx_http_server_string',line : 'static u_char ngx_http_server_string[] = "Server: {{custom_server}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_full_string',line : 'static u_char ngx_http_server_full_string[] = "Server: {{custom_server}}/{{custom_version}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_build_string',line : 'static u_char ngx_http_server_build_string[] = "Server: {{custom_server}}/{{custom_version}}" CRLF;'}
+
+- name: nginx_compile_str
+  set_fact:
+    nginx_compile_str: "{{ nginx_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_compile }}"   
+    
+- name: nginx_mode_str
+  set_fact:
+    nginx_mode_str: "{{ nginx_mode_str | default('') }} {{ '--with-' + item }}"
+  with_items:
+    - "{{ nginx_mode }}"    
+    
+- name: nginx_lib_str
+  set_fact:
+    nginx_lib_str: "{{ nginx_lib_str | default('') }} {{ '--with-' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_lib }}"   
+    
+- name: nginx_ex_str
+  set_fact:
+    nginx_ex_str: "{{ nginx_ex_str | default('') }} {{ '--with-ld-opt=' + item }}"
+  with_items:
+    - "{{ nginx_ex }}"   
+  
+- name: nginx_ex_moudle_str
+  set_fact:
+    nginx_ex_moudle_str: "{{ nginx_ex_moudle_str | default('') }} {{ '--add-module=' + item }}"
+  with_items:
+    - "{{ nginx_ex_moudle }}"    
+       
+- name: configure nginx 
+  command: ./configure {{ nginx_compile_str }} {{ nginx_mode_str }} {{ nginx_lib_str }} {{ nginx_ex_str }} {{ nginx_ex_moudle_str }}
+  args:
+    chdir: '{{deploy_home}}/nginx-{{nginx_version}}'
+
+- name: make nginx
+  make:
+    chdir: '{{deploy_home}}/nginx-{{nginx_version}}'
+    target: install
+ 
+- name: config nginx
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'nginx.conf.j2',dest: '{{home}}/nginx/conf/nginx.conf' }
+    - { src: '80_8088.conf.j2',dest: '{{home}}/nginx/conf/conf.d/80_8088.conf' }
+    - { src: '443.conf.j2',dest: '{{home}}/nginx/conf/conf.d/443.conf' }
+    - { src: 'gzip.conf.j2',dest: '{{home}}/nginx/conf/conf.d/gzip.conf' }
+    - { src: 'fastcgi.conf.j2',dest: '{{home}}/nginx/conf/conf.d/fastcgi.conf' }
+    - { src: 'map.conf.j2',dest: '{{home}}/nginx/conf/conf.d/map.conf' }
+    - { src: 'upstream.conf.j2',dest: '{{home}}/nginx/conf/conf.d/upstream.conf' }
+    - { src: 'proxy.conf.j2',dest: '{{home}}/nginx/conf/proxy.conf' }
+    - { src: 'location.conf.j2',dest: '{{home}}/nginx/conf/location.conf' }    
+    - { src: 'senyint.com.crt.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
+    - { src: 'senyint.com.key.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
+    
+- name: add service nginx   
+  template: src=nginx.service.j2 dest=/usr/lib/systemd/system/nginx.service backup=yes
+
+- name: nginx on start up
+  systemd: name=nginx state=started enabled=yes
