@@ -69,10 +69,10 @@
 - name: init service mysql
   file: src='{{item.src}}' dest='{{item.dest}}' state=link
   with_items:
-    - { src: '{home}}/mysql/mysql/bin/mysql',dest: '/usr/bin/mysql' }
-    - { src: '{home}}/mysql/mysql/bin/mysqladmin',dest: '/usr/bin/mysqladmin' }
-    - { src: '{home}}/mysql/mysql/bin/mysqldump',dest: '/usr/bin/mysqldump' }
-    - { src: '{home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
+    - { src: '{{home}}/mysql/mysql/bin/mysql',dest: '/usr/bin/mysql' }
+    - { src: '{{home}}/mysql/mysql/bin/mysqladmin',dest: '/usr/bin/mysqladmin' }
+    - { src: '{{home}}/mysql/mysql/bin/mysqldump',dest: '/usr/bin/mysqldump' }
+    - { src: '{{home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
 
 #- name: add service mysql   
 #  template: src=mysql.service.j2 dest=/usr/lib/systemd/system/mysql.service backup=yes
