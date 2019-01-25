@@ -1,0 +1,1 @@
+# senyint.plat.ansible
