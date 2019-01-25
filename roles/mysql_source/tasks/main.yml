@@ -64,7 +64,7 @@
 - name: initialization mysql db
   command: ./mysql_install_db --user={{user}} --basedir={{home}}/mysql/mysql --datadir={{home}}/mysql/data
   args:
-    chdir: '{home}}/mysql/mysql/scripts'
+    chdir: '{{home}}/mysql/mysql/scripts'
 
 - name: init service mysql
   file: src='{{item.src}}' dest='{{item.dest}}' state=link
