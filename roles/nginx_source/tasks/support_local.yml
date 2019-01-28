@@ -2,4 +2,4 @@
   copy: src=support/ dest={{deploy_home}}/support
 
 - name: install support rpm by localyum
-  shell: /usr/bin/support localinstall -y {{deploy_home}}/support/*.rpm
+  shell: /usr/bin/yum localinstall -y {{deploy_home}}/support/*.rpm
