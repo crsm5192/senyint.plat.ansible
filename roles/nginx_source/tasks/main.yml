@@ -1,13 +1,13 @@
 - name: add group for nginx
   group: 
     name: '{{group}}' 
-    gid: 8080
+    gid: '{{gid}}'
 
 - name: add user for nginx
   user: 
     name: '{{user}}'
     group: '{{group}}'    
-    uid: 8080 
+    uid: '{{uid}}' 
     home: '{{home}}' 
     shell: /bin/bash
 
@@ -19,24 +19,52 @@
     mode: 0755 
     state: directory
   with_items:
-    - { path: '{{deploy_home}}/rpm',owner: 'root',group: 'root' }
+    - { path: '{{deploy_home}}/support',owner: 'root',group: 'root' }
     - { path: '{{home}}',owner: '{{user}}',group: '{{group}}' }
     - { path: '{{home}}/nginx/conf/conf.d/ssl',owner: '{{user}}',group: '{{group}}' }
     
+- name: check network 
+  shell: ping baidu.com -c 10
+  ignore_errors: yes
+  register: network_status  
+  
+- name: support for nginx
+  yum: name={{item.name}} state={{item.state}}
+  with_items:
+  - { name: "nginx", state: "absent" }
+  - { name: "@Development tools", state: "present" }
+  - { name: "perl-devel", state: "present" }
+  - { name: "perl-ExtUtils-Embed", state: "present" }
+  - { name: "libxslt", state: "present" }
+  - { name: "libxslt-devel", state: "present" }
+  - { name: "libxml2", state: "present" }
+  - { name: "libxml2-devel", state: "present" }
+  - { name: "gd", state: "present" }
+  - { name: "lua-devel", state: "present" }
+  - { name: "gd-devel", state: "present" } 
+  - { name: "GeoIP", state: "present" }
+  - { name: "GeoIP-devel", state: "present" }
+  ignore_errors: yes
+  when: network_status is ok
+ 
+- import_tasks: support_local.yml
+  when: network_status is failed
+
+ 
 - name: check jemalloc
   shell: ls /usr/local/lib/libjemalloc.so.2
   ignore_errors: yes
   register: jemalloc_status
-  
+
+- import_tasks: make_jemalloc.yml
+  when: jemalloc_status is failed 
+ 
 - name: check luajit
   shell: ls /usr/local/lib/libluajit-5.1.so.2
   ignore_errors: yes
   register: luajit_status
-
-- include: make_jemalloc.yml
-  when: jemalloc_status is failed
-    
-- include: make_luajit.yml
+  
+- import_tasks: make_luajit.yml
   when: luajit_status is failed 
     
 - name: extract nginx source packages
@@ -117,9 +145,16 @@
     - { src: 'location.conf.j2',dest: '{{home}}/nginx/conf/location.conf' }    
     - { src: 'senyint.com.crt.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
     - { src: 'senyint.com.key.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
+    - { src: 'nginx.service.j2',dest: '/usr/lib/systemd/system/nginx.service' }
     
-- name: add service nginx   
-  template: src=nginx.service.j2 dest=/usr/lib/systemd/system/nginx.service backup=yes
-
-- name: nginx on start up
-  systemd: name=nginx state=started enabled=yes
+- name: fire wall nginx
+  firewalld: port=80/tcp permanent=true state=enabled
+  
+- name: reload firewalld
+  systemd: name=firewalld state=reloaded
+    
+- name: start nginx
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'nginx',state: 'started' }

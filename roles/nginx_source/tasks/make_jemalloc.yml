@@ -19,7 +19,7 @@
 - name: ldconfig jemalloc
   copy: 
    src: jemalloc.conf
-    dest: /etc/ld.so.conf.d/jemalloc.conf
+   dest: /etc/ld.so.conf.d/jemalloc.conf
 
 - name: source ldconfig jemalloc 
   shell: /sbin/ldconfig

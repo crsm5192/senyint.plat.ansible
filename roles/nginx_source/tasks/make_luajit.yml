@@ -22,7 +22,7 @@
 - name: ldconfig luajit
   copy: 
    src: luajit.conf
-    dest: /etc/ld.so.conf.d/luajit.conf
+   dest: /etc/ld.so.conf.d/luajit.conf
 
 - name: source ldconfig luajit 
   shell: /sbin/ldconfig

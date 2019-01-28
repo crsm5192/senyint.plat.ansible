@@ -1,6 +1,8 @@
 home : /home/plat
 user : plat
+uid : 8080
 group: "{{user}}"
+gid: "{{uid}}"
 deploy_home : /home/deploy
 nginx_version : 1.14.2
 pcre_version : 8.42
@@ -62,8 +64,8 @@ nginx_lib:
   - { option: "stream_geoip_module", value: "dynamic" }  
 
 nginx_ex:  
-  - '"-L /usr/local/lib/libjemalloc.so.2 -l jemalloc"'
   - "-Wl,-rpath,/usr/local/lib"
+  - "/usr/local/lib/libjemalloc.so.2"
 
 nginx_ex_moudle:
   - "{{deploy_home}}/naxsi-{{naxsi_version}}/naxsi_src"

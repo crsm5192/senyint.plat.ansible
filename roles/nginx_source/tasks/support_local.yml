@@ -1,0 +1,5 @@
+- name: copy support files to host
+  copy: src=support/ dest={{deploy_home}}/support
+
+- name: install support rpm by localyum
+  shell: /usr/bin/support localinstall -y {{deploy_home}}/support/*.rpm
