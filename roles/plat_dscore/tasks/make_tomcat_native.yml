@@ -1,0 +1,14 @@
+- name: extract tomcat native source packages
+  unarchive:
+    src: 'tomcat-native-{{tomcat_native_version}}-src.tar.gz'
+    dest: '{{deploy_home}}'
+
+- name: config tomcat native
+  command: ./configure --with-apr=/usr/bin/apr-1-config --with-java-home={{home}}/jdk{{jdk_version}} --with-ssl=yes
+  args:
+    chdir: '{{deploy_home}}/tomcat-native-{{tomcat_native_version}}-src/native' 
+
+- name: make tomcat native
+  make:
+    chdir: '{{deploy_home}}/tomcat-native-{{tomcat_native_version}}-src/native'
+    target: install

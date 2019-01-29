@@ -1,0 +1,26 @@
+#!/bin/sh
+export JAVA_HOME={{home}}/jdk{{jdk_version}}
+export CATALINA_OPTS="$CATALINA_OPTS -Djava.library.path=/usr/local/apr/lib"
+#jmx-remote-monitor
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.port={{tomcat_jmx_port}}"
+#export CATALINA_OPTS="$CATALINA_OPTS -Djava.rmi.server.hostname={{ansible_all_ipv4_addresses}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+#jvm gc-log
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDetails"
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDateStamps"
+export CATALINA_OPTS="$CATALINA_OPTS -Xloggc:{{home}}/dscore/logs/gc.log"
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCTimeStamps"
+#jvm gc
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseG1GC" 
+export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxGCPauseMillis=50"
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{gcXmx}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Xms{{gcXms}}" 
+export CATALINA_OPTS="$CATALINA_OPTS -Xmn{{gcXmn}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Xss512K"
+#elastic-apm-agent
+#export CATALINA_OPTS="$CATALINA_OPTS -javaagent:${CATALINA_HOME}/lib/elastic-apm-agent-0.7.1.jar"
+#export CATALINA_OPTS="$CATALINA_OPTS -Delastic.apm.service_name=my-cool-service"
+#export CATALINA_OPTS="$CATALINA_OPTS -Delastic.apm.application_packages=org.example"
+#export CATALINA_OPTS="$CATALINA_OPTS -Delastic.apm.server_urls=http://${MONITOR_IP}:${APM_PORT}"

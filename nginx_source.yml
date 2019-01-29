@@ -1,3 +1,4 @@
 - hosts: nginx
   roles:
+     - install_support
      - nginx_source

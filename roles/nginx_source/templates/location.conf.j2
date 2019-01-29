@@ -162,3 +162,6 @@ location  /ehrllq/ {
 location /sjzljc/ {
 	root /usr/local/nginx/html/;
 } 
+location /hello { 
+    content_by_lua 'ngx.say("Hello, Lua")'; 
+}

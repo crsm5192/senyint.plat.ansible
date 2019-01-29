@@ -22,35 +22,7 @@
     - { path: '{{deploy_home}}/support',owner: 'root',group: 'root' }
     - { path: '{{home}}',owner: '{{user}}',group: '{{group}}' }
     - { path: '{{home}}/nginx/conf/conf.d/ssl',owner: '{{user}}',group: '{{group}}' }
-    
-- name: check network 
-  shell: ping baidu.com -c 10
-  ignore_errors: yes
-  register: network_status  
-  
-- name: support for nginx
-  yum: name={{item.name}} state={{item.state}}
-  with_items:
-  - { name: "nginx", state: "absent" }
-  - { name: "@Development tools", state: "present" }
-  - { name: "perl-devel", state: "present" }
-  - { name: "perl-ExtUtils-Embed", state: "present" }
-  - { name: "libxslt", state: "present" }
-  - { name: "libxslt-devel", state: "present" }
-  - { name: "libxml2", state: "present" }
-  - { name: "libxml2-devel", state: "present" }
-  - { name: "gd", state: "present" }
-  - { name: "lua-devel", state: "present" }
-  - { name: "gd-devel", state: "present" } 
-  - { name: "GeoIP", state: "present" }
-  - { name: "GeoIP-devel", state: "present" }
-  ignore_errors: yes
-  when: network_status is ok
- 
-- import_tasks: support_local.yml
-  when: network_status is failed
 
- 
 - name: check jemalloc
   shell: ls /usr/local/lib/libjemalloc.so.2
   ignore_errors: yes
@@ -150,8 +122,8 @@
 - name: fire wall nginx
   firewalld: port=80/tcp permanent=true state=enabled
   
-- name: reload firewalld
-  systemd: name=firewalld state=reloaded
+- name: change floder owner
+  file: path='{{home}}/nginx' owner='{{user}}' group='{{group}}' recurse=yes  
     
 - name: start nginx
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes

@@ -1,0 +1,13 @@
+[Unit]
+Description=Redis In-Memory Data Store
+After=network.target
+[Service]
+Type=forking
+PIDFile={{home}}/redis/pid/redis_{{redis_port}}.pid
+User={{user}}
+Group={{group}}
+ExecStart={{home}}/redis/bin/redis-server {{home}}/redis/etc/redis.conf
+ExecStop={{home}}/redis/bin/redis-cli -a {{redis_pwd}} shutdown
+Restart=always
+[Install]
+WantedBy=multi-user.target

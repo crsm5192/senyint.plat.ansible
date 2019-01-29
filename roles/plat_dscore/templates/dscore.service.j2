@@ -1,0 +1,13 @@
+[Unit]
+Description=DsCore Server
+After=syslog.target network.target
+[Service]
+Type=forking
+User={{user}}
+Group={{group}}
+ExecStart={{home}}/dscore/bin/catalina.sh start
+ExecStop={{home}}/dscore/bin/catalina.sh stop
+Restart=always
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

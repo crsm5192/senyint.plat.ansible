@@ -1,0 +1,14 @@
+home : /home/plat
+user : plat
+uid : 8080
+group: "{{user}}"
+gid: "{{uid}}"
+deploy_home : /home/deploy
+kafka_version : 2.11-2.1.0
+kafka_port : 9092
+kafka_jmx_port : 9999
+zookeeper_version : 3.4.13
+zookeeper_port : 2181
+zookeeper_reg_port : '2888:3888'
+zookeeper_jmx_port : 9998
+jdk_version : 1.8.0_191

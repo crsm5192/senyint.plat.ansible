@@ -1,0 +1,9 @@
+home : /home/plat
+user : plat
+uid : 8080
+group: "{{user}}"
+gid: "{{uid}}"
+deploy_home : /home/deploy
+redis_version : 3.2.12 
+redis_port : 6379
+redis_pwd : deaN9mizr_ZRzy1

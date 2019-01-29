@@ -16,25 +16,25 @@
     path: '{{item.path}}' 
     owner: '{{item.owner}}' 
     group: '{{item.group}}' 
-    mode: 0755 
-    state: directory
+    mode: 0755
+    state: '{{item.state}}'
   with_items:
-    - { path: '{{deploy_home}}/rpm',owner: 'root',group: 'root' }
-    - { path: '{{home}}/mysql/etc',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/mysql/data',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/mysql/pid',owner: '{{user}}',group: '{{group}}' }  
-    - { path: '{{home}}/mysql/src',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/mysql/log',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/mysql/binlog',owner: '{{user}}',group: '{{group}}' }    
-    - { path: '{{home}}/mysql/sock',owner: '{{user}}',group: '{{group}}' }     
-  
+    - { path: '{{deploy_home}}/support',owner: 'root',group: 'root',state: directory }
+    - { path: '{{home}}/mysql/etc',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/data',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/pid',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/src',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/log',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/binlog',owner: '{{user}}',group: '{{group}}',state: directory }   
+    - { path: '{{home}}/mysql/sock',owner: '{{user}}',group: '{{group}}',state: directory }
+    - { path: '{{home}}/mysql/log/mysql.log',owner: '{{user}}',group: '{{group}}',state: touch }   
+
 - name: check jemalloc
   shell: ls /usr/local/lib/libjemalloc.so.2
   ignore_errors: yes
   register: jemalloc_status
   
-
-- include: make_jemalloc.yml
+- import_tasks: make_jemalloc.yml
   when: jemalloc_status is failed
     
 - name: extract mysql source packages
@@ -60,7 +60,8 @@
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
     - { src: 'my.cnf.j2',dest: '{{home}}/mysql/etc/my.cnf' }
- 
+    - { src: 'mysqld.service.j2',dest: '/usr/lib/systemd/system/mysqld.service' }
+    
 - name: initialization mysql db
   command: ./mysql_install_db --user={{user}} --basedir={{home}}/mysql/mysql --datadir={{home}}/mysql/data
   args:
@@ -73,9 +74,15 @@
     - { src: '{{home}}/mysql/mysql/bin/mysqladmin',dest: '/usr/bin/mysqladmin' }
     - { src: '{{home}}/mysql/mysql/bin/mysqldump',dest: '/usr/bin/mysqldump' }
     - { src: '{{home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
-
-#- name: add service mysql   
-#  template: src=mysql.service.j2 dest=/usr/lib/systemd/system/mysql.service backup=yes
-
-#- name: mysql on start up
-#  systemd: name=mysql state=started enabled=yes
+    
+- name: fire wall mysql
+  firewalld: port=33066/tcp permanent=true state=enabled
+  
+- name: change floder owner
+  file: path='{{home}}/mysql' owner='{{user}}' group='{{group}}' recurse=yes
+  
+- name: start mysql
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'mysqld',state: 'started' }

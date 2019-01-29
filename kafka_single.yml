@@ -1,0 +1,4 @@
+- hosts: nginx
+  roles:
+     #- install_support
+     - kafka_single

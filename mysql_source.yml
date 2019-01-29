@@ -1,3 +1,4 @@
 - hosts: mysql
   roles:
+     - install_support
      - mysql_source
