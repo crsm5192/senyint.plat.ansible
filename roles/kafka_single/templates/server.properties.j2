@@ -1,6 +1,6 @@
 broker.id=0
 listeners=PLAINTEXT://:9092
-advertised.listeners=PLAINTEXT://{{ansible_all_ipv4_addresses}}:9092
+advertised.listeners=PLAINTEXT://{{ ansible_eth0['ipv4']['address'] }}:9092
 num.network.threads=3
 num.io.threads=8
 socket.send.buffer.bytes=102400
