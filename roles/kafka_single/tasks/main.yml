@@ -53,16 +53,16 @@
 - name: firewall zookeeper & kafka
   firewalld: port={{item}}/tcp permanent=true state=enabled
   with_items:
-    -'{{kafka_port}}'
-    -'{{kafka_jmx_port}}'
-    -'{{zookeeper_port}}'
-    -'{{zookeeper_jmx_port}}'
+    - '{{kafka_port}}'
+    - '{{kafka_jmx_port}}'
+    - '{{zookeeper_port}}'
+    - '{{zookeeper_jmx_port}}'
   
 - name: change floder zookeeper & kafka
   file: path='{{item}}' owner='{{user}}' group='{{group}}' recurse=yes
   with_items:
-    -'{{home}}/kafka'
-    -'{{home}}/zookeeper'
+    - '{{home}}/kafka'
+    - '{{home}}/zookeeper'
 
 - name: start zookeeper & kafka
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
