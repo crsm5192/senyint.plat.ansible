@@ -50,21 +50,21 @@
     - { src: 'log4j.properties.j2',dest: '{{home}}/zookeeper/zookeeper-{{zookeeper_version}}/conf/log4j.properties' }
     - { src: 'zookeeper.service.j2',dest: '/lib/systemd/system/zookeeper.service' } 
 
-- name: fire wall redis
-  firewalld: port={{item.port}}/tcp permanent=true state=enabled
+- name: firewall zookeeper & kafka
+  firewalld: port={{item}}/tcp permanent=true state=enabled
   with_items:
     -'{{kafka_port}}'
     -'{{kafka_jmx_port}}'
     -'{{zookeeper_port}}'
     -'{{zookeeper_jmx_port}}'
   
-- name: change floder owner
-  file: path='{{item.path}}' owner='{{user}}' group='{{group}}' recurse=yes
+- name: change floder zookeeper & kafka
+  file: path='{{item}}' owner='{{user}}' group='{{group}}' recurse=yes
   with_items:
     -'{{home}}/kafka'
     -'{{home}}/zookeeper'
 
-- name: start redis
+- name: start zookeeper & kafka
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }
