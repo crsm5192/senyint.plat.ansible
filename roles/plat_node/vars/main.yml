@@ -1,0 +1,18 @@
+#path
+pl_home :         "{{ home | default('/data') }}"
+pl_deploy_home :  "{{ deploy_home | default('/home/deploy') }}"
+#user
+pl_user :   "{{ user | default('node') }}"
+pl_uid :    "{{ uid | default('9092') }}"
+pl_group :  "{{ group | default('node') }}"
+pl_gid :    "{{ gid | default('9092') }}"
+#config
+pl_node_version :      "{{ node_version | default('0.12.9') }}"
+pl_node_log_version :  "{{ node_log_version | default('20181226') }}"
+pl_node_ui_version :   "{{ node_ui_version | default('20181226') }}"
+pl_node_conf_version : "{{ node_conf_version | default('20181226') }}"
+pl_node_web_version :  "{{ node_web_version | default('20181226') }}"
+pl_node_port :      "{{ node_port | default('9092') }}"
+pl_zookeeper_port :  "{{ zookeeper_port | default('2181') }}"
+pl_node_jmx_port :  "{{ node_jmx_port | default('9999') }}"
+pl_jdk_version :     "{{ jdk_version | default('1.8.0_191') }}"

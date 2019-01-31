@@ -1,8 +1,23 @@
-- name: yum bakup repo
-  command: mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bk
-  
-- name: yum update repo
-  copy: src=CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo
+- name: openfiles system
+  lineinfile: 
+    dest: /etc/security/limits.conf
+    insertbefore: '# End of file' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes    
+  with_items:
+    - '*     hard   nproc   {{pl_hard_nproc}}'
+    - '*     soft   nproc   {{pl_soft_nproc}}'
+    - '*     hard   nofile  {{pl_hard_nofile}}'
+    - '*     soft   nofile  {{pl_soft_nofile}}'
+    - '*     hard   memlock {{pl_hard_memlock}}'
+    - '*     soft   memlock {{pl_soft_memlock}}'
 
-- name: yum make cache
-  yum: update_cache=yes state=latest
+#- name: yum bakup repo
+#  command: mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo_bk
+  
+#- name: yum update repo
+#  copy: src=CentOS-Base.repo dest=/etc/yum.repos.d/CentOS-Base.repo
+
+#- name: yum make cache
+#  yum: update_cache=yes state=latest

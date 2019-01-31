@@ -1,14 +1,14 @@
 bind 0.0.0.0
 protected-mode yes
-port {{redis_port}}
+port {{pl_redis_port}}
 tcp-backlog 511
 timeout 0
 tcp-keepalive 300
 daemonize yes
 supervised no
-pidfile {{home}}/redis/pid/redis_{{redis_port}}.pid
+pidfile {{pl_home}}/redis/pid/redis_{{pl_redis_port}}.pid
 loglevel notice
-logfile {{home}}/redis/log/redis.log
+logfile {{pl_home}}/redis/log/redis.log
 databases 16
 save 900 1
 save 300 10
@@ -17,14 +17,14 @@ stop-writes-on-bgsave-error yes
 rdbcompression yes
 rdbchecksum yes
 dbfilename dump.rdb
-dir {{home}}/redis/data
+dir {{pl_home}}/redis/data
 slave-serve-stale-data yes
 slave-read-only yes
 repl-diskless-sync no
 repl-diskless-sync-delay 5
 repl-disable-tcp-nodelay no
 slave-priority 100
-requirepass {{redis_pwd}}
+requirepass {{pl_redis_pwd}}
 appendonly no
 appendfilename "appendonly.aof"
 appendfsync everysec

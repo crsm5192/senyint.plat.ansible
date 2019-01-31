@@ -1,9 +1,12 @@
-home : /home/plat
-user : plat
-uid : 8080
-group: "{{user}}"
-gid: "{{uid}}"
-deploy_home : /home/deploy
-redis_version : 3.2.12 
-redis_port : 6379
-redis_pwd : deaN9mizr_ZRzy1
+#path
+pl_home :        "{{home|default('/data')}}"
+pl_deploy_home : "{{deploy_home|default('/home/deploy')}}"
+#user
+pl_user : "{{user|default('redis')}}"
+pl_uid :  "{{uid|default('6379')}}"
+pl_group: "{{group|default('redis')}}"
+pl_gid:   "{{gid|default('6379')}}"
+#install
+pl_redis_version: "{{redis_version|default('3.2.12')}}"
+pl_redis_port :   "{{redis_port|default('6379')}}"
+pl_redis_pwd :    "{{redis_pwd|default('123456')}}"

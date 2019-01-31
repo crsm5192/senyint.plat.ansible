@@ -1,33 +1,33 @@
 - name: add group for mysql
   group: 
-    name: '{{group}}' 
-    gid: '{{gid}}'
+    name: '{{pl_group}}' 
+    gid:  '{{pl_gid}}'
 
 - name: add user for mysql
   user: 
-    name: '{{user}}'
-    group: '{{group}}'    
-    uid: '{{uid}}' 
-    home: '{{home}}' 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'    
+    uid:   '{{pl_uid}}' 
+    home:  '{{pl_home}}' 
     shell: /bin/bash
 
 - name: make floder for use 
   file: 
-    path: '{{item.path}}' 
+    path:  '{{item.path}}' 
     owner: '{{item.owner}}' 
     group: '{{item.group}}' 
     mode: 0755
     state: '{{item.state}}'
   with_items:
-    - { path: '{{deploy_home}}/support',owner: 'root',group: 'root',state: directory }
-    - { path: '{{home}}/mysql/etc',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/data',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/pid',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/src',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/log',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/binlog',owner: '{{user}}',group: '{{group}}',state: directory }   
-    - { path: '{{home}}/mysql/sock',owner: '{{user}}',group: '{{group}}',state: directory }
-    - { path: '{{home}}/mysql/log/mysql.log',owner: '{{user}}',group: '{{group}}',state: touch }   
+    - { path: '{{pl_deploy_home}}/support',     owner: 'root',group: 'root',state: directory }
+    - { path: '{{pl_home}}/mysql/etc',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/data',         owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/pid',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/src',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/log',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/binlog',       owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }   
+    - { path: '{{pl_home}}/mysql/sock',         owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/mysql/log/mysql.log',owner: '{{pl_user}}',group: '{{pl_group}}',state: touch }   
 
 - name: check jemalloc
   shell: ls /usr/local/lib/libjemalloc.so.2
@@ -38,7 +38,7 @@
   when: jemalloc_status is failed
     
 - name: extract mysql source packages
-  unarchive: src=mysql-{{mysql_version}}.tar.gz dest={{deploy_home}}
+  unarchive: src=mysql-{{pl_mysql_version}}.tar.gz dest={{pl_deploy_home}}
 
 - name: mysql_compile_str
   set_fact:
@@ -49,40 +49,42 @@
 - name: configure mysql 
   command: cmake . {{ mysql_compile_str }}
   args:
-    chdir: '{{deploy_home}}/mysql-{{mysql_version}}'
+    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
 
 - name: make mysql
   make:
-    chdir: '{{deploy_home}}/mysql-{{mysql_version}}'
+    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
     target: install
+    params:
+      NUM_THREADS: 4 
  
 - name: config mysql
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'my.cnf.j2',dest: '{{home}}/mysql/etc/my.cnf' }
+    - { src: 'my.cnf.j2',        dest: '{{pl_home}}/mysql/etc/my.cnf' }
     - { src: 'mysqld.service.j2',dest: '/usr/lib/systemd/system/mysqld.service' }
     
 - name: initialization mysql db
-  command: ./mysql_install_db --user={{user}} --basedir={{home}}/mysql/mysql --datadir={{home}}/mysql/data
+  command: ./mysql_install_db --user={{pl_user}} --basedir={{pl_home}}/mysql/mysql --datadir={{pl_home}}/mysql/data
   args:
-    chdir: '{{home}}/mysql/mysql/scripts'
+    chdir: '{{pl_home}}/mysql/mysql/scripts'
 
 - name: init service mysql
   file: src='{{item.src}}' dest='{{item.dest}}' state=link
   with_items:
-    - { src: '{{home}}/mysql/mysql/bin/mysql',dest: '/usr/bin/mysql' }
-    - { src: '{{home}}/mysql/mysql/bin/mysqladmin',dest: '/usr/bin/mysqladmin' }
-    - { src: '{{home}}/mysql/mysql/bin/mysqldump',dest: '/usr/bin/mysqldump' }
-    - { src: '{{home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
+    - { src: '{{pl_home}}/mysql/mysql/bin/mysql',                 dest: '/usr/bin/mysql' }
+    - { src: '{{pl_home}}/mysql/mysql/bin/mysqladmin',            dest: '/usr/bin/mysqladmin' }
+    - { src: '{{pl_home}}/mysql/mysql/bin/mysqldump',             dest: '/usr/bin/mysqldump' }
+    - { src: '{{pl_home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
     
 - name: fire wall mysql
-  firewalld: port=33066/tcp permanent=true state=enabled
+  firewalld: port={{pl_mysql_port}}/tcp permanent=true state=enabled
   
 - name: change floder owner
-  file: path='{{home}}/mysql' owner='{{user}}' group='{{group}}' recurse=yes
+  file: path='{{pl_home}}/mysql' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes
   
 - name: start mysql
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'mysqld',state: 'started' }
+    - { name: 'mysqld',   state: 'started' }

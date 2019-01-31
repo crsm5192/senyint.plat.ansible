@@ -1,0 +1,6 @@
+location ~ [^/]\.php(/|$)
+		{
+			fastcgi_pass  {{pl_nginx_php}};
+			fastcgi_index index.php;
+			include fastcgi.conf;
+		}

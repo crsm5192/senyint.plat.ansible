@@ -1,0 +1,71 @@
+- name: add group for samba
+  group: 
+    name: '{{pl_group}}' 
+    gid:  '{{pl_gid}}'
+
+- name: add user for samba
+  user: 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'    
+    uid:   '{{pl_uid}}' 
+    home:  '{{pl_home}}' 
+    shell: /bin/bash
+
+- name: clear other version
+  yum: name=samba state=absent
+
+- name: make floder for use 
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_deploy_home}}',     owner: 'root',       group: 'root',state: directory }
+    - { path: '{{pl_home}}',            owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/samba',      owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/samba/log',  owner: '{{pl_user}}',group: '{{pl_group}}',state: directory } 
+    - { path: '{{pl_samba_mount_path}}',owner: '{{pl_user}}',group: '{{pl_group}}',state: directory } 
+    
+- name: extract samba source packages
+  unarchive: src=samba-{{pl_samba_version}}.tar.gz dest={{pl_deploy_home}}
+
+- name: configure samba 
+  command: ./configure --prefix={{pl_home}}/samba --systemd-install-services
+  args:
+    chdir: '{{pl_deploy_home}}/samba-{{pl_samba_version}}'
+
+#- name: make samba
+#  make:
+#    chdir: '{{pl_deploy_home}}/samba-{{pl_samba_version}}'
+#    target: install
+#    params:
+#      NUM_THREADS: 4
+
+  
+- name: make samba
+  shell: make -j 4 && make install
+  args:
+    chdir: '{{pl_deploy_home}}/samba-{{pl_samba_version}}' 
+
+- name: config samba
+  template: src='smb.conf.j2' dest='{{pl_home}}/samba/etc/smb.conf'
+    
+- name: add samba user
+  shell: echo -e "{{pl_samba_password}}\n{{pl_samba_password}}" |{{pl_home}}/samba/bin/smbpasswd -a {{pl_user}} 
+
+- name: service samba
+  copy: src='{{pl_home}}/samba/lib/systemd/system/smb.service' dest='/usr/lib/systemd/system/smb.service' remote_src=yes
+    
+- name: fire wall samba
+  firewalld: port={{pl_samba_port}}/tcp permanent=true state=enabled
+  
+- name: change floder owner
+  file: path='{{pl_home}}/samba' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes
+  
+- name: start samba
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'smd',      state: 'started' }

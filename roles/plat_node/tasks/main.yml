@@ -1,0 +1,59 @@
+- name: add group for node
+  group: 
+    name: '{{pl_group}}'
+    gid:  '{{pl_gid}}'
+
+- name: add user for node
+  user: 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'
+    uid:   '{{pl_uid}}'
+    home:  '{{pl_home}}'
+    shell: /bin/bash
+
+- name: path node
+  file: path='{{pl_home}}/change_logdb'  owner='{{pl_user}}' group='{{pl_group}}' mode=0755 state=directory
+    
+- name: extract node source packages
+  unarchive: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'node-v{{pl_node_version}}-linux-x64.tar.gz' ,dest: '{{pl_home}}' }
+    - { src: 'node-ui-{{pl_node_ui_version}}.tar.gz'      ,dest: '{{pl_home}}' }
+    - { src: 'node-log-srv-{{pl_node_log_version}}.tar.gz',dest: '{{pl_home}}' }
+    - { src: 'node-config-{{pl_node_conf_version}}.tar.gz',dest: '{{pl_home}}' }
+    - { src: 'web4node-{{pl_node_web_version}}.tar.gz'    ,dest: '{{pl_home}}' }
+
+- name: link node bin    
+  file: src='{{item.src}}' dest='{{item.dest}}' state=link
+  with_items:
+    - { src: '{{pl_home}}/node-v{{pl_node_version}}-linux-x64/bin/node',dest: '/bin/node' }
+    - { src: '{{pl_home}}/node-v{{pl_node_version}}-linux-x64/bin/npm', dest: '/bin/npm' }
+    - { src: '{{pl_home}}/web4node/public/t/paas/0function',            dest: '{{pl_home}}/web4node/private' }
+    - { src: '{{pl_home}}/change_logdb',                                dest: '{{pl_home}}/web4node/change_logdb' }  
+    
+- name: service node
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'node-ui.service.j2',     dest: '/lib/systemd/system/node-ui.service' }
+    - { src: 'node-log-srv.service.j2',dest: '/lib/systemd/system/node-log-srv.service' }
+
+#- name: firewall node
+#  firewalld: port={{item}}/tcp permanent=true state=enabled
+#  with_items:
+#    - '{{pl_node_port}}'
+#    - '{{pl_node_jmx_port}}'
+  
+- name: change floder node
+  file: path='{{item}}/' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes
+  with_items:
+    - '{{pl_home}}/node-v{{pl_node_version}}-linux-x64'
+    - '{{pl_home}}/node-ui'
+    - '{{pl_home}}/node-log-srv'
+    - '{{pl_home}}/node-config'
+    - '{{pl_home}}/web4node'
+    
+- name: start  node
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'node-ui',     state: 'reloaded' }
+    - { name: 'node-log-srv',state: 'started' }

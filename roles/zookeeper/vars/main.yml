@@ -1,0 +1,21 @@
+#path
+pl_home :         "{{ home | default('/data') }}"
+pl_deploy_home :  "{{ deploy_home | default('/home/deploy') }}"
+#user
+pl_user :   "{{ user | default('zookeeper') }}"
+pl_uid :    "{{ uid | default('2181') }}"
+pl_group :  "{{ group | default('zookeeper') }}"
+pl_gid :    "{{ gid | default('2181') }}"
+#config
+pl_jdk_version :        "{{ jdk_version | default('1.8.0_191') }}"
+pl_zookeeper_version :  "{{ zookeeper_version | default('3.4.13') }}"
+pl_zookeeper_port :     "{{ zookeeper_port | default('2181') }}"
+pl_zookeeper_reg_port : "{{ zookeeper_reg_port | default('2888:3888') }}"
+pl_zookeeper_jmx_port : "{{ zookeeper_jmx_port | default('9998') }}"
+pl_zookeeper_id :       "{{ zookeeper_id | default('1') }}"
+pl_zookeeper_members :  "{{ zookeeper_members | default('1') }}"
+pl_zookeeper_node1 :    "{{ zookeeper_node1 | default('') }}"
+pl_zookeeper_node2 :    "{{ zookeeper_node2 | default('') }}"
+pl_zookeeper_node3 :    "{{ zookeeper_node3 | default('') }}"
+pl_zookeeper_node4 :    "{{ zookeeper_node4 | default('') }}"   
+pl_zookeeper_node5 :    "{{ zookeeper_node5 | default('') }}" 

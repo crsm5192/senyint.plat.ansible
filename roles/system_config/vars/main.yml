@@ -1,0 +1,6 @@
+pl_hard_nproc : "{{ hard_nproc | default('65535') }}"
+pl_soft_nproc : "{{ soft_nproc | default('65535') }}"
+pl_hard_nofile : "{{ hard_nofile | default('65535') }}"
+pl_soft_nofile : "{{ soft_nofile | default('65535') }}"
+pl_hard_memlock : "{{ hard_memlock | default('unlimited') }}"
+pl_soft_memlock : "{{ soft_memlock | default('unlimited') }}"

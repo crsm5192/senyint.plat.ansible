@@ -1,4 +1,7 @@
 - hosts: mysql
+  vars:
+    home: /home/plat
   roles:
-     - install_support
+     #- install_support
+     - system_config
      - mysql_source

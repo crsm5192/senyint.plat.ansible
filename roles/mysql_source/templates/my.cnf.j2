@@ -1,14 +1,14 @@
 [client]
 default-character-set          = utf8
-socket                         = {{home}}/mysql/sock/mysql.sock
+socket                         = {{pl_home}}/mysql/sock/mysql.sock
 [mysqld]
-user                           = {{user}}
+user                           = {{pl_user}}
 symbolic-links                 = 0
 lower_case_table_names         = 1
 back_log                       = -1
 max_connections                = 500
 max_allowed_packet             = 32M
-log-bin                        = {{home}}/mysql/binlog/mysql-bin
+log-bin                        = {{pl_home}}/mysql/binlog/mysql-bin
 binlog-format                  = 'mixed'
 binlog_cache_size              = 1M
 max_heap_table_size            = 64M
@@ -38,17 +38,17 @@ innodb_flush_log_at_trx_commit = 2
 innodb_log_file_size           = 3G
 innodb_flush_method            = O_DIRECT
 innodb_lock_wait_timeout       = 120
-datadir                        = {{home}}/mysql/data
-socket                         = {{home}}/mysql/sock/mysql.sock
+datadir                        = {{pl_home}}/mysql/data
+socket                         = {{pl_home}}/mysql/sock/mysql.sock
 symbolic-links                 = 0
 sql_mode                       = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
 character-set-server           = utf8
 collation-server               = utf8_general_ci
 connect_timeout                = 600
-port                           = {{mysql_port}}
+port                           = {{pl_mysql_port}}
 [mysqldump]
 quick
 max_allowed_packet             = 32M
 [mysqld_safe]
-log-error                      = {{home}}/mysql/log/mysql.log
-pid-file                       = {{home}}/mysql/pid/mysqld.pid
+log-error                      = {{pl_home}}/mysql/log/mysql.log
+pid-file                       = {{pl_home}}/mysql/pid/mysqld.pid

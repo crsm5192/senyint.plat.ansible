@@ -1,0 +1,51 @@
+#smaba path
+pl_home :        "{{ home | default('/data') }}"
+pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}" 
+#samba user
+pl_user :  "{{ user | default('squid') }}"
+pl_uid :   "{{ uid | default('3128') }}"
+pl_group : "{{ group | default('squid') }}"
+pl_gid :   "{{ gid | default('3128') }}"
+#samba deploy setting
+pl_squid_port :    "{{ samba_port | default('3128') }}"
+pl_squid_version : "{{ samba_version | default('4.5') }}"
+pl_squid_io:       "{{ squid_io | default('240') }}"
+pl_squid_lang:     "{{ squid_lang | default('Simplify_Chinese') }}"
+
+squid_compile:
+  - { option: "prefix",           value: "{{pl_home}}/squid" }
+  - { option: "with-default-user",value: "{{pl_user}}" }
+  - { option: "with-logdir",      value: "{{pl_home}}/squid/log" }
+  - { option: "with-pidfile",     value: "{{pl_home}}/squid/run/squid.pid" }
+  - { option: "sysconfdir",       value: "{{pl_home}}/squid/etc" }
+  - { option: "localstatedir",    value: "{{pl_home}}/squid/var" }
+  
+squid_mode:
+  - xmalloc-debug  
+  - xmalloc-debug-trace  
+  - xmalloc-statistics 
+  - icmp  
+  - delay-pools  
+  - useragent-log  
+  - kill-parent-hack   
+  - linux-netfilter  
+  - linux-tproxy  
+  - htpc  
+  - cache-digests  
+  - follow-x-forwarded-for  
+  - poll  
+  - underscore  
+  - gnuregex  
+  - http_perl_module  
+  - file-aio  
+  - mail  
+  - mail_ssl_module  
+  - http_image_filter_module    
+  - debug
+  - stream
+  - pcre-jit        
+
+squid_ex_mode:
+  - { option: "dlmalloc",    value: "/usr/local/lib" }
+  - { option: "async-io",    value: "{{pl_squid_io}}" }
+  - { option: "err-language",value: '"{{pl_squid_lang}}"' }

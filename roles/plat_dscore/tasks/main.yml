@@ -1,39 +1,39 @@
 - name: add group for tomcat
   group: 
-    name: '{{group}}' 
-    gid: '{{gid}}'
+    name: '{{pl_group}}' 
+    gid:  '{{pl_gid}}'
 
 - name: add user for tomcat
   user: 
-    name: '{{user}}'
-    group: '{{group}}'    
-    uid: '{{uid}}' 
-    home: '{{home}}' 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'    
+    uid:   '{{pl_uid}}' 
+    home:  '{{pl_home}}' 
     shell: /bin/bash
 
 - name: make floder for use 
   file: 
-    path: '{{item.path}}' 
+    path:  '{{item.path}}' 
     owner: '{{item.owner}}' 
     group: '{{item.group}}' 
     mode: 0755 
     state: directory
   with_items:
-    - { path: '{{deploy_home}}',owner: 'root',group: 'root' }
-    - { path: '{{home}}',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/ds-log',owner: '{{user}}',group: '{{group}}' }
+    - { path: '{{pl_deploy_home}}',owner: 'root',       group: 'root' }
+    - { path: '{{pl_home}}',       owner: '{{pl_user}}',group: '{{pl_group}}' }
+    - { path: '{{pl_home}}/ds-log',owner: '{{pl_user}}',group: '{{pl_group}}' }
 
 - name: extract tomcat source packages
   unarchive: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'apache-tomcat-{{tomcat_version}}.tar.gz',dest: '{{home}}' }
-    - { src: 'jdk-{{jdk_version}}-linux-x64.tar.gz',dest: '{{home}}' }
+    - { src: 'apache-tomcat-{{pl_tomcat_version}}.tar.gz',dest: '{{pl_home}}' }
+    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',dest: '{{pl_home}}' }
 
 - name: change floder owner
-  file: path='{{home}}/jdk{{jdk_version}}' owner='{{user}}' group='{{group}}' recurse=yes  
+  file: path='{{pl_home}}/jdk{{pl_jdk_version}}' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
     
 - name: rename floder tomcat
-  command: mv {{home}}/apache-tomcat-{{tomcat_version}} {{home}}/dscore
+  command: mv {{pl_home}}/apache-tomcat-{{pl_tomcat_version}} {{pl_home}}/dscore
   
 - name: check tomcat-native
   shell: ls /usr/local/apr/lib/libtcnative-1.so
@@ -45,29 +45,32 @@
 
 - name: mk floger tomcat
   file:
-    path: '{{item.path}}'
+    path:  '{{item.path}}'
     state: '{{item.state}}'
   with_items:
-    - { path: '{{home}}/dscore/webapps', state: 'absent' }
-    - { path: '{{home}}/dscore/webapps', state: 'directory' }
+    - { path: '{{pl_home}}/dscore/webapps', state: 'absent' }
+    - { path: '{{pl_home}}/dscore/webapps', state: 'directory' }
   
 - name: config tomcat
   template: 
-    src: '{{item.src}}' 
+    src:  '{{item.src}}' 
     dest: '{{item.dest}}' 
   with_items:
-    - { src: 'server.xml.j2',dest: '{{home}}/dscore/conf/server.xml' }
-    - { src: 'setenv.sh.j2',dest: '{{home}}/dscore/bin/setenv.sh' }
+    - { src: 'server.xml.j2',    dest: '{{pl_home}}/dscore/conf/server.xml' }
+    - { src: 'setenv.sh.j2',     dest: '{{pl_home}}/dscore/bin/setenv.sh' }
     - { src: 'dscore.service.j2',dest: '/lib/systemd/system/dscore.service' }
-    
+  
+- name: ds project
+  unarchive: src='ds-{{pl_ds_version}}.tar.gz' dest='{{pl_home}}/dscore/webapps/'
+  
 - name: fire wall tomcat
-  firewalld: port={{tomcat_port}}/tcp permanent=true state=enabled
+  firewalld: port={{pl_tomcat_port}}/tcp permanent=true state=enabled
   
 - name: change floder owner
-  file: path='{{home}}/dscore' owner='{{user}}' group='{{group}}' recurse=yes  
+  file: path='{{pl_home}}/dscore' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
     
 - name: start tomcat
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'dscore',state: 'started' }
+    - { name: 'dscore',   state: 'started' }

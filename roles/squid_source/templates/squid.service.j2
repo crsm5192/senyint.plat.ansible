@@ -1,0 +1,15 @@
+[Unit]
+Description=Squid Web Proxy Server
+Documentation=man:squid(8)
+After=network.target network-online.target nss-lookup.target
+[Service]
+Type=forking
+User={{pl_user}}
+Group={{pl_group}}
+PIDFile={{pl_home}}/squid/run/squid.pid
+ExecStartPre={{pl_home}}/squid/sbin/squid --foreground -z
+ExecStart={{pl_home}}/squid/sbin/squid -sYC
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+[Install]
+WantedBy=multi-user.target

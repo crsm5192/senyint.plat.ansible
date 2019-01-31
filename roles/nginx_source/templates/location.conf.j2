@@ -1,167 +1,17 @@
+location = /50x.html {
+    root   html;
+}
 location /ns_check {
     stub_status   on;
     access_log   off;
 }
-# 对 "/" 启用负载均衡
-location / {
-   #---------------------------------------root   /usr/local/web/;      # 主目录
-   #---------------------------------------index  index.html index.htm; # 缺省文档
-   # 没有索引页时，显示文件和子目录
-   #autoindex on;
-   #autoindex_exact_size on;
-   #autoindex_localtime on;
-   # 当外部请求path与后端服务的path不同时，导致cookie和session获取不到，设定[proxy_cookie_path 后端路径 前端路径]
-   #proxy_cookie_path /v1/ /;
-
-   include proxy.conf;
-
-   #proxy_pass http://tomcats; # 代理服务器
-   #---------------------------------------
-   access_log off;
-   # 暂时关闭，解决测试UI时浏览器缓存问题
-   #expires 30d;
-   if ($request_uri = '/') {
-     rewrite ^/$ /ui/paas/login.html redirect;
-   }
-   #proxy_pass     http://nodetemplate;
-   #proxy_redirect default;
+location /hello { 
+    content_by_lua 'ngx.say("Hello, Lua")'; 
 }
-
-location /ui/ {
-   include proxy.conf;
-   proxy_pass     http://nodetemplate;
-   proxy_redirect default;
-}
-location /web/ {
-   include proxy.conf;
-   proxy_pass     http://nodetemplate;
-   proxy_redirect default;
-}
-
-#error_page  404              /404.html;
-# redirect server error pages to the static page /50x.html
-#
-error_page   500 502 503 504  /50x.html;
-location = /50x.html {
-    root   html;
-}
-
-
-#针对不同的目录进行代理把下面的配置放到根目录代理的上面
-location /ds/ {
-# 转向爬虫专用server
-    #error_page 418 =200 @bots;
-    #if ($is_bot) {
-    #    return 418;
-    #}
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://tomcats;
-    proxy_redirect default;
-}
-location /api/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodeuiide;
-    proxy_redirect default;
-}
-
-location /mobileide/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodemobileuiide;
-    proxy_redirect default;
-}
-
-location /mobileui/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodemobileui;
-    proxy_redirect default;
-}
-
-location /empi/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass    http://nodeempi;
-    proxy_redirect default;
-}
-location /cron/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodecron;
-    proxy_redirect default;
-}
-
-location /eeb/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodeeeb;
-    proxy_redirect default;
-}
-
-location /blendy/ {
-    if ($is_bot) {
-        return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://nodethinghttp;
-    proxy_redirect default;
-}
-
-location /druid/ {
-    if ($is_bot) {
-       return 403;
-    }
-    include proxy.conf;
-    proxy_pass     http://druid;
-    proxy_redirect default;
-}
-
-location /empi/person/{
-	if ($is_bot) {
-		return 403;
-	}
-	include proxy.conf;
-	proxy_pass    http://172.16.140.229:8096;
-	proxy_redirect default;
-}
-
-
-location /imageServer/ {
-	add_header Access-Control-Allow-Origin *;
-	add_header Access-Control-Allow-Methods 'GET, POST';
-	add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-	proxy_pass     http://172.16.140.226/imgs/;
-}
-location /updateImg/ {
-	add_header Access-Control-Allow-Origin *;
-	add_header Access-Control-Allow-Methods 'GET, POST';
-	add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-	proxy_pass     http://172.16.140.226:8080/;
-}
-
-
 location  /ehrllq/ {
 	root /usr/local/nginx/html/;
 }
 location /sjzljc/ {
 	root /usr/local/nginx/html/;
 } 
-location /hello { 
-    content_by_lua 'ngx.say("Hello, Lua")'; 
-}
+error_page   500 502 503 504  /50x.html;

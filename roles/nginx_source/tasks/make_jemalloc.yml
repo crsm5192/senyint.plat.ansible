@@ -1,16 +1,16 @@
 - name: extract jemalloc source packages
   unarchive: 
-    src: 'jemalloc-{{jemalloc_version}}.tar.gz' 
-    dest: '{{deploy_home}}'
+    src: 'jemalloc-{{pl_jemalloc_version}}.tar.gz' 
+    dest: '{{pl_deploy_home}}'
   
 - name: configure jemalloc 
   command: ./configure
   args:
-    chdir: '{{deploy_home}}/jemalloc-{{jemalloc_version}}' 
+    chdir: '{{pl_deploy_home}}/jemalloc-{{pl_jemalloc_version}}' 
     
 - name: make jemalloc
   make:
-    chdir: '{{deploy_home}}/jemalloc-{{jemalloc_version}}'
+    chdir: '{{pl_deploy_home}}/jemalloc-{{pl_jemalloc_version}}'
     target: install
 
 - name: link jemalloc

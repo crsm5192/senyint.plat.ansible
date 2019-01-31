@@ -4,11 +4,11 @@ After=network.target
 
 [Service]
 Type=forking
-PIDFile={{home}}/nginx/nginx.pid
-ExecStartPre={{home}}/nginx/sbin/nginx -t -q -g 'daemon on; master_process on;'
-ExecStart={{home}}/nginx/sbin/nginx -g 'daemon on; master_process on;'
-ExecReload={{home}}/nginx/sbin/nginx -g 'daemon on; master_process on;' -s reload
-ExecStop=-{{home}}/nginx/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile {{home}}/nginx/nginx.pid
+PIDFile={{pl_home}}/nginx/nginx.pid
+ExecStartPre={{pl_home}}/nginx/sbin/nginx -t -q -g 'daemon on; master_process on;'
+ExecStart={{pl_home}}/nginx/sbin/nginx -g 'daemon on; master_process on;'
+ExecReload={{pl_home}}/nginx/sbin/nginx -g 'daemon on; master_process on;' -s reload
+ExecStop=-{{pl_home}}/nginx/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile {{pl_home}}/nginx/nginx.pid
 TimeoutStopSec=5
 KillMode=mixed
 

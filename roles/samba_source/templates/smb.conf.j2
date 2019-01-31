@@ -1,0 +1,18 @@
+[global]
+        workgroup = {{pl_samba_workgroup}}
+        unix charset = utf8
+        security = user	
+        log file = {{pl_home}}/samba/log/smb_log.%m
+        max log size = 50
+        load printers = No
+[{{pl_samba_workgroup}}]
+        comment = {{pl_samba_workgroup}}
+        path = {{pl_samba_mount_path}}
+        read only = No
+        writable = yes
+        create mask = 0775
+        directory mask = 0775
+        available = yes
+        browseable = yes
+        force user = {{pl_user}}
+        force group = {{pl_group}}

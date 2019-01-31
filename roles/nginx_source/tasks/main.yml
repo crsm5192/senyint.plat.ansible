@@ -1,28 +1,30 @@
 - name: add group for nginx
   group: 
-    name: '{{group}}' 
-    gid: '{{gid}}'
+    name: '{{pl_group}}' 
+    gid:  '{{pl_gid}}'
 
 - name: add user for nginx
   user: 
-    name: '{{user}}'
-    group: '{{group}}'    
-    uid: '{{uid}}' 
-    home: '{{home}}' 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'    
+    uid:   '{{pl_uid}}' 
+    home:  '{{pl_home}}' 
     shell: /bin/bash
 
 - name: make floder for use 
   file: 
-    path: '{{item.path}}' 
+    path:  '{{item.path}}' 
     owner: '{{item.owner}}' 
     group: '{{item.group}}' 
     mode: 0755 
     state: directory
   with_items:
-    - { path: '{{deploy_home}}/support',owner: 'root',group: 'root' }
-    - { path: '{{home}}',owner: '{{user}}',group: '{{group}}' }
-    - { path: '{{home}}/nginx/conf/conf.d/ssl',owner: '{{user}}',group: '{{group}}' }
-
+    - { path: '{{pl_deploy_home}}/support',       owner: 'root',group: 'root' }
+    - { path: '{{pl_home}}',                      owner: '{{pl_user}}',group: '{{pl_group}}' }
+    - { path: '{{pl_home}}/nginx/conf/conf.d',    owner: '{{pl_user}}',group: '{{pl_group}}' }    
+    - { path: '{{pl_home}}/nginx/conf/conf.d/ssl',owner: '{{pl_user}}',group: '{{pl_group}}' }
+    - { path: '{{pl_home}}/nginx/conf/vhost.d',   owner: '{{pl_user}}',group: '{{pl_group}}' }  
+    
 - name: check jemalloc
   shell: ls /usr/local/lib/libjemalloc.so.2
   ignore_errors: yes
@@ -42,26 +44,26 @@
 - name: extract nginx source packages
   unarchive: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'nginx-{{nginx_version}}.tar.gz',dest: '{{deploy_home}}' }
-    - { src: 'pcre-{{pcre_version}}.tar.gz',dest: '{{deploy_home}}' }
-    - { src: 'zlib-{{zlib_version}}.tar.gz',dest: '{{deploy_home}}' }
-    - { src: 'openssl-{{openssl_version}}.tar.gz',dest: '{{deploy_home}}' }
-    - { src: 'ngx_devel_kit-{{ngx_devel_kit_version}}.tar.gz',dest: '{{deploy_home}}' }   
-    - { src: 'lua-nginx-module-{{lua_nginx_module_version}}.tar.gz',dest: '{{deploy_home}}' }
-    - { src: 'naxsi-{{naxsi_version}}.tar.gz',dest: '{{deploy_home}}' }
+    - { src: 'nginx-{{pl_nginx_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }
+    - { src: 'pcre-{{pl_pcre_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
+    - { src: 'zlib-{{pl_zlib_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
+    - { src: 'openssl-{{pl_openssl_version}}.tar.gz',                  dest: '{{pl_deploy_home}}' }
+    - { src: 'ngx_devel_kit-{{pl_ngx_devel_kit_version}}.tar.gz',      dest: '{{pl_deploy_home}}' }   
+    - { src: 'lua-nginx-module-{{pl_lua_nginx_module_version}}.tar.gz',dest: '{{pl_deploy_home}}' }
+    - { src: 'naxsi-{{pl_naxsi_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }
  
 - name: Clear nginx headers
   lineinfile: 
-    dest: '{{deploy_home}}/nginx-{{nginx_version}}/src/http/ngx_http_header_filter_module.c' 
+    dest: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}/src/http/ngx_http_header_filter_module.c' 
     regexp: '{{item.regexp}}' 
     line: '{{item.line}}' 
     state: present 
     backup: yes 
     backrefs: yes
   with_items:
-    - { regexp: 'static u_char ngx_http_server_string',line : 'static u_char ngx_http_server_string[] = "Server: {{custom_server}}" CRLF;'}
-    - { regexp: 'static u_char ngx_http_server_full_string',line : 'static u_char ngx_http_server_full_string[] = "Server: {{custom_server}}/{{custom_version}}" CRLF;'}
-    - { regexp: 'static u_char ngx_http_server_build_string',line : 'static u_char ngx_http_server_build_string[] = "Server: {{custom_server}}/{{custom_version}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_string',      line : 'static u_char ngx_http_server_string[] = "Server: {{pl_custom_server}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_full_string', line : 'static u_char ngx_http_server_full_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_build_string',line : 'static u_char ngx_http_server_build_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
 
 - name: nginx_compile_str
   set_fact:
@@ -96,37 +98,25 @@
 - name: configure nginx 
   command: ./configure {{ nginx_compile_str }} {{ nginx_mode_str }} {{ nginx_lib_str }} {{ nginx_ex_str }} {{ nginx_ex_moudle_str }}
   args:
-    chdir: '{{deploy_home}}/nginx-{{nginx_version}}'
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
 
 - name: make nginx
   make:
-    chdir: '{{deploy_home}}/nginx-{{nginx_version}}'
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
     target: install
+    params:
+      NUM_THREADS: 4
  
-- name: config nginx
-  template: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'nginx.conf.j2',dest: '{{home}}/nginx/conf/nginx.conf' }
-    - { src: '80_8088.conf.j2',dest: '{{home}}/nginx/conf/conf.d/80_8088.conf' }
-    - { src: '443.conf.j2',dest: '{{home}}/nginx/conf/conf.d/443.conf' }
-    - { src: 'gzip.conf.j2',dest: '{{home}}/nginx/conf/conf.d/gzip.conf' }
-    - { src: 'fastcgi.conf.j2',dest: '{{home}}/nginx/conf/conf.d/fastcgi.conf' }
-    - { src: 'map.conf.j2',dest: '{{home}}/nginx/conf/conf.d/map.conf' }
-    - { src: 'upstream.conf.j2',dest: '{{home}}/nginx/conf/conf.d/upstream.conf' }
-    - { src: 'proxy.conf.j2',dest: '{{home}}/nginx/conf/proxy.conf' }
-    - { src: 'location.conf.j2',dest: '{{home}}/nginx/conf/location.conf' }    
-    - { src: 'senyint.com.crt.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
-    - { src: 'senyint.com.key.j2',dest: '{{home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
-    - { src: 'nginx.service.j2',dest: '/usr/lib/systemd/system/nginx.service' }
+- import_tasks: nginx_conf.yml
     
 - name: fire wall nginx
   firewalld: port=80/tcp permanent=true state=enabled
   
 - name: change floder owner
-  file: path='{{home}}/nginx' owner='{{user}}' group='{{group}}' recurse=yes  
+  file: path='{{pl_home}}/nginx' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
     
 - name: start nginx
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'nginx',state: 'started' }
+    - { name: 'nginx',    state: 'started' }

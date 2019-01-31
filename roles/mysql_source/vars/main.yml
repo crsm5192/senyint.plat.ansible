@@ -1,19 +1,22 @@
-home: /home/plat
-user: plat
-uid: 8080
-group: "{{user}}"
-gid: "{{uid}}"
-mysql_port: 33066
-deploy_home: /home/deploy
-mysql_version: 5.6.42
-jemalloc_version: 5.1.0
-
+#path
+pl_home:        "{{home|default('/data')}}"
+pl_deploy_home: "{{deploy_home|default('/home/deploy')}}"
+#uer
+pl_user:  "{{user|default('mysql')}}"
+pl_uid:   "{{uid|default('3306')}}"
+pl_group: "{{group|default('mysql')}}"
+pl_gid:   "{{gid|default('3306')}}"
+#soft_version
+pl_mysql_port:       "{{mysql_port|default('3306')}}"
+pl_mysql_version:    "{{mysql_version|default('5.6.42')}}"
+pl_jemalloc_version: "{{jemalloc_version|default('5.1.0')}}"
+#install_config
 mysql_compile:
-  - { option: "CMAKE_INSTALL_PREFIX", value: "{{home}}/mysql/mysql" }
+  - { option: "CMAKE_INSTALL_PREFIX", value: "{{pl_home}}/mysql/mysql" }
   - { option: "CMAKE_EXE_LINKER_FLAGS", value: '"-ljemalloc"' }
-  - { option: "MYSQL_UNIX_ADDR", value: "{{home}}/mysql/sock/mysql.sock" }
-  - { option: "MYSQL_DATADIR", value: "{{home}}/mysql/data" }
-  - { option: "SYSCONFDIR", value: "{{home}}/mysql/etc" }
+  - { option: "MYSQL_UNIX_ADDR", value: "{{pl_home}}/mysql/sock/mysql.sock" }
+  - { option: "MYSQL_DATADIR", value: "{{pl_home}}/mysql/data" }
+  - { option: "SYSCONFDIR", value: "{{pl_home}}/mysql/etc" }
   - { option: "WITH_EMBEDDED_SERVE", value: "1" }
   - { option: "WITH_INNOBASE_STORAGE_ENGINE", value: "1" }
   - { option: "WITH_MEMORY_STORAGE_ENGINE", value: "1" }

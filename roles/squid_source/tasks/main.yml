@@ -1,0 +1,82 @@
+- name: add group for squid
+  group: 
+    name: '{{pl_group}}' 
+    gid:  '{{pl_gid}}'
+
+- name: add user for squid
+  user: 
+    name:  '{{pl_user}}'
+    group: '{{pl_group}}'    
+    uid:   '{{pl_uid}}' 
+    home:  '{{pl_home}}' 
+    shell: /bin/bash
+
+- name: clear other version
+  yum: name=squid state=absent
+
+- name: make floder for use 
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_deploy_home}}',     owner: 'root',       group: 'root',state: directory }
+    - { path: '{{pl_home}}',            owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/squid',      owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
+    - { path: '{{pl_home}}/squid/log',  owner: '{{pl_user}}',group: '{{pl_group}}',state: directory } 
+    - { path: '{{pl_home}}/squid/run',  owner: '{{pl_user}}',group: '{{pl_group}}',state: directory } 
+    - { path: '{{pl_home}}/squid/etc',  owner: '{{pl_user}}',group: '{{pl_group}}',state: directory } 
+    - { path: '{{pl_home}}/squid/var',  owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }   
+    
+- name: extract squid source packages
+  unarchive: src=squid-{{pl_squid_version}}.tar.gz dest={{pl_deploy_home}}
+
+- name: squid_compile_str
+  set_fact:
+    squid_compile_str: "{{ squid_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ squid_compile }}"   
+
+- name: squid_mode_str
+  set_fact:
+    squid_mode_str: "{{ squid_mode_str | default('') }} {{ '--enable-' + item }}"
+  with_items:
+    - "{{ squid_mode }}"
+
+- name: squid_ex_mode_str
+  set_fact:
+    squid_ex_mode_str: "{{ squid_ex_mode_str | default('') }} {{ '--enable-' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ squid_ex_mode }}" 
+    
+- name: configure squid 
+  command: ./configure --with-large-files {{ squid_compile_str }} {{ squid_mode_str }} {{ squid_ex_mode_str }}
+  args:
+    chdir: '{{pl_deploy_home}}/squid-{{pl_squid_version}}'
+
+- name: make squid
+  make:
+    chdir: '{{pl_deploy_home}}/squid-{{pl_squid_version}}'
+    target: install
+    params:
+      NUM_THREADS: 4{{pl_group}}
+
+- name: config squid
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'squid.conf.j2',     dest: '{{pl_home}}/squid/etc/squid.conf' }
+    - { src: 'squid.service.j2'  ,dest: '/usr/lib/systemd/system/squid.service' }
+    
+- name: fire wall squid
+  firewalld: port={{pl_squid_port}}/tcp permanent=true state=enabled
+  
+- name: change floder owner
+  file: path='{{pl_home}}/squid' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
+    
+- name: start squid
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'squid',    state: 'started' }

@@ -1,0 +1,14 @@
+#smaba path
+pl_home :        "{{ home | default('/data') }}"
+pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}" 
+#samba user
+pl_user :  "{{ user | default('samba') }}"
+pl_uid :   "{{ uid | default('445') }}"
+pl_group : "{{ group | default('samba') }}"
+pl_gid :   "{{ gid | default('445') }}"
+#samba deploy setting
+pl_samba_password :   "{{ samba_password | default('P7qVZiha24fL%@qL') }}"
+pl_samba_port :       "{{ samba_port | default('445') }}"
+pl_samba_version :    "{{ samba_version | default('4.9.4') }}"
+pl_samba_mount_path : "{{ samba_mount_path | default('/data/mount') }}"
+pl_samba_workgroup :  "{{ samba_workgroup | default('samba') }}"

@@ -1,18 +1,26 @@
-home: /home/plat
-deploy_home: /home/deploy
-user: plat
-group: "{{user}}"
-uid: 8080
-gid: "{{uid}}"
-tomcat_version: 8.5.37
-jdk_version: 1.8.0_191
-tomcat_shutdown_port: 8005
-tomcat_port: 8080
-connectionTimeout: 20000
-tomcat_redirectPort: 8447
-tomcat_protocol_port: 8025
-tomcat_host: localhost
-tomcat_appName: localhost
-tomcat_appBase: webapps
-tomcat_jmx_port: 10000
-tomcat_native_version: 1.2.19
+#path
+pl_home:        "{{ home | default('/data') }}"
+pl_deploy_home: "{{ deploy_home | default('/home/deploy') }}"
+#user
+pl_user:  "{{ user | default('tomcat') }}"
+pl_group: "{{ group | default('tomcat') }}"
+pl_uid:   "{{ uid | default('8080') }}"
+pl_gid:   "{{ gid | default('8080') }}"
+#version
+pl_tomcat_version: "{{ tomcat_version | default('8.5.37') }}"
+pl_jdk_version: "{{ jdk_version | default('1.8.0_191') }}"
+pl_ds_version: "{{ ds_version | default('20190104') }}"
+#config
+pl_tomcat_shutdown_port: "{{ tomcat_shutdown_port | default('8005') }}"
+pl_tomcat_port: "{{ tomcat_port | default('8080') }}"
+pl_connectionTimeout: "{{ connectionTimeout | default('20000') }}"
+pl_tomcat_redirectPort: "{{ tomcat_redirectPort | default('8443') }}"
+pl_tomcat_protocol_port: "{{ tomcat_protocol_port | default('8009') }}"
+pl_tomcat_host: "{{ tomcat_host | default('localhost') }}"
+pl_tomcat_appName: "{{ tomcat_appName | default('localhost') }}"
+pl_tomcat_appBase: "{{ tomcat_appBase | default('webapps') }}"
+pl_tomcat_jmx_port: "{{ tomcat_jmx_port | default('10000') }}"
+pl_tomcat_native_version: "{{ tomcat_native_version | default('1.2.19') }}"
+pl_gcXmx: "{{ gcXmx | default('256MB') }}"
+pl_gcXms: "{{ gcXms | default('256MB') }}"
+pl_gcXmn: "{{ gcXmn | default('128MB') }}"

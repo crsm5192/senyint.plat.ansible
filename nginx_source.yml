@@ -1,4 +1,11 @@
 - hosts: nginx
+  vars:
+    user: plat
+    group: plat
+    uid: 8080
+    gid: 8080
+    home: /home/plat
   roles:
-     - install_support
+     #- install_support
+     - system_config
      - nginx_source
