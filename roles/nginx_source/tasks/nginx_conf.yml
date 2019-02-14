@@ -1,49 +1,63 @@
 - name: config nginx default
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'nginx.conf.j2',     dest: '{{pl_home}}/nginx/conf/nginx.conf' }
-    - { src: '80_8088.conf.j2',   dest: '{{pl_home}}/nginx/conf/conf.d/80_8088.conf' }
-    - { src: '443.conf.j2',       dest: '{{pl_home}}/nginx/conf/conf.d/443.conf' }
-    - { src: 'gzip.conf.j2',      dest: '{{pl_home}}/nginx/conf/conf.d/gzip.conf' }
-    - { src: 'fastcgi.conf.j2',   dest: '{{pl_home}}/nginx/conf/conf.d/fastcgi.conf' }
-    - { src: 'map.conf.j2',       dest: '{{pl_home}}/nginx/conf/conf.d/map.conf' }
-    - { src: 'proxy.conf.j2',     dest: '{{pl_home}}/nginx/conf/proxy.conf' }
-    - { src: 'location.conf.j2',  dest: '{{pl_home}}/nginx/conf/vhost.d/location.conf' }    
-    - { src: 'senyint.com.crt.j2',dest: '{{pl_home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
-    - { src: 'senyint.com.key.j2',dest: '{{pl_home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
-    - { src: 'nginx.service.j2'  ,dest: '/usr/lib/systemd/system/nginx.service' }
+    - { src: 'config/nginx.conf.j2',  dest: '{{pl_home}}/nginx/conf/nginx.conf' }
+    - { src: 'config/proxy.conf.j2',  dest: '{{pl_home}}/nginx/conf/proxy.conf' }
+    - { src: 'config/client.conf.j2', dest: '{{pl_home}}/nginx/conf/conf.d/client.conf' }
+    - { src: 'config/gzip.conf.j2',   dest: '{{pl_home}}/nginx/conf/conf.d/gzip.conf' }
+    - { src: 'config/fastcgi.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/fastcgi.conf' }
+    - { src: 'config/map.conf.j2',    dest: '{{pl_home}}/nginx/conf/conf.d/map.conf' }
 
-- name: config nginx nodeui
+- name: config nginx server
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'node.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/node.conf' }
-    - { src: 'up_node.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_node.conf' }
-  when: pl_node_host is defined
+    - { src: 'server/80.conf.j2', dest: '{{pl_home}}/nginx/conf/conf.d/80.conf' }
+    - { src: 'server/443.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/443.conf' }
 
-- name: config nginx dscore
+- name: config nginx location
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'dscore.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/dscore.conf' }
-    - { src: 'up_dscore.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_dscore.conf' }
-  when: pl_dscore_host is defined
+    - { src: 'location/default.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/default.conf' }
+    - { src: 'location/druid.conf.j2',     dest: '{{pl_home}}/nginx/conf/vhost.d/druid.conf' }
+    - { src: 'location/dscore.conf.j2',    dest: '{{pl_home}}/nginx/conf/vhost.d/dscore.conf' }
+    - { src: 'location/empi.conf.j2',      dest: '{{pl_home}}/nginx/conf/vhost.d/empi.conf' }
+    - { src: 'location/img_server.conf.j2',dest: '{{pl_home}}/nginx/conf/vhost.d/img_server.conf' }
+    - { src: 'location/node.conf.j2',      dest: '{{pl_home}}/nginx/conf/vhost.d/node.conf' }
+    
+- name: config nginx upstream
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'upstream/up_druid.conf.j2',  dest: '{{pl_home}}/nginx/conf/conf.d/up_druid.conf' }
+    - { src: 'upstream/up_dscore.conf.j2', dest: '{{pl_home}}/nginx/conf/conf.d/up_dscore.conf' }
+    - { src: 'upstream/up_empi.conf.j2',   dest: '{{pl_home}}/nginx/conf/conf.d/up_empi.conf' }
+    - { src: 'upstream/up_img_server.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_img_server.conf' }
+    - { src: 'upstream/up_trs.conf.j2',       dest: '{{pl_home}}/nginx/conf/conf.d/up_trs.conf' }
+    - { src: 'upstream/up_node.conf.j2',   dest: '{{pl_home}}/nginx/conf/conf.d/up_node.conf' }    
 
-- name: config nginx druid
+- name: config nginx ssl
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'druid.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/druid.conf' }
-    - { src: 'up_druid.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_druid.conf' }
-  when: pl_druid_host is defined
-  
-- name: config nginx empi
-  template: src='{{item.src}}' dest='{{item.dest}}'
+    - { src: 'ssl/senyint.com.crt.j2',dest: '{{pl_home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
+    - { src: 'ssl/senyint.com.key.j2',dest: '{{pl_home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
+
+- name: config nginx dscore2
+  lineinfile: 
+    dest: '{{pl_home}}/nginx/conf/conf.d/up_dscore.conf' 
+    insertafter: 'server {{pl_dscore_host}}:8080;' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
   with_items:
-    - { src: 'empi.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/empi.conf' }
-    - { src: 'up_empi.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_empi.conf' }
-  when: pl_empi_host is defined
- 
-- name: config nginx img_server
-  template: src='{{item.src}}' dest='{{item.dest}}'
+    - 'server {{dscore_host2}}:8080;'  
+  when: dscore_host2 is defined 
+
+- name: config nginx dscore3
+  lineinfile: 
+    dest: '{{pl_home}}/nginx/conf/conf.d/up_dscore.conf' 
+    insertafter: 'server {{dscore_host2}}:8080;' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
   with_items:
-    - { src: 'img_server.conf.j2',   dest: '{{pl_home}}/nginx/conf/vhost.d/img_server.conf' }
-    - { src: 'up_img_server.conf.j2',dest: '{{pl_home}}/nginx/conf/conf.d/up_img_server.conf' }
-  when: pl_img_server_host is defined
+    - 'server {{dscore_host3}}:8080;' 
+  when: dscore_host3 is defined

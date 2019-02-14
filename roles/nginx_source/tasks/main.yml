@@ -1,122 +1,14 @@
-- name: add group for nginx
-  group: 
-    name: '{{pl_group}}' 
-    gid:  '{{pl_gid}}'
+- import_tasks: nginx_user.yml
+  tags: Nginx User(with floder)
 
-- name: add user for nginx
-  user: 
-    name:  '{{pl_user}}'
-    group: '{{pl_group}}'    
-    uid:   '{{pl_uid}}' 
-    home:  '{{pl_home}}' 
-    shell: /bin/bash
-
-- name: make floder for use 
-  file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
-    mode: 0755 
-    state: directory
-  with_items:
-    - { path: '{{pl_deploy_home}}/support',       owner: 'root',group: 'root' }
-    - { path: '{{pl_home}}',                      owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/nginx/conf/conf.d',    owner: '{{pl_user}}',group: '{{pl_group}}' }    
-    - { path: '{{pl_home}}/nginx/conf/conf.d/ssl',owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/nginx/conf/vhost.d',   owner: '{{pl_user}}',group: '{{pl_group}}' }  
-    
-- name: check jemalloc
-  shell: ls /usr/local/lib/libjemalloc.so.2
-  ignore_errors: yes
-  register: jemalloc_status
-
-- import_tasks: make_jemalloc.yml
-  when: jemalloc_status is failed 
- 
-- name: check luajit
-  shell: ls /usr/local/lib/libluajit-5.1.so.2
-  ignore_errors: yes
-  register: luajit_status
+- import_tasks: nginx_package.yml
+  tags: Nginx Package 
   
-- import_tasks: make_luajit.yml
-  when: luajit_status is failed 
-    
-- name: extract nginx source packages
-  unarchive: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'nginx-{{pl_nginx_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }
-    - { src: 'pcre-{{pl_pcre_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
-    - { src: 'zlib-{{pl_zlib_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
-    - { src: 'openssl-{{pl_openssl_version}}.tar.gz',                  dest: '{{pl_deploy_home}}' }
-    - { src: 'ngx_devel_kit-{{pl_ngx_devel_kit_version}}.tar.gz',      dest: '{{pl_deploy_home}}' }   
-    - { src: 'lua-nginx-module-{{pl_lua_nginx_module_version}}.tar.gz',dest: '{{pl_deploy_home}}' }
-    - { src: 'naxsi-{{pl_naxsi_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }
- 
-- name: Clear nginx headers
-  lineinfile: 
-    dest: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}/src/http/ngx_http_header_filter_module.c' 
-    regexp: '{{item.regexp}}' 
-    line: '{{item.line}}' 
-    state: present 
-    backup: yes 
-    backrefs: yes
-  with_items:
-    - { regexp: 'static u_char ngx_http_server_string',      line : 'static u_char ngx_http_server_string[] = "Server: {{pl_custom_server}}" CRLF;'}
-    - { regexp: 'static u_char ngx_http_server_full_string', line : 'static u_char ngx_http_server_full_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
-    - { regexp: 'static u_char ngx_http_server_build_string',line : 'static u_char ngx_http_server_build_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
-
-- name: nginx_compile_str
-  set_fact:
-    nginx_compile_str: "{{ nginx_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
-  with_items:
-    - "{{ nginx_compile }}"   
-    
-- name: nginx_mode_str
-  set_fact:
-    nginx_mode_str: "{{ nginx_mode_str | default('') }} {{ '--with-' + item }}"
-  with_items:
-    - "{{ nginx_mode }}"    
-    
-- name: nginx_lib_str
-  set_fact:
-    nginx_lib_str: "{{ nginx_lib_str | default('') }} {{ '--with-' + item.option + '=' + item.value }}"
-  with_items:
-    - "{{ nginx_lib }}"   
-    
-- name: nginx_ex_str
-  set_fact:
-    nginx_ex_str: "{{ nginx_ex_str | default('') }} {{ '--with-ld-opt=' + item }}"
-  with_items:
-    - "{{ nginx_ex }}"   
-  
-- name: nginx_ex_moudle_str
-  set_fact:
-    nginx_ex_moudle_str: "{{ nginx_ex_moudle_str | default('') }} {{ '--add-module=' + item }}"
-  with_items:
-    - "{{ nginx_ex_moudle }}"    
-       
-- name: configure nginx 
-  command: ./configure {{ nginx_compile_str }} {{ nginx_mode_str }} {{ nginx_lib_str }} {{ nginx_ex_str }} {{ nginx_ex_moudle_str }}
-  args:
-    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
-
-- name: make nginx
-  make:
-    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
-    target: install
-    params:
-      NUM_THREADS: 4
+- import_tasks: nginx_make.yml
+  tags: Nginx Make
  
 - import_tasks: nginx_conf.yml
+  tags: Nginx Config
     
-- name: fire wall nginx
-  firewalld: port=80/tcp permanent=true state=enabled
-  
-- name: change floder owner
-  file: path='{{pl_home}}/nginx' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
-    
-- name: start nginx
-  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
-  with_items:
-    - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'nginx',    state: 'started' }
+- import_tasks: nginx_service.yml
+  tags: Nginx Service(with firewall)

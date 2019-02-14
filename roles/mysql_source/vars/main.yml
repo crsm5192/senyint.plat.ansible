@@ -6,10 +6,20 @@ pl_user:  "{{user|default('mysql')}}"
 pl_uid:   "{{uid|default('3306')}}"
 pl_group: "{{group|default('mysql')}}"
 pl_gid:   "{{gid|default('3306')}}"
+#pl_user:  mysql
+#pl_uid:   3306
+#pl_group: mysql
+#pl_gid:   3306
 #soft_version
 pl_mysql_port:       "{{mysql_port|default('3306')}}"
 pl_mysql_version:    "{{mysql_version|default('5.6.42')}}"
 pl_jemalloc_version: "{{jemalloc_version|default('5.1.0')}}"
+
+
+pl_db_user:  "{{ db_user | default ('test')}}"
+pl_db_pwd:   "{{ db_pwd | default ('test123')}}"
+pl_root_pwd: "{{ root_pwd | default ('123456')}}"
+
 #install_config
 mysql_compile:
   - { option: "CMAKE_INSTALL_PREFIX", value: "{{pl_home}}/mysql/mysql" }

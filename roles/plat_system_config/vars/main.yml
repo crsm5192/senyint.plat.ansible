@@ -1,0 +1,18 @@
+pl_hard_nproc :   "{{ hard_nproc | default('65535') }}"
+pl_soft_nproc :   "{{ soft_nproc | default('65535') }}"
+pl_hard_nofile :  "{{ hard_nofile | default('65535') }}"
+pl_soft_nofile :  "{{ soft_nofile | default('65535') }}"
+pl_hard_memlock : "{{ hard_memlock | default('unlimited') }}"
+pl_soft_memlock : "{{ soft_memlock | default('unlimited') }}"
+
+pl_yum_repo:  "{{ yum_repo | default('tsinghua') }}"
+pl_ntpserver: "{{ ntpserver | default('jz') }}"
+pl_timezone:  "{{ timezone | default('Asia/Shanghai') }}"
+
+pl_vm_swappiness:        "{{ vm_swappiness | default('1') }}"
+pl_vm_max_map_count:     "{{ vm_max_map_count | default('262144') }}"
+pl_vm_overcommit_memory: "{{ vm_overcommit_memory | default('1') }}"
+pl_net_core_somaxconn:   "{{ net_core_somaxconn | default('1024') }}"
+
+pl_hostname: "{{ hostname | default('localhost') }}"
+pl_hosts: "{{ hosts | default('test') }}"

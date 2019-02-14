@@ -17,14 +17,14 @@ pl_ngx_devel_kit_version :    "{{ngx_devel_kit_version|default('0.3.1rc1')}}"
 pl_jemalloc_version : "{{jemalloc_version|default('5.1.0')}}"
 pl_naxsi_version :    "{{naxsi_version|default('0.56')}}"
 #personal
-pl_custom_server :  "{{custom_server|default('MyServer')}}"
-pl_custom_version : "{{custom_version|default('8888')}}"
-#setting
-pl_img_server_host : "{{ img_server_host | default('') }}"
-pl_empi_host :       "{{ empi_host | default('') }}"
-pl_druid_host :      "{{ druid_host | default('') }}"
-pl_dscore_host :     "{{ dscore_host | default('') }}"
-pl_node_host :       "{{ node_host | default('') }}"
+pl_custom_server :   "{{custom_server|default('MyServer')}}"
+pl_custom_version :  "{{custom_version|default('8888')}}"
+pl_trs_host :        "{{trs_host|default('localhost')}}"
+pl_druid_host :      "{{druid_host|default('localhost')}}"
+pl_dscore_host :     "{{dscore_host|default('localhost')}}"
+pl_empi_host :       "{{empi_host|default('localhost')}}"
+pl_node_host :       "{{node_host|default('localhost')}}"
+pl_img_server_host : "{{img_server_host|default('localhost')}}"
 #install config
 nginx_compile:
   - { option: "prefix",                     value: "{{pl_home}}/nginx" }

@@ -1,21 +1,22 @@
 - hosts: test
-  vars:
-    home: /home/plat
-    user: plat
-    uid: 8080
-    group: '{{user}}'
-    gid: '{{uid}}'
+  #vars:
+    #home: /home/plat
+    #user: plat
+    #uid: 8080
+    #group: '{{user}}'
+    #gid: '{{uid}}'
   roles:
     #- install_support
-    #- system_config
+    #- plat_system_config
     #- nginx_source
-    #- { role: mysql_source , mysql_port: 33066 , user: mysql , uid: 3306 , group: '{{user}}' , gid: '{{uid}}' }
+    #- { role: mysql_source , user: mysql , group: mysql , uid: 3306 , gid: 3306 }
     #- redis_source
     #- plat_dscore
     #- plat_node
-    #- { role: zookeeper , zookeeper_members: 5 , zookeeper_node1: 192.168.88.132 , zookeeper_node2: 192.168.88.133 , zookeeper_node3: 192.168.88.134 , zookeeper_node4: 192.168.88.135 , zookeeper_node5: 192.168.88.136 }
-    #- { role: zookeeper , zookeeper_members: 3 , zookeeper_node1: 192.168.88.132 , zookeeper_node2: 192.168.88.133 , zookeeper_node3: 192.168.88.134 }
-    - zookeeper
-    #- { role: kafka , kafka_version: 2.11-0.10.1.1 }
-    #- { role: samba_source , samba_mount_path: /home/share_patch , samba_workgroup: plat }
-    #- { role: squid_source , squid_port: 8092 }
+    ##- { role: zookeeper , zookeeper_members: 5 , zookeeper_node1: 192.168.88.132 , zookeeper_node2: 192.168.88.133 , zookeeper_node3: 192.168.88.134 , zookeeper_node4: 192.168.88.135 , zookeeper_node5: 192.168.88.136 }
+    ##- { role: zookeeper , zookeeper_members: 3 , zookeeper_node1: 192.168.88.132 , zookeeper_node2: 192.168.88.133 , zookeeper_node3: 192.168.88.134 }
+    #- zookeeper
+    #- kafka
+    #- samba_source
+    #- squid_source
+    - monitor_agent

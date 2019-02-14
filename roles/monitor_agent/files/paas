@@ -1,0 +1,135 @@
+#!/bin/bash
+
+color(){
+if [ "`systemctl status $1 |grep Active|awk '{print $3}'`" = "(running)" ];then &>/dev/null
+        POINT="\033[32m\033[1m● "
+else
+        POINT="\033[31m\033[5m\033[1m● "
+fi
+MESAGE=`systemctl status $1 |grep Active`
+PID=`systemctl status $1 | grep "Main PID"`
+}
+
+service_start(){
+echo "Starting Nginx..."
+systemctl start nginx
+echo "Starting MysqlDB..."
+systemctl start mysqld
+echo "Starting Redis-Server..."
+systemctl start redis-server
+echo "Starting ZooKeeper..."
+systemctl start zookeeper
+echo "Starting Kafka..."
+systemctl start kafka
+echo "Starting Node-UI..."
+systemctl start node-ui
+echo "Starting Node-Log..."
+systemctl start node-log-srv
+echo "Starting Samba..."
+systemctl start smb
+echo "Starting Squid..."
+systemctl start squid
+echo "Starting DsCore..."
+systemctl start dscore
+echo "Starting Zabbix-Agent..."
+systemctl start zabbix-agent
+echo "Starting Filebeat..."
+systemctl start filebeat
+}
+
+service_status(){
+color nginx
+echo -e "${POINT}Nginx:\033[0m\n${MESAGE}\n${PID}"
+color mysqld
+echo -e "${POINT}MysqlDB:\033[0m\n${MESAGE}\n${PID}"
+color redis-server
+echo -e "${POINT}Redis-Server:\033[0m\n${MESAGE}\n${PID}"
+color zookeeper
+echo -e "${POINT}ZooKeeper:\033[0m\n${MESAGE}\n${PID}"
+color node-ui
+echo -e "${POINT}Kafka:\033[0m\n${MESAGE}\n${PID}"
+color node-log-srv
+echo -e "${POINT}Node-Log:\033[0m\n${MESAGE}\n${PID}"
+color smb 
+echo -e "${POINT}Samba:\033[0m\n${MESAGE}\n${PID}"
+color squid
+echo -e "${POINT}Squid:\033[0m\n${MESAGE}\n${PID}"
+color dscore
+echo -e "${POINT}DsCore:\033[0m\n${MESAGE}\n${PID}"
+color zabbix-agent
+echo -e "${POINT}Zabbix-Agent:\033[0m\n${MESAGE}\n${PID}"
+color filebeat
+echo -e "${POINT}Filebeat:\033[0m\n${MESAGE}\n${PID}"
+}
+
+service_stop(){
+echo "Stopping Nginx..."
+systemctl stop nginx
+echo "Stopping MysqlDB..."
+systemctl stop mysqld
+echo "Stopping Redis-Server..."
+systemctl stop redis-server
+echo "Stopping ZooKeeper..."
+systemctl stop zookeeper
+echo "Stopping Kafka..."
+systemctl stop kafka
+echo "Stopping Node-UI..."
+systemctl stop node-ui
+echo "Stopping Node-Log..."
+systemctl stop node-log-srv
+echo "Stopping Samba..."
+systemctl stop smb
+echo "Stopping Squid..."
+systemctl stop squid
+echo "Stopping DsCore..."
+systemctl stop dscore
+echo "Stopping Zabbix-Agent..."
+systemctl stop zabbix-agent
+echo "Stopping Filebeat..."
+systemctl stop filebeat
+}
+
+service_restart(){
+echo "ReStarting Nginx..."
+systemctl restart nginx
+echo "ReStarting MysqlDB..."
+systemctl restart mysqld
+echo "ReStarting Redis-Server..."
+systemctl restart redis-server
+echo "ReStarting ZooKeeper..."
+systemctl restart zookeeper
+echo "ReStarting Kafka..."
+systemctl restart kafka
+echo "ReStarting Node-UI..."
+systemctl restart node-ui
+echo "ReStarting Node-Log..."
+systemctl restart node-log-srv
+echo "ReStarting Samba..."
+systemctl restart smb
+echo "ReStarting Squid..."
+systemctl restart squid
+echo "ReStarting DsCore..."
+systemctl restart dscore
+echo "ReStarting Zabbix-Agent..."
+systemctl restart zabbix-agent
+echo "ReStarting Filebeat..."
+systemctl restart filebeat
+}
+
+case "$1" in
+	start)
+		service_start
+	;;
+	stop)
+		service_stop
+	;;
+	restart)
+		service_restart
+	;;
+	status)
+		service_status
+	;;
+	*)
+		echo "Usage:{start|stop|restart|status}"
+    ;;
+esac

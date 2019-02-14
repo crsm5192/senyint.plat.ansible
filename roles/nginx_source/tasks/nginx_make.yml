@@ -1,0 +1,54 @@
+- name: Clear nginx headers
+  lineinfile: 
+    dest: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}/src/http/ngx_http_header_filter_module.c' 
+    regexp: '{{item.regexp}}' 
+    line: '{{item.line}}' 
+    state: present 
+    backup: yes 
+    backrefs: yes
+  with_items:
+    - { regexp: 'static u_char ngx_http_server_string',      line : 'static u_char ngx_http_server_string[] = "Server: {{pl_custom_server}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_full_string', line : 'static u_char ngx_http_server_full_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
+    - { regexp: 'static u_char ngx_http_server_build_string',line : 'static u_char ngx_http_server_build_string[] = "Server: {{pl_custom_server}}/{{pl_custom_version}}" CRLF;'}
+
+- name: nginx_compile_str
+  set_fact:
+    nginx_compile_str: "{{ nginx_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_compile }}"   
+    
+- name: nginx_mode_str
+  set_fact:
+    nginx_mode_str: "{{ nginx_mode_str | default('') }} {{ '--with-' + item }}"
+  with_items:
+    - "{{ nginx_mode }}"    
+    
+- name: nginx_lib_str
+  set_fact:
+    nginx_lib_str: "{{ nginx_lib_str | default('') }} {{ '--with-' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_lib }}"   
+    
+- name: nginx_ex_str
+  set_fact:
+    nginx_ex_str: "{{ nginx_ex_str | default('') }} {{ '--with-ld-opt=' + item }}"
+  with_items:
+    - "{{ nginx_ex }}"   
+  
+- name: nginx_ex_moudle_str
+  set_fact:
+    nginx_ex_moudle_str: "{{ nginx_ex_moudle_str | default('') }} {{ '--add-module=' + item }}"
+  with_items:
+    - "{{ nginx_ex_moudle }}"    
+       
+- name: configure nginx 
+  command: ./configure {{ nginx_compile_str }} {{ nginx_mode_str }} {{ nginx_lib_str }} {{ nginx_ex_str }} {{ nginx_ex_moudle_str }}
+  args:
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
+
+- name: make nginx
+  make:
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
+    target: install
+    params:
+      NUM_THREADS: 4

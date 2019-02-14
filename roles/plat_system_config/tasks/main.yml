@@ -1,0 +1,62 @@
+- name: close selinux
+  selinux:
+    state: disabled
+
+- name: change openfiles 
+  lineinfile: 
+    dest: /etc/security/limits.conf
+    insertbefore: '# End of file' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes    
+  with_items:
+    - '*     hard   nproc   {{pl_hard_nproc}}'
+    - '*     soft   nproc   {{pl_soft_nproc}}'
+    - '*     hard   nofile  {{pl_hard_nofile}}'
+    - '*     soft   nofile  {{pl_soft_nofile}}'
+    - '*     hard   memlock {{pl_hard_memlock}}'
+    - '*     soft   memlock {{pl_soft_memlock}}'
+
+- name: change yum repo & ntpconf
+  copy:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'centos7_{{pl_yum_repo}}_CentOS-Base.repo',dest: '/etc/yum.repos.d/CentOS-Base.repo' }
+    - { src: '{{pl_ntpserver}}_ntp.conf',               dest: '/etc/ntp.conf' }    
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
+
+- name: change timezone 
+  timezone:
+    name: '{{pl_timezone}}'
+
+- name: change sysctl
+  sysctl:
+    name:  '{{item.name}}'
+    value: '{{item.value}}'
+    sysctl_set: yes
+    state: '{{item.state}}'
+    reload: yes
+  with_items:
+    - { name: 'vm.swappiness',       value: '{{pl_vm_swappiness}}',       state: present }
+    - { name: 'vm.max_map_count',    value: '{{pl_vm_max_map_count}}',    state: present }
+    - { name: 'vm.overcommit_memory',value: '{{pl_vm_overcommit_memory}}',state: present }
+    - { name: 'net.core.somaxconn',  value: '{{pl_net_core_somaxconn}}',     state: present }
+    
+- name: kernel transparent_hugepage & enforece & hostname 
+  shell: '{{item}}'
+  with_items:
+    - 'echo "never" > /sys/kernel/mm/transparent_hugepage/enabled'
+    - 'setenforce 0'
+    - 'hostname {{pl_hostname}}'
+
+- name: change hostname
+  hostname:
+    name: '{{pl_hostname}}'
+
+- name: change hosts
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: '{{pl_hosts}}_hosts.j2',dest: '/etc/hosts' }

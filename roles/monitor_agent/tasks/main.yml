@@ -1,0 +1,17 @@
+- import_tasks: install_agent.yml
+  tags: Install Agent
+
+- import_tasks: zabbix_agent_config.yml
+  tags: Zabbix Agent Config 
+  
+- import_tasks: zabbix_service.yml
+  tags: Zabbix Service
+  
+- import_tasks: filebeat_config.yml
+  tags: Filebeat Config 
+
+- import_tasks: filebeat_service.yml
+  tags: Filebeat Service
+
+- import_tasks: paas_bak.yml
+  tags: Paas Service and bakup

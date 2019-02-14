@@ -1,0 +1,21 @@
+- name: zabbix-service config
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+    owner: '{{item.owner}}'
+    group: '{{item.group}}'
+  with_items:
+    - { src: 'zabbix-agent.service.j2',dest: '/lib/systemd/system/zabbix-agent.service',      owner: 'root',            group: 'root' }
+    - { src: 'zabbix_agentd.conf.j2',  dest: '{{pl_mon_home}}/zabbix/etc/zabbix_agentd.conf', owner: '{{pl_zbx_user}}', group: '{{pl_zbx_group}}' }
+
+- name: firewall zabbix
+  firewalld: port={{pl_zbx_port}}/tcp permanent=true state=enabled
+  
+- name: change floder owner
+  file: path='{{pl_mon_home}}/zabbix' owner='{{pl_zbx_user}}' group='{{pl_zbx_group}}' recurse=yes  
+    
+- name: start zabbix
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'zabbix-agent',    state: 'restarted' }
