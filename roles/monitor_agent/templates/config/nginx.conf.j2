@@ -1,0 +1,2 @@
+UserParameter=custom.nginx.discovery,python {{pl_mon_home}}/zabbix/etc/scripts/nginx/nginx.py --list 2>/dev/null
+UserParameter=custom.nginx.item[*],python {{pl_mon_home}}/zabbix/etc/scripts/nginx/nginx.py -p $1 -k $2 2>/dev/null

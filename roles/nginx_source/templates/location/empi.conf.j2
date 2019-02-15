@@ -1,0 +1,8 @@
+location /empi/person/{
+	if ($is_bot) {
+		return 403;
+	}
+	include proxy.conf;
+	proxy_pass    http://empi;
+	proxy_redirect default;
+}

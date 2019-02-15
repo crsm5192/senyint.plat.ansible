@@ -1,0 +1,12 @@
+location /imageServer/ {
+	add_header Access-Control-Allow-Origin *;
+	add_header Access-Control-Allow-Methods 'GET, POST';
+	add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+	proxy_pass     http://imgServer/imgs/;
+}
+location /updateImg/ {
+	add_header Access-Control-Allow-Origin *;
+	add_header Access-Control-Allow-Methods 'GET, POST';
+	add_header Access-Control-Allow-Headers 'DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+	proxy_pass     http://up_imgServer;
+}

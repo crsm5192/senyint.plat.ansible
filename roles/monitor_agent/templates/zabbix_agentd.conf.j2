@@ -1,0 +1,11 @@
+LogFile={{pl_mon_home}}/zabbix/log/zabbix_agentd.log
+LogFileSize=1
+LogType=file
+PidFile={{pl_mon_home}}/zabbix/run/zabbix_agentd.pid
+Server={{pl_zbx_srv}}
+ListenPort={{pl_zbx_port}}
+ListenIP={{ansible_default_ipv4['address']}}
+ServerActive={{pl_zbx_act}}
+StartAgents=3
+Hostname={{ansible_default_ipv4['address']}}
+Include={{pl_mon_home}}/zabbix/etc/zabbix_agentd.conf.d/*.conf

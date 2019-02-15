@@ -1,0 +1,27 @@
+filebeat.prospectors:
+
+- type: log
+  paths:
+    - {{pl_home}}/nginx/logs/access.log
+  encoding: utf-8
+  fields:
+    logtype: nginx_access_log
+    group: {{pl_srv_group}}
+    server: {{pl_role}}-{{pl_hostname}}
+    ipaddr: {{ansible_default_ipv4['address']}}
+  fields_under_root: true
+#nginx_error 
+- type: log
+  paths:
+    - {{pl_home}}/nginx/logs/error.log
+  encoding: utf-8
+  fields:
+    logtype: nginx_error_log
+    group: {{pl_srv_group}}
+    server: {{pl_role}}-{{pl_hostname}}
+    ipaddr: {{ansible_default_ipv4['address']}}
+  fields_under_root: true	
+
+  
+output.logstash:
+  hosts: ["{{pl_log_srv}}:{{pl_log_port}}"]

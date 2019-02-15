@@ -1,0 +1,15 @@
+map $http_user_agent $is_bot {
+    default                0;
+    ~*[a-z]bot             1;
+    ~[sS]pider             1;
+    ~spi_der               1;
+    ~crawler               1;
+    ~ysearch               1;
+    ~Yahoo\sPipes          1;
+    ~BingPreview           1;
+    ~YoudaoFeedFetcher     1;
+    ~Firefox\/3.0          1;
+    ~MSIE\s6.0             1;
+    'Yahoo!\sSlurp'        1;
+    'Mediapartners-Google' 1;
+}
