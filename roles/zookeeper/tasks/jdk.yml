@@ -1,0 +1,17 @@
+- name: ZooKeeper JDK Source Package
+  unarchive: 
+    src:     '{{item.src}}' 
+    dest:    '{{item.dest}}'
+    owner:   '{{pl_zookeeper_user}}' 
+    group:   '{{pl_zookeeper_group}}'
+  with_items:
+    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',   dest: '{{pl_zookeeper_home}}/zookeeper' }
+
+- name: ZooKeeper JDK Floder Owner
+  file: 
+    path: '{{item.path}}' 
+    owner: '{{pl_zookeeper_user}}' 
+    group: '{{pl_zookeeper_group}}' 
+    recurse: yes
+  with_items:
+    - { path: '{{pl_zookeeper_home}}/zookeeper/jdk{{pl_jdk_version}}' }

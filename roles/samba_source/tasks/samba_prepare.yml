@@ -1,0 +1,29 @@
+- name: Samba Grou
+  group: 
+    name: '{{pl_samba_mount_group}}' 
+    gid:  '{{pl_samba_mount_gid}}'
+    state: present
+
+- name: Samba User
+  user: 
+    name:  '{{pl_samba_mount_user}}'
+    group: '{{pl_samba_mount_group}}'    
+    uid:   '{{pl_samba_mount_uid}}' 
+    shell: /bin/bash
+    state: present
+
+- name: Samba Clear Other Version
+  yum: name=samba state=absent
+
+- name: Samba Floder 
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_deploy_home}}',         owner: 'root',                   group: 'root',                    state: directory }
+    - { path: '{{pl_samba_home}}/samba',    owner: 'root',                   group: 'root',                    state: directory }
+    - { path: '{{pl_samba_home}}/samba/log',owner: 'root',                   group: 'root',                    state: directory } 
+    - { path: '{{pl_samba_mount_path}}',    owner: '{{pl_samba_mount_user}}',group: '{{pl_samba_mount_group}}',state: directory } 

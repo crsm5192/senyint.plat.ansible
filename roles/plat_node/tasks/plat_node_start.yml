@@ -1,0 +1,16 @@
+- name: Plat Node Service
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'node-ui.service.j2',     dest: '/lib/systemd/system/node-ui.service' }
+    - { src: 'node-log-srv.service.j2',dest: '/lib/systemd/system/node-log-srv.service' }
+
+- name: Plat Node Firewall
+  firewalld: port={{item}}/tcp permanent=true state=enabled
+  with_items:
+    - '{{pl_node_port}}'
+    
+- name: Plat Node Start
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'node-ui',     state: 'reloaded' }
+    - { name: 'node-log-srv',state: 'started' }

@@ -1,0 +1,46 @@
+- name: ZooKeeper Config
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'zoo.cfg.j2',          dest: '{{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' }
+    - { src: 'log4j.properties.j2', dest: '{{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/log4j.properties' }
+    - { src: 'zookeeper.service.j2',dest: '/lib/systemd/system/zookeeper.service' } 
+    - { src: 'myid.j2',             dest: '{{pl_zookeeper_home}}/zookeeper/zkdata/myid' }
+
+- name: ZooKeeper Single
+  lineinfile: 
+    dest: '{{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
+    insertafter: 'dataLogDir={{pl_zookeeper_home}}/zookeeper/zkdatalog' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
+  with_items:
+    - 'server.1=localhost:{{pl_zookeeper_reg_port}}'
+  when: zookeeper_node1 is not defined
+
+- name: ZooKeeper Cluster 3 Node
+  lineinfile: 
+    dest: '{{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
+    insertafter: 'dataLogDir={{pl_zookeeper_home}}/zookeeper/zkdatalog' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
+  with_items:
+    - 'server.3={{zookeeper_node3}}:{{pl_zookeeper_reg_port}}'
+    - 'server.2={{zookeeper_node2}}:{{pl_zookeeper_reg_port}}'
+    - 'server.1={{zookeeper_node1}}:{{pl_zookeeper_reg_port}}'
+  when: zookeeper_node3 is defined
+  
+- name: ZooKeeper Cluster 5 Node
+  lineinfile: 
+    dest: '{{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
+    insertafter: 'dataLogDir={{pl_zookeeper_home}}/zookeeper/zkdatalog' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
+  with_items:
+    - 'server.5={{zookeeper_node5}}:{{pl_zookeeper_reg_port}}'
+    - 'server.4={{zookeeper_node4}}:{{pl_zookeeper_reg_port}}'
+    - 'server.3={{zookeeper_node3}}:{{pl_zookeeper_reg_port}}'
+    - 'server.2={{zookeeper_node2}}:{{pl_zookeeper_reg_port}}'
+    - 'server.1={{zookeeper_node1}}:{{pl_zookeeper_reg_port}}'    
+  when: zookeeper_node5 is defined

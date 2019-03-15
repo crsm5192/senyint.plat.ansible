@@ -1,0 +1,15 @@
+- name: Plat Node Group
+  group: 
+    name: '{{pl_node_group}}'
+    gid:  '{{pl_node_gid}}'
+
+- name: Plat Node User
+  user: 
+    name:  '{{pl_node_user}}'
+    group: '{{pl_node_group}}'
+    uid:   '{{pl_node_uid}}'
+    shell: /bin/bash
+
+- name: Plat Node change_logdb
+  file: path='{{pl_node_home}}/change_logdb'  owner='{{pl_node_user}}' group='{{pl_node_group}}' mode=0755 state=directory
+    

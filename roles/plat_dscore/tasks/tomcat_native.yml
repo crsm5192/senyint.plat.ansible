@@ -1,0 +1,14 @@
+- name: Tomcat Native Source Packages
+  unarchive:
+    src: 'tomcat-native-{{pl_tomcat_native_version}}-src.tar.gz'
+    dest: '{{pl_deploy_home}}'
+
+- name: Tomcat Native Make config
+  command: ./configure --with-apr=/usr/bin/apr-1-config --with-java-home={{pl_dscore_home}}/dscore/jdk{{pl_jdk_version}} --with-ssl=yes
+  args:
+    chdir: '{{pl_deploy_home}}/tomcat-native-{{pl_tomcat_native_version}}-src/native' 
+
+- name: Tomcat Native Make Install
+  make:
+    chdir: '{{pl_deploy_home}}/tomcat-native-{{pl_tomcat_native_version}}-src/native'
+    target: install

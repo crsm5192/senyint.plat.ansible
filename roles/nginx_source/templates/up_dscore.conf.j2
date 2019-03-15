@@ -1,8 +1,0 @@
-upstream tomcats {  
-      server 10.20.26.88:8080 max_fails=2 fail_timeout=3s weight=10;
-      server 10.20.27.214:8080 max_fails=2 fail_timeout=3s weight=10;
-	  server 10.20.27.214:8080 max_fails=2 fail_timeout=3s weight=10;
-}
-upstream trs {
-      server localhost:8080;
-}

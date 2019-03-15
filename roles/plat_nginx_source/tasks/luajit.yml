@@ -1,0 +1,28 @@
+- name: LuaJit2 Source Packages
+  unarchive: 
+    src: 'luajit2-{{pl_luajit2_version}}.tar.gz'
+    dest: '{{pl_deploy_home}}'
+
+- name: LuaJit2 Make Install
+  make:
+    chdir: '{{pl_deploy_home}}/luajit2-{{pl_luajit2_version}}'
+    target: install
+ 
+- name: LuaJit2 Env
+  lineinfile: 
+    dest: /etc/profile
+    insertbefore: 'enset -f pathmunge' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes    
+  with_items:
+    - export LUAJIT_LIB=/usr/local/lib
+    - export LUAJIT_INC=/usr/local/include/luajit-2.1
+    
+- name: LuaJit2 Config
+  copy: 
+   src: luajit.conf
+   dest: /etc/ld.so.conf.d/luajit.conf
+
+- name: LuaJit2 Config Source
+  shell: /sbin/ldconfig

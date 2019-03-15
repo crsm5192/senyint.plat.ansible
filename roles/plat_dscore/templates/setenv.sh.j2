@@ -1,6 +1,11 @@
 #!/bin/sh
-export JAVA_HOME={{pl_home}}/jdk{{pl_jdk_version}}
+CATALINA_PID="$CATALINA_BASE/dscore.pid" 
+export CATALINA_OPTS="$CATALINA_OPTS -Djava.security.egd=file:/dev/./urandom"
+export CATALINA_OPTS="$CATALINA_OPTS -Dfile.encoding=UTF-8"
+export CATALINA_OPTS="$CATALINA_OPTS -Duser.timezone=GMT+08"
 export CATALINA_OPTS="$CATALINA_OPTS -Djava.library.path=/usr/local/apr/lib"
+export JAVA_HOME={{pl_dscore_home}}/dscore/jdk{{pl_jdk_version}}
+export JRE_HOME={{pl_dscore_home}}/dscore/jdk{{pl_jdk_version}}/jre
 #jmx-remote-monitor
 export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote"
 export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.port={{pl_tomcat_jmx_port}}"
@@ -10,15 +15,15 @@ export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate
 #jvm gc-log
 export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDetails"
 export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDateStamps"
-export CATALINA_OPTS="$CATALINA_OPTS -Xloggc:{{pl_home}}/dscore/logs/gc.log"
+export CATALINA_OPTS="$CATALINA_OPTS -Xloggc:{{pl_dscore_home}}/dscore/logs/gc.log"
 export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCTimeStamps"
 #jvm gc
 export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseG1GC" 
 export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxGCPauseMillis=50"
-export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{pl_gcXmx}}"
-export CATALINA_OPTS="$CATALINA_OPTS -Xms{{pl_gcXms}}" 
-export CATALINA_OPTS="$CATALINA_OPTS -Xmn{{pl_gcXmn}}"
-export CATALINA_OPTS="$CATALINA_OPTS -Xss512K"
+export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{pl_tomcat_gcXmx}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Xms{{pl_tomcat_gcXms}}" 
+export CATALINA_OPTS="$CATALINA_OPTS -Xmn{{pl_tomcat_gcXmn}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Xss1M"
 #elastic-apm-agent
 #export CATALINA_OPTS="$CATALINA_OPTS -javaagent:${CATALINA_HOME}/lib/elastic-apm-agent-0.7.1.jar"
 #export CATALINA_OPTS="$CATALINA_OPTS -Delastic.apm.service_name=my-cool-service"

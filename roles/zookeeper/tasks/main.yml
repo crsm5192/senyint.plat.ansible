@@ -1,99 +1,15 @@
-- name: add group for kafka
-  group: 
-    name: '{{pl_group}}' 
-    gid:  '{{pl_gid}}'
-
-- name: add user for kafka
-  user: 
-    name:  '{{pl_user}}'
-    group: '{{pl_group}}'    
-    uid:   '{{pl_uid}}' 
-    home:  '{{pl_home}}' 
-    shell: /bin/bash
-
-- name: make floder for use 
-  file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
-    mode: 0755 
-    state: '{{item.state}}'
-  with_items:
-    - { path: '{{pl_deploy_home}}',               owner: 'root',       group: 'root',state: 'directory' }
-    - { path: '{{pl_home}}/zookeeper',            owner: '{{pl_user}}',group: '{{pl_group}}',state: 'directory' }
-    - { path: '{{pl_home}}/zookeeper/zkdata',     owner: '{{pl_user}}',group: '{{pl_group}}',state: 'directory' }
-    - { path: '{{pl_home}}/zookeeper/zkdatalog',  owner: '{{pl_user}}',group: '{{pl_group}}',state: 'directory' }
-    - { path: '{{pl_home}}/zookeeper/logs',       owner: '{{pl_user}}',group: '{{pl_group}}',state: 'directory' }
+- import_tasks: zookeeper_prepare.yml
+  tags:
+    - zookeeper_prepare
+ 
+- import_tasks: zookeeper_install.yml
+  tags:
+    - zookeeper_install
     
-- name: extract zookeeper  source packages
-  unarchive: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'zookeeper-{{pl_zookeeper_version}}.tar.gz',dest: '{{pl_home}}/zookeeper' }
-    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',  dest: '{{pl_home}}' }
-
-- name: change floder owner
-  file: path='{{pl_home}}/jdk{{pl_jdk_version}}' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes 
-  
-- name: config zookeeper
-  template: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'zoo.cfg.j2',          dest: '{{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' }
-    - { src: 'log4j.properties.j2', dest: '{{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/log4j.properties' }
-    - { src: 'zookeeper.service.j2',dest: '/lib/systemd/system/zookeeper.service' } 
-    - { src: 'myid.j2',dest: '{{pl_home}}/zookeeper/zkdata/myid' }
-
-- name: zookeeper single
-  lineinfile: 
-    dest: '{{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
-    insertafter: 'dataLogDir={{pl_home}}/zookeeper/zkdatalog' 
-    line: '{{item}}' 
-    state: present 
-    backup: yes 
-  with_items:
-    - 'server.1=localhost:{{pl_zookeeper_reg_port}}'
-  when: zookeeper_node1 is not defined
-
-- name: zookeeper 3node
-  lineinfile: 
-    dest: '{{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
-    insertafter: 'dataLogDir={{pl_home}}/zookeeper/zkdatalog' 
-    line: '{{item}}' 
-    state: present 
-    backup: yes 
-  with_items:
-    - 'server.3={{zookeeper_node3}}:{{pl_zookeeper_reg_port}}'
-    - 'server.2={{zookeeper_node2}}:{{pl_zookeeper_reg_port}}'
-    - 'server.1={{zookeeper_node1}}:{{pl_zookeeper_reg_port}}'
-  when: zookeeper_node3 is defined
-  
-- name: zookeeper 5node
-  lineinfile: 
-    dest: '{{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg' 
-    insertafter: 'dataLogDir={{pl_home}}/zookeeper/zkdatalog' 
-    line: '{{item}}' 
-    state: present 
-    backup: yes 
-  with_items:
-    - 'server.5={{zookeeper_node5}}:{{pl_zookeeper_reg_port}}'
-    - 'server.4={{zookeeper_node4}}:{{pl_zookeeper_reg_port}}'
-    - 'server.3={{zookeeper_node3}}:{{pl_zookeeper_reg_port}}'
-    - 'server.2={{zookeeper_node2}}:{{pl_zookeeper_reg_port}}'
-    - 'server.1={{zookeeper_node1}}:{{pl_zookeeper_reg_port}}'    
-  when: zookeeper_node5 is defined
-  
-- name: firewall zookeeper
-  firewalld: port={{item}}/tcp permanent=true state=enabled
-  with_items:
-    - '{{pl_zookeeper_port}}'
-    - '{{pl_zookeeper_jmx_port}}'
-  
-- name: change floder zookeeper 
-  file: path='{{item}}' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes
-  with_items:
-    - '{{pl_home}}/zookeeper'
-
-- name: start zookeeper 
-  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
-  with_items:
-    - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'zookeeper',state: 'started' }
+- import_tasks: zookeeper_config.yml
+  tags:
+    - zookeeper_config
+    
+- import_tasks: zookeeper_start.yml
+  tags:
+    - zookeeper_start

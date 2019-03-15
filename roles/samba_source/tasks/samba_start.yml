@@ -1,0 +1,14 @@
+- name: Samba Service
+  copy: src='{{pl_samba_home}}/samba/lib/systemd/system/smb.service' dest='/usr/lib/systemd/system/smb.service' remote_src=yes
+  
+#- name: change floder owner
+#  file: path='{{pl_samba_home}}/samba' owner='{{pl_samba_user}}' group='{{pl_samba_group}}' recurse=yes  
+    
+- name: Samba Firewall
+  firewalld: port={{pl_samba_port}}/tcp permanent=true state=enabled
+
+- name: Samba Start
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'smb',      state: 'started' }

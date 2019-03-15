@@ -1,13 +1,15 @@
 [Unit]
 Description=DsCore Server
-After=syslog.target network.target
+After=network.target
 [Service]
 Type=forking
-User={{pl_user}}
-Group={{pl_group}}
-ExecStart={{pl_home}}/dscore/bin/catalina.sh start
-ExecStop={{pl_home}}/dscore/bin/catalina.sh stop
+User={{pl_dscore_user}}
+Group={{pl_dscore_group}}
+ExecStart={{pl_dscore_home}}/dscore/bin/startup.sh
+ExecStop={{pl_dscore_home}}/dscore/bin/shutdown.sh
+PIDFile={{pl_dscore_home}}/dscore/dscore.pid
 Restart=always
 PrivateTmp=true
+SuccessExitStatus=143
 [Install]
 WantedBy=multi-user.target

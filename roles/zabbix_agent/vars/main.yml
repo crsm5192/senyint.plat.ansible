@@ -1,0 +1,14 @@
+#smaba path
+pl_zabbix_agent_home : "{{ zabbix_home | default('/data/monitor') }}"
+pl_deploy_home :       "{{ deploy_home | default('/home/deploy') }}" 
+#zabbix user
+pl_zabbix_agent_user :  "{{ zabbix_user  | default('zabbix') }}"
+pl_zabbix_agent_uid :   "{{ zabbix_uid   | default('10050') }}"
+pl_zabbix_agent_group : "{{ zabbix_group | default('zabbix') }}"
+pl_zabbix_agent_gid :   "{{ zabbix_gid   | default('10050') }}"
+#zabbix deploy setting
+pl_zabbix_server :     "{{ zabbix_server     | default('localhost') }}"
+pl_zabbix_agent_port : "{{ zabbix_agent_port | default('10050') }}"
+pl_zabbix_version :    "{{ zabbix_version    | default('3.4.15') }}"
+pl_ipaddr:             "{{ ipaddr            | default('127.0.0.1') }}"
+pl_jdk_version:        "{{ jdk_version       | default('1.8.0_191') }}"

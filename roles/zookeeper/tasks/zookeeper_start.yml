@@ -1,0 +1,16 @@
+- name: ZooKeeper Firewall
+  firewalld: port={{item}}/tcp permanent=true state=enabled
+  with_items:
+    - '{{pl_zookeeper_port}}'
+    - '{{pl_zookeeper_jmx_port}}'
+  
+- name: ZooKeeper Floder Owner 
+  file: path='{{item}}' owner='{{pl_zookeeper_user}}' group='{{pl_zookeeper_group}}' recurse=yes
+  with_items:
+    - '{{pl_zookeeper_home}}/zookeeper'
+
+- name: ZooKeeper Start 
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'zookeeper',state: 'started' }

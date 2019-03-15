@@ -1,0 +1,5 @@
+- name: Samba Config
+  template: src='smb.conf.j2' dest='{{pl_samba_home}}/samba/etc/smb.conf'
+    
+- name: Samba Mount User
+  shell: echo -e "{{pl_samba_password}}\n{{pl_samba_password}}" |{{pl_samba_home}}/samba/bin/smbpasswd -a {{pl_samba_mount_user}} 

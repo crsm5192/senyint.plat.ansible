@@ -1,16 +1,15 @@
 #path
-pl_home :         "{{ home | default('/data') }}"
-pl_deploy_home :  "{{ deploy_home | default('/home/deploy') }}"
+pl_zookeeper_home : "{{ zookeeper_home | default('/home/plat') }}"
 #user
-pl_user :   "{{ user | default('zookeeper') }}"
-pl_uid :    "{{ uid | default('2181') }}"
-pl_group :  "{{ group | default('zookeeper') }}"
-pl_gid :    "{{ gid | default('2181') }}"
+pl_zookeeper_user :   "{{ zookeeper_user  | default('zookeeper') }}"
+pl_zookeeper_uid :    "{{ zookeeper_uid   | default('2181') }}"
+pl_zookeeper_group :  "{{ zookeeper_group | default('zookeeper') }}"
+pl_zookeeper_gid :    "{{ zookeeper_gid   | default('2181') }}"
 #config
-pl_jdk_version :        "{{ jdk_version | default('1.8.0_191') }}"
-pl_zookeeper_version :  "{{ zookeeper_version | default('3.4.13') }}"
-pl_zookeeper_port :     "{{ zookeeper_port | default('2181') }}"
+pl_jdk_version :        "{{ jdk_version        | default('1.8.0_191') }}"
+pl_zookeeper_version :  "{{ zookeeper_version  | default('3.4.13') }}"
+pl_zookeeper_port :     "{{ zookeeper_port     | default('2181') }}"
 pl_zookeeper_reg_port : "{{ zookeeper_reg_port | default('2888:3888') }}"
 pl_zookeeper_jmx_port : "{{ zookeeper_jmx_port | default('9998') }}"
-pl_zookeeper_id :       "{{ zookeeper_id | default('1') }}"
+pl_zookeeper_id :       "{{ zookeeper_id       | default('1') }}"
 

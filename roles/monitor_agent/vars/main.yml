@@ -16,9 +16,10 @@ pl_zookeeper_port : "{{ zookeeper_port | default('2181') }}"
 
 pl_mysql_port:       "{{mysql_port|default('3306')}}"
 
-pl_db_user:  "{{ db_user | default ('test')}}"
-pl_db_pwd:   "{{ db_pwd | default ('test123')}}"
-pl_root_pwd: "{{ root_pwd | default ('123456')}}"
+pl_mysql_user:  "{{ mysql_user | default ('test')}}"
+pl_mysql_pwd:   "{{ mysql_pwd | default ('test123')}}"
+pl_mysql_root_pwd: "{{ mysql_root_pwd | default ('123456')}}"
+
 
 pl_redis_port :   "{{redis_port|default('6379')}}"
 pl_redis_pwd :    "{{redis_pwd|default('123456')}}"

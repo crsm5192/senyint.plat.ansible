@@ -1,25 +1,16 @@
-- name: Config Selinux
-  selinux:
-    state: disabled
-  tags: Config Selinux
-  
-- name: Config Limits 
-  lineinfile: 
-    dest: /etc/security/limits.conf
-    insertbefore: '# End of file' 
-    line: '{{item}}' 
-    state: present 
-    backup: yes    
-  with_items:
-    - '{{pl_config_user}}     hard   nproc   {{pl_hard_nproc}}'
-    - '{{pl_config_user}}     soft   nproc   {{pl_soft_nproc}}'
-    - '{{pl_config_user}}     hard   nofile  {{pl_hard_nofile}}'
-    - '{{pl_config_user}}     soft   nofile  {{pl_soft_nofile}}'
-    - '{{pl_config_user}}     hard   memlock {{pl_hard_memlock}}'
-    - '{{pl_config_user}}     soft   memlock {{pl_soft_memlock}}'
-  tags: Config Limits 
+- import_tasks: plat_prepare.yml
+  tags:
+    - plat_prepare
+
+- import_tasks: plat_support.yml
+  tags:
+    - plat_support
+
+- import_tasks: plat_system_config.yml
+  tags: 
+    - plat_system_config
  
-- name: Config YumRepo & NtpConf
+- name: Plat YumRepo NtpConf
   copy:
     src:  '{{item.src}}'
     dest: '{{item.dest}}'
@@ -27,44 +18,37 @@
     - { src: 'centos7_{{pl_yum_repo}}_CentOS-Base.repo',dest: '/etc/yum.repos.d/CentOS-Base.repo' }
     - { src: '{{pl_ntpserver}}_ntp.conf',               dest: '/etc/ntp.conf' }    
   when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"
-  tags: Config YumRepo & NtpConf 
+  tags:
+    - plat_yumrepo_ntpconf  
 
-- name: Config Timezone 
+- name: Plat Selinux
+  selinux:
+    state: disabled
+  tags:
+    - plat_selinux
+
+- name: Plat Timezone 
   timezone:
     name: '{{pl_timezone}}'
-  tags: Config Timezone 
+  tags:
+    - plat_timezone
 
-- name: Config Sysctl
-  sysctl:
-    name:  '{{item.name}}'
-    value: '{{item.value}}'
-    sysctl_set: yes
-    state: '{{item.state}}'
-    reload: yes
-  with_items:
-    - { name: 'vm.swappiness',       value: '{{pl_vm_swappiness}}',          state: present }
-    - { name: 'vm.max_map_count',    value: '{{pl_vm_max_map_count}}',       state: present }
-    - { name: 'vm.overcommit_memory',value: '{{pl_vm_overcommit_memory}}',   state: present }
-    - { name: 'net.core.somaxconn',  value: '{{pl_net_core_somaxconn}}',     state: present }
-  tags: Config Sysctl
-
-- name: Config Kernel transparent_hugepage & enforece & hostname 
-  shell: '{{item}}'
-  with_items:
-    - 'echo "{{pl_transparent_hugepage}}" > /sys/kernel/mm/transparent_hugepage/enabled'
-    - 'setenforce 0'
-    - 'hostname {{pl_hostname}}'
-  tags: Config Kernel
-
-- name: Config Hostname
+- name: Plat Hostname
   hostname:
     name: '{{pl_hostname}}'
-  tags: Config Hostname
+  tags:
+    - plat_hostname
 
-- name: Config Hosts
-  template:
-    src:  '{{item.src}}'
-    dest: '{{item.dest}}'
-  with_items:
-    - { src: '{{pl_hosts}}_hosts.j2',dest: '/etc/hosts' }
-  tags: Config Hosts
+- name: Plat Hosts
+  lineinfile:
+    line: '{{hosts_list}}'
+    path: '/etc/hosts'
+    backup: yes
+  tags:
+    - plat_hosts
+  
+- name: Plat Server Reboot
+  reboot:
+    reboot_timeout: 300
+  tags:
+    - plat_server_reboot

@@ -1,0 +1,25 @@
+- name: Plat Dscore Tomcat Source Packages
+  unarchive: 
+    src:     '{{item.src}}' 
+    dest:    '{{item.dest}}'
+    owner:   '{{pl_dscore_user}}' 
+    group:   '{{pl_dscore_group}}'
+  with_items:
+    - { src: 'apache-tomcat-{{pl_tomcat_version}}.tar.gz',dest: '{{pl_dscore_home}}' }
+     
+- name: Plat Dscore Tomcat Floder Rename
+  command: mv {{pl_dscore_home}}/apache-tomcat-{{pl_tomcat_version}} {{pl_dscore_home}}/dscore
+ 
+- name: Plat Dscore Tomcat JDK Check
+  stat: path='{{pl_dscore_home}}/dscore/jdk{{pl_jdk_version}}'
+  register: jdk
+
+- import_tasks: jdk.yml
+  when: jdk.stat.exists == False
+
+- name: Tomcat Native Check
+  stat: path=/usr/local/apr/lib/libtcnative-1.so
+  register: native
+
+- import_tasks: tomcat_native.yml
+  when: native.stat.exists == False

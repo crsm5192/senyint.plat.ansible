@@ -1,24 +1,24 @@
 #smaba path
-pl_home :        "{{ home | default('/data') }}"
+pl_squid_home :  "{{ squid_home  | default('/home/plat') }}"
 pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}" 
 #samba user
-pl_user :  "{{ user | default('squid') }}"
-pl_uid :   "{{ uid | default('3128') }}"
-pl_group : "{{ group | default('squid') }}"
-pl_gid :   "{{ gid | default('3128') }}"
+pl_squid_user :  "{{ squid_user  | default('squid') }}"
+pl_squid_uid :   "{{ squid_uid   | default('3128') }}"
+pl_squid_group : "{{ squid_group | default('squid') }}"
+pl_squid_gid :   "{{ squid_gid   | default('3128') }}"
 #samba deploy setting
-pl_squid_port :    "{{ samba_port | default('3128') }}"
-pl_squid_version : "{{ samba_version | default('4.5') }}"
-pl_squid_io:       "{{ squid_io | default('240') }}"
-pl_squid_lang:     "{{ squid_lang | default('Simplify_Chinese') }}"
+pl_squid_port :    "{{ squid_port    | default('3128') }}"
+pl_squid_version : "{{ squid_version | default('4.5') }}"
+pl_squid_io:       "{{ squid_io      | default('240') }}"
+pl_squid_lang:     "{{ squid_lang    | default('Simplify_Chinese') }}"
 
 squid_compile:
-  - { option: "prefix",           value: "{{pl_home}}/squid" }
-  - { option: "with-default-user",value: "{{pl_user}}" }
-  - { option: "with-logdir",      value: "{{pl_home}}/squid/log" }
-  - { option: "with-pidfile",     value: "{{pl_home}}/squid/run/squid.pid" }
-  - { option: "sysconfdir",       value: "{{pl_home}}/squid/etc" }
-  - { option: "localstatedir",    value: "{{pl_home}}/squid/var" }
+  - { option: "prefix",           value: "{{pl_squid_home}}/squid" }
+  - { option: "with-default-user",value: "{{pl_squid_user}}" }
+  - { option: "with-logdir",      value: "{{pl_squid_home}}/squid/log" }
+  - { option: "with-pidfile",     value: "{{pl_squid_home}}/squid/run/squid.pid" }
+  - { option: "sysconfdir",       value: "{{pl_squid_home}}/squid/etc" }
+  - { option: "localstatedir",    value: "{{pl_squid_home}}/squid/var" }
   
 squid_mode:
   - xmalloc-debug  

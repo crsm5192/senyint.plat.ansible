@@ -1,0 +1,15 @@
+[Unit]
+Description=Zabbix Agent
+After=syslog.target network.target
+[Service]
+Type=simple
+ExecStart={{pl_zabbix_agent_home}}/zabbix/sbin/zabbix_agentd -c {{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf
+ExecStop=/bin/kill -SIGTERM $MAINPID
+Restart=on-failure
+KillMode=control-group
+RemainAfterExit=yes
+PIDFile={{pl_zabbix_agent_home}}/zabbix/run/zabbix_agentd.pid
+RestartSec=10s
+TimeoutSec=0
+[Install]
+WantedBy=multi-user.target

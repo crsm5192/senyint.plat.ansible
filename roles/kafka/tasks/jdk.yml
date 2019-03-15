@@ -1,0 +1,17 @@
+- name: Kafka JDK Source Package
+  unarchive: 
+    src:     '{{item.src}}' 
+    dest:    '{{item.dest}}'
+    owner:   '{{pl_kafka_user}}' 
+    group:   '{{pl_kafka_group}}'
+  with_items:
+    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',   dest: '{{pl_kafka_home}}/kafka' }
+
+- name: Kafka JDK Floder Owner
+  file: 
+    path: '{{item.path}}' 
+    owner: '{{pl_kafka_user}}' 
+    group: '{{pl_kafka_group}}' 
+    recurse: yes
+  with_items:
+    - { path: '{{pl_kafka_home}}/kafka/jdk{{pl_jdk_version}}' }

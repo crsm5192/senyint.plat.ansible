@@ -1,0 +1,26 @@
+- name: Plat Nginx Group
+  group: 
+    name: '{{pl_ngx_group}}' 
+    gid:  '{{pl_ngx_gid}}'
+
+- name: Plat Nginx User
+  user: 
+    name:  '{{pl_ngx_user}}'
+    group: '{{pl_ngx_group}}'    
+    uid:   '{{pl_ngx_uid}}' 
+    home:  '{{pl_ngx_home}}/nginx'
+    shell: /bin/bash
+
+- name: Plat Nginx Floder
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755 
+    state: directory
+  with_items:
+    - { path: '{{pl_deploy_home}}/support',                 owner: 'root',           group: 'root' }
+    - { path: '{{pl_ngx_home}}/nginx',                      owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
+    - { path: '{{pl_ngx_home}}/nginx/conf/conf.d',    owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
+    - { path: '{{pl_ngx_home}}/nginx/conf/conf.d/ssl',owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
+    - { path: '{{pl_ngx_home}}/nginx/conf/vhost.d',   owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }

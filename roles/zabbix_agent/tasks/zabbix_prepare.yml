@@ -1,0 +1,47 @@
+- name: Zabbix Clear Other Version
+  yum: name=zabbix-agent state=absent
+
+- name: Zabbix Group Add
+  group: 
+    name: '{{pl_zabbix_agent_group}}' 
+    gid:  '{{pl_zabbix_agent_gid}}'
+    state: present
+
+- name: Zabbix Install Floder 
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}'
+    state: '{{item.state}}'    
+    mode: 0755
+  with_items:
+    - { path: '{{pl_deploy_home}}',      owner: 'root',group: 'root',state: directory }
+    - { path: '{{pl_zabbix_agent_home}}',owner: 'root',group: 'root',state: directory }
+
+- name: Zabbix User Add
+  user: 
+    name:  '{{pl_zabbix_agent_user}}'
+    group: '{{pl_zabbix_agent_group}}'    
+    uid:   '{{pl_zabbix_agent_uid}}' 
+    home:  '{{pl_zabbix_agent_home}}/zabbix'
+    shell: /bin/bash
+    state: present 
+
+- name: Zabbix Floder
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}'
+    state: '{{item.state}}'    
+    mode: 0755
+  with_items:
+    - { path: '{{pl_zabbix_agent_home}}/zabbix/run',owner: '{{pl_zabbix_agent_user}}',group: '{{pl_zabbix_agent_user}}',state: directory }
+    - { path: '{{pl_zabbix_agent_home}}/zabbix/log',owner: '{{pl_zabbix_agent_user}}',group: '{{pl_zabbix_agent_user}}',state: directory }
+
+- name: Zabbix User Sudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    regexp: 'root    ALL=(ALL)       ALL'
+    insertafter: 'root    ALL=(ALL)       ALL'
+    line: 'zabbix  ALL=(root)       NOPASSWD:/usr/bin/mysql'

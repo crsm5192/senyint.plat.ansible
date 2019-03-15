@@ -1,0 +1,99 @@
+#zabbix
+- name: Zabbix Agent Conf
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'zabbix_agentd.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf' }
+
+#jvm
+- name: Zabbix Agent Conf JVM
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'jvm.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/jvm.conf' }
+
+#nginx
+- name: Zabbix Agent Conf Nginx Check
+  stat:
+    path: '/usr/lib/systemd/system/nginx.service'
+  register: nginx
+
+- name: Zabbix Agent Conf Nginx
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'nginx.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/nginx.conf' }
+  when: nginx.stat.exists == True
+
+#mysql
+- name: Zabbix Agent Conf Mysql Check
+  stat:
+    path: '/usr/lib/systemd/system/mysqld.service'
+  register: mysql
+
+- name: Zabbix Agent Conf Mysql
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'mysql.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/mysql.conf'}
+  when: mysql.stat.exists == True
+  
+#dscore
+- name: Zabbix Agent Conf Dscore Check
+  stat:
+    path: '/usr/lib/systemd/system/dscore.service'
+  register: dscore
+
+- name: Zabbix Agent Conf Dscore
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'tomcat.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/tomcat.conf'}
+  when: dscore.stat.exists == True
+  
+#redis
+- name: Zabbix Agent Conf Redis Check
+  stat:
+    path: '/usr/lib/systemd/system/redis-server.service'
+  register: redis
+
+- name: Zabbix Agent Conf Redis
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'redis.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/redis.conf'}
+  when: redis.stat.exists == True
+
+#kafka
+- name: Zabbix Agent Conf Kafka Check
+  stat:
+    path: '/usr/lib/systemd/system/kafka.service'
+  register: kafka
+
+- name: Zabbix Agent Conf Kafka
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'kafka.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/kafka.conf'}
+  when: kafka.stat.exists == True
+  
+#zookeeper
+- name: Zabbix Agent Conf Zookeeper Check
+  stat:
+    path: '/usr/lib/systemd/system/zookeeper.service'
+  register: zookeeper
+
+- name: Zabbix Agent Conf Zookeeper
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+  with_items:
+    - { src: 'zookeeper.conf', dest: '{{pl_zabbix_agent_home}}/zabbix/etc/zabbix_agentd.conf.d/zookeeper.conf'}
+  when: zookeeper.stat.exists == True

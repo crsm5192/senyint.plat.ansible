@@ -1,77 +1,15 @@
-- name: add group for redis
-  group: 
-    name: '{{pl_group}}' 
-    gid:  '{{pl_gid}}'
+- import_tasks: redis_prepare.yml
+  tags:
+    - redis_prepare
 
-- name: add user for redis
-  user: 
-    name:  '{{pl_user}}'
-    group: '{{pl_group}}'    
-    uid:   '{{pl_uid}}' 
-    home:  '{{pl_home}}' 
-    shell: /bin/bash
-
-- name: make floder for use 
-  file: 
-    path: '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
-    mode: 0755 
-    state: directory
-  with_items:
-    - { path: '{{pl_deploy_home}}'    ,owner: 'root',       group: 'root' }
-    - { path: '{{pl_home}}',           owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis',     owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis/data',owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis/etc', owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis/bin', owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis/pid', owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/redis/log', owner: '{{pl_user}}',group: '{{pl_group}}' }
+- import_tasks: redis_install.yml
+  tags:
+    - redis_install
     
-- name: extract redis source packages
-  unarchive: src='redis-{{pl_redis_version}}.tar.gz' dest='{{pl_deploy_home}}'
-
-- name: make redis test
-  make:
-    chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}'
-    target: test
-    params:
-      NUM_THREADS: 4
- 
-- name: make redis install
-  make:
-    chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src'
-    target: install
-    params:
-      NUM_THREADS: 4    
+- import_tasks: redis_config.yml
+  tags:
+    - redis_config
     
-- name: copy redis bin
-  copy: src='{{item.src}}' dest='{{item.dest}}' remote_src=yes mode=755
-  with_items:
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-benchmark',dest: '{{pl_home}}/redis/bin/redis-benchmark' }
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-check-aof',dest: '{{pl_home}}/redis/bin/redis-check-aof' }
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-check-rdb',dest: '{{pl_home}}/redis/bin/redis-check-rdb' }
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-cli',      dest: '{{pl_home}}/redis/bin/redis-cli' }
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-sentinel', dest: '{{pl_home}}/redis/bin/redis-sentinel' }
-    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-server',   dest: '{{pl_home}}/redis/bin/redis-server' }
-
-- name: copy redis cli
-  file: src='{{pl_home}}/redis/bin/redis-cli' dest='/usr/bin/redis-cli' state=link
-  
-- name: config redis
-  template: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'redis.conf.j2',          dest: '{{pl_home}}/redis/etc/redis.conf' }
-    - { src: 'redis-server.service.j2',dest: '/lib/systemd/system/redis-server.service' }  
-
-- name: fire wall redis
-  firewalld: port={{pl_redis_port}}/tcp permanent=true state=enabled
-  
-- name: change floder owner
-  file: path='{{pl_home}}/redis' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
-
-- name: start redis
-  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
-  with_items:
-    - { name: 'firewalld',   state: 'reloaded' }
-    - { name: 'redis-server',state: 'started' }
+- import_tasks: redis_start.yml
+  tags:
+    - redis_start

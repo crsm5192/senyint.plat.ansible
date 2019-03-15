@@ -2,9 +2,10 @@
         workgroup = {{pl_samba_workgroup}}
         unix charset = utf8
         security = user	
-        log file = {{pl_home}}/samba/log/smb_log.%m
+        log file = {{pl_samba_home}}/samba/log/smb_log.%m
         max log size = 50
         load printers = No
+		smb ports = {{pl_samba_port}}
 [{{pl_samba_workgroup}}]
         comment = {{pl_samba_workgroup}}
         path = {{pl_samba_mount_path}}
@@ -14,5 +15,5 @@
         directory mask = 0775
         available = yes
         browseable = yes
-        force user = {{pl_user}}
-        force group = {{pl_group}}
+        force user = {{pl_samba_mount_user}}
+        force group = {{pl_samba_mount_group}}

@@ -1,0 +1,18 @@
+- name: Redis Bin
+  copy: src='{{item.src}}' dest='{{item.dest}}' remote_src=yes mode=755
+  with_items:
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-benchmark',dest: '{{pl_redis_home}}/redis/bin/redis-benchmark' }
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-check-aof',dest: '{{pl_redis_home}}/redis/bin/redis-check-aof' }
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-check-rdb',dest: '{{pl_redis_home}}/redis/bin/redis-check-rdb' }
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-cli',      dest: '{{pl_redis_home}}/redis/bin/redis-cli' }
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-sentinel', dest: '{{pl_redis_home}}/redis/bin/redis-sentinel' }
+    - { src: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src/redis-server',   dest: '{{pl_redis_home}}/redis/bin/redis-server' }
+
+- name: Redis Cli
+  file: src='{{pl_redis_home}}/redis/bin/redis-cli' dest='/usr/bin/redis-cli' state=link
+  
+- name: Redis Config
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'redis.conf.j2',          dest: '{{pl_redis_home}}/redis/etc/redis.conf' }
+    - { src: 'redis-server.service.j2',dest: '/lib/systemd/system/redis-server.service' }  

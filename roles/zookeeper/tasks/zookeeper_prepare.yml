@@ -1,0 +1,26 @@
+- name: ZooKeeper Group
+  group: 
+    name: '{{pl_zookeeper_group}}' 
+    gid:  '{{pl_zookeeper_gid}}'
+
+- name: ZooKeeper User
+  user: 
+    name:  '{{pl_zookeeper_user}}'
+    group: '{{pl_zookeeper_group}}'    
+    uid:   '{{pl_zookeeper_uid}}' 
+    home:  '{{pl_zookeeper_home}}/zookeeper' 
+    shell: /bin/bash
+
+- name: ZooKeeper Floder Owner
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755 
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_zookeeper_home}}/zookeeper',          owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
+    - { path: '{{pl_zookeeper_home}}/zookeeper/zkdata',   owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
+    - { path: '{{pl_zookeeper_home}}/zookeeper/zkdatalog',owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
+    - { path: '{{pl_zookeeper_home}}/zookeeper/logs',     owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
+   

@@ -5,13 +5,13 @@ Requires=network.target remote-fs.target
 After=network.target remote-fs.target
 [Service]
 Type=forking
-User={{pl_user}}
-Group={{pl_group}}
-Environment=JAVA_HOME={{pl_home}}/jdk{{pl_jdk_version}}
+User={{pl_zookeeper_user}}
+Group={{pl_zookeeper_group}}
+Environment=JAVA_HOME={{pl_zookeeper_home}}/zookeeper/jdk{{pl_jdk_version}}
 Environment=JMXPORT={{pl_zookeeper_jmx_port}}
-Environment=ZOO_LOG_DIR={{pl_home}}/zookeeper/logs
-ExecStart={{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh start
-ExecStop={{pl_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh stop
+Environment=ZOO_LOG_DIR={{pl_zookeeper_home}}/zookeeper/logs
+ExecStart={{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh start
+ExecStop={{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh stop
 Restart=always
 PrivateTmp=true
 [Install]

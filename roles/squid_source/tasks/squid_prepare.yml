@@ -1,0 +1,31 @@
+- name: Squid Group
+  group: 
+    name: '{{pl_squid_group}}' 
+    gid:  '{{pl_squid_gid}}'
+
+- name: Squid User
+  user: 
+    name:  '{{pl_squid_user}}'
+    group: '{{pl_squid_group}}'    
+    uid:   '{{pl_squid_uid}}' 
+    home:  '{{pl_squid_home}}/squid' 
+    shell: /bin/bash
+
+- name: Squid Clean Other Version
+  yum: name=squid state=absent
+
+- name: Squid Floder Owner 
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}' 
+    mode: 0755
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_deploy_home}}',     owner: 'root',       group: 'root',state: directory }
+    - { path: '{{pl_squid_home}}/squid',      owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory }
+    - { path: '{{pl_squid_home}}/squid/log',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
+    - { path: '{{pl_squid_home}}/squid/run',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
+    - { path: '{{pl_squid_home}}/squid/etc',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
+    - { path: '{{pl_squid_home}}/squid/var',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory }   
+ 

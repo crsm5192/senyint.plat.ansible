@@ -1,90 +1,15 @@
-- name: add group for mysql
-  group: 
-    name: '{{pl_group}}' 
-    gid:  '{{pl_gid}}'
-
-- name: add user for mysql
-  user: 
-    name:  '{{pl_user}}'
-    group: '{{pl_group}}'    
-    uid:   '{{pl_uid}}' 
-    home:  '{{pl_home}}' 
-    shell: /bin/bash
-
-- name: make floder for use 
-  file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
-    mode: 0755
-    state: '{{item.state}}'
-  with_items:
-    - { path: '{{pl_deploy_home}}/support',     owner: 'root',group: 'root',state: directory }
-    - { path: '{{pl_home}}/mysql/etc',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/data',         owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/pid',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/src',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/log',          owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/binlog',       owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }   
-    - { path: '{{pl_home}}/mysql/sock',         owner: '{{pl_user}}',group: '{{pl_group}}',state: directory }
-    - { path: '{{pl_home}}/mysql/log/mysql.log',owner: '{{pl_user}}',group: '{{pl_group}}',state: touch }   
-
-- name: check jemalloc
-  shell: ls /usr/local/lib/libjemalloc.so.2
-  ignore_errors: yes
-  register: jemalloc_status
+- import_tasks: mysql_prepare.yml
+  tags:
+    - mysql_prepare
   
-- import_tasks: make_jemalloc.yml
-  when: jemalloc_status is failed
+- import_tasks: mysql_install.yml
+  tags:
+    - mysql_install
     
-- name: extract mysql source packages
-  unarchive: src=mysql-{{pl_mysql_version}}.tar.gz dest={{pl_deploy_home}}
-
-- name: mysql_compile_str
-  set_fact:
-    mysql_compile_str: "{{ mysql_compile_str | default('') }} {{ '-D' + item.option + '=' + item.value }}"
-  with_items:
-    - "{{ mysql_compile }}"   
-       
-- name: configure mysql 
-  command: cmake . {{ mysql_compile_str }}
-  args:
-    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
-
-- name: make mysql
-  make:
-    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
-    target: install
-    params:
-      NUM_THREADS: 4 
- 
-- name: config mysql
-  template: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'my.cnf.j2',        dest: '{{pl_home}}/mysql/etc/my.cnf' }
-    - { src: 'mysqld.service.j2',dest: '/usr/lib/systemd/system/mysqld.service' }
+- import_tasks: mysql_config.yml
+  tags:
+    - mysql_config
     
-- name: initialization mysql db
-  command: ./mysql_install_db --user={{pl_user}} --basedir={{pl_home}}/mysql/mysql --datadir={{pl_home}}/mysql/data
-  args:
-    chdir: '{{pl_home}}/mysql/mysql/scripts'
-
-- name: init service mysql
-  file: src='{{item.src}}' dest='{{item.dest}}' state=link
-  with_items:
-    - { src: '{{pl_home}}/mysql/mysql/bin/mysql',                 dest: '/usr/bin/mysql' }
-    - { src: '{{pl_home}}/mysql/mysql/bin/mysqladmin',            dest: '/usr/bin/mysqladmin' }
-    - { src: '{{pl_home}}/mysql/mysql/bin/mysqldump',             dest: '/usr/bin/mysqldump' }
-    - { src: '{{pl_home}}/mysql/mysql/support-files/mysql.server',dest: '/etc/init.d/mysqld' }    
-    
-- name: fire wall mysql
-  firewalld: port={{pl_mysql_port}}/tcp permanent=true state=enabled
-  
-- name: change floder owner
-  file: path='{{pl_home}}/mysql' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes
-  
-- name: start mysql
-  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
-  with_items:
-    - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'mysqld',   state: 'started' }
+- import_tasks: mysql_grant.yml
+  tags:
+    - mysql_grant

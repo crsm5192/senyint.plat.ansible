@@ -1,0 +1,24 @@
+- name: Zabbix Source Packages
+  unarchive: 
+    src: 'zabbix-{{pl_zabbix_version}}.tar.gz'
+    dest: '{{pl_deploy_home}}'
+
+- name: Zabbix Configure For Make
+  command: ./configure --prefix={{pl_zabbix_agent_home}}/zabbix --sysconfdir={{pl_zabbix_agent_home}}/zabbix/etc --with-ldap --with-openssl --enable-ipv6 --enable-agent
+  args:
+    chdir: '{{pl_deploy_home}}/zabbix-{{pl_zabbix_version}}'
+   
+- name: Zabbix Make Install
+  make:
+    chdir: '{{pl_deploy_home}}/zabbix-{{pl_zabbix_version}}'
+    target: install
+    params:
+      NUM_THREADS: 4
+
+- name: Zabbix Scripts
+  copy: 
+    src:  'scripts/' 
+    dest: '{{pl_zabbix_agent_home}}/zabbix/scripts'
+
+- import_tasks: zabbix_jdk.yml
+  tags: Zabbix JDK

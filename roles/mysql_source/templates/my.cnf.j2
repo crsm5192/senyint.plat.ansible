@@ -1,14 +1,15 @@
 [client]
 default-character-set          = utf8
-socket                         = {{pl_home}}/mysql/sock/mysql.sock
+socket                         = {{pl_mysql_home}}/mysql/sock/mysql.sock
 [mysqld]
-user                           = {{pl_user}}
+pid-file                       = {{pl_mysql_home}}/mysql/pid/mysql.pid
+user                           = {{pl_mysql_user}}
 symbolic-links                 = 0
 lower_case_table_names         = 1
 back_log                       = -1
 max_connections                = 500
 max_allowed_packet             = 32M
-log-bin                        = {{pl_home}}/mysql/binlog/mysql-bin
+log-bin                        = {{pl_mysql_home}}/mysql/binlog/log-bin
 binlog-format                  = 'mixed'
 binlog_cache_size              = 1M
 max_heap_table_size            = 64M
@@ -27,7 +28,7 @@ bulk_insert_buffer_size        = 256M
 myisam_sort_buffer_size        = 128M
 myisam_max_sort_file_size      = 10G
 myisam_repair_threads          = 1
-myisam_recover
+myisam-recover-options
 innodb_buffer_pool_size        = 100M
 innodb_buffer_pool_instances   = 16
 innodb_write_io_threads        = 8
@@ -37,9 +38,10 @@ innodb_thread_concurrency      = 16
 innodb_flush_log_at_trx_commit = 2
 innodb_log_file_size           = 3G
 innodb_flush_method            = O_DIRECT
+query_response_time_stats      = 1
 innodb_lock_wait_timeout       = 120
-datadir                        = {{pl_home}}/mysql/data
-socket                         = {{pl_home}}/mysql/sock/mysql.sock
+datadir                        = {{pl_mysql_home}}/mysql/data
+socket                         = {{pl_mysql_home}}/mysql/sock/mysql.sock
 symbolic-links                 = 0
 sql_mode                       = NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES 
 character-set-server           = utf8
@@ -50,5 +52,6 @@ port                           = {{pl_mysql_port}}
 quick
 max_allowed_packet             = 32M
 [mysqld_safe]
-log-error                      = {{pl_home}}/mysql/log/mysql.log
-pid-file                       = {{pl_home}}/mysql/pid/mysqld.pid
+log-error                      = {{pl_mysql_home}}/mysql/log/mysql.log
+pid-file                       = {{pl_mysql_home}}/mysql/pid/mysql_safe.pid
+socket                         = {{pl_mysql_home}}/mysql/sock/mysql.sock

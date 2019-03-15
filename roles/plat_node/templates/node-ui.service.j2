@@ -2,15 +2,15 @@ Description=Plat Node-Ui
 After=network.target remote-fs.target nss-lookup.target
 [Service]
 Type=simple
-Environment=HOME={{pl_home}}
-Environment=PATH={{pl_home}}/node-v{{pl_node_version}}-linux-x64/bin
-User={{pl_user}}
-Group={{pl_group}}
-ExecStart={{pl_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_home}}/node-ui/index.js
-ExecStop={{pl_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_home}}/node-ui/stop.js
+Environment=HOME={{pl_node_home}}
+Environment=PATH={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin
+User={{pl_node_user}}
+Group={{pl_node_group}}
+ExecStart={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_node_home}}/node-ui/index.js
+ExecStop={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_node_home}}/node-ui/stop.js
 Restart=always
-PIDFile={{pl_home}}/node-ui/pid
-WorkingDirectory={{pl_home}}/node-ui
+PIDFile={{pl_node_home}}/node-ui/pid
+WorkingDirectory={{pl_node_home}}/node-ui
 PrivateTmp=true
 [Install]
 WantedBy=multi-user.target

@@ -1,0 +1,32 @@
+- name: Plat Deploy Floder
+  file: 
+    path: "{{pl_deploy_home}}/support"
+    mode: 0755 
+    state: directory
+
+- name: Plat Support Rpm Copy
+  copy: 
+    src: support/
+    dest: "{{pl_deploy_home}}/support"
+
+- name: Plat Support Rpm Install
+  shell: /usr/bin/yum localinstall -y {{pl_deploy_home}}/support/*.rpm
+
+#- name: support_rpm_str
+#  set_fact:
+#    support_rpm_str: "{{ support_rpm_str | default('') }} {{ pl_deploy_home+'/support/'+item }}"
+#  with_items:
+#    - "{{ support_rpm }}"  
+#- name: debug rpm_str    
+#  debug: var=support_rpm_str
+
+#- name: install support rpm by local yum
+#  yum:
+#    name: "{{support_rpm}}"
+#    state: present
+    #list: "{{pl_deploy_home}}/support/rpm_list.txt"
+#    skip_broken: yes
+ # register: result
+
+#- name: debug
+#  debug: var=result  

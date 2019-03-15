@@ -1,8 +1,10 @@
-- hosts: dscore
+- hosts: netoff
   vars:
     gcXmx: 256M
     gcXms: 256M
     gcXmn: 128M
   roles:
-     - install_support
-     - plat_dscore
+    - install_support
+    - plat_system_config
+    - plat_dscore
+    - samba_mount

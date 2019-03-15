@@ -1,0 +1,11 @@
+- name: Squid Firewall 
+  firewalld: port={{pl_squid_port}}/tcp permanent=true state=enabled
+  
+- name: Squid Floder Owner
+  file: path='{{pl_squid_home}}/squid' owner='{{pl_squid_user}}' group='{{pl_squid_group}}' recurse=yes  
+    
+- name: Squid Start
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'squid',    state: 'started' }

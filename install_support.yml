@@ -1,3 +1,0 @@
-- hosts: test 
-  roles:
-     - install_support

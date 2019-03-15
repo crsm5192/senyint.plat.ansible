@@ -1,0 +1,16 @@
+- name: Plat Nginx Service
+  template: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'nginx.service.j2'  ,dest: '/usr/lib/systemd/system/nginx.service' }
+
+- name: Plat Nginx Firewall
+  firewalld: port=80/tcp permanent=true state=enabled
+  
+- name: Plat Nginx Floder Owner
+  file: path='{{pl_ngx_home}}/nginx' owner='{{pl_ngx_user}}' group='{{pl_ngx_group}}' recurse=yes  
+    
+- name: Plat Nginx Start
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'nginx',    state: 'restarted' }

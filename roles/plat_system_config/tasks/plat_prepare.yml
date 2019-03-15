@@ -1,0 +1,27 @@
+- name: Plat Group
+  group: 
+    name: '{{pl_plat_group}}' 
+    gid:  '{{pl_plat_gid}}'
+  tags: Plat Group
+
+- name: Plat User
+  user: 
+    name:  '{{pl_plat_user}}'
+    group: '{{pl_plat_group}}'    
+    uid:   '{{pl_plat_uid}}' 
+    home:  '{{pl_plat_home}}' 
+    shell: /bin/bash
+  tags: Plat User
+  
+- name: Plat Floder 
+  file: 
+    path: "{{pl_plat_home}}"
+    mode: 0755 
+    owner: "{{pl_plat_user}}"
+    group: "{{pl_plat_group}}"
+    state: directory
+    
+- name: Plat Rsa_Pub
+  authorized_key: 
+    user=root 
+    key="{{ lookup('file','/root/.ssh/id_rsa.pub')}}"

@@ -1,1 +1,0 @@
-pl_deploy_home : "{{ deploy_home | default ( '/home/deploy' ) }}"

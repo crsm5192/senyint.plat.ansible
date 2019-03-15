@@ -1,0 +1,12 @@
+#samba user
+pl_samba_mount_server :  "{{ samba_mount_server  | default('localhost') }}"
+#samba_mount_user
+pl_samba_mount_user :  "{{ samba_mount_user  | default('plat') }}"
+pl_samba_mount_uid :   "{{ samba_mount_uid   | default('8080') }}"
+pl_samba_mount_group : "{{ samba_mount_group | default('plat') }}"
+pl_samba_mount_gid :   "{{ samba_mount_gid   | default('8080') }}"
+#samba deploy setting
+pl_samba_password :   "{{ samba_password   | default('1234567890') }}"
+pl_samba_mounted_path : "{{ samba_mounted_path | default('/home/plat/share_path') }}"
+pl_samba_workgroup :  "{{ samba_workgroup  | default('plat') }}"
+pl_samba_port :  "{{ samba_port  | default('445') }}"

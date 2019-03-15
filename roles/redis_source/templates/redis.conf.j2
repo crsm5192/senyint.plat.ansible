@@ -6,9 +6,9 @@ timeout 0
 tcp-keepalive 300
 daemonize yes
 supervised no
-pidfile {{pl_home}}/redis/pid/redis_{{pl_redis_port}}.pid
+pidfile {{pl_redis_home}}/redis/pid/redis_{{pl_redis_port}}.pid
 loglevel notice
-logfile {{pl_home}}/redis/log/redis.log
+logfile {{pl_redis_home}}/redis/log/redis.log
 databases 16
 save 900 1
 save 300 10
@@ -17,7 +17,7 @@ stop-writes-on-bgsave-error yes
 rdbcompression yes
 rdbchecksum yes
 dbfilename dump.rdb
-dir {{pl_home}}/redis/data
+dir {{pl_redis_home}}/redis/data
 slave-serve-stale-data yes
 slave-read-only yes
 repl-diskless-sync no

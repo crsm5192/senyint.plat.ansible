@@ -1,0 +1,23 @@
+- name: Kafka Group for kafka
+  group: 
+    name: '{{pl_kafka_group}}'
+    gid:  '{{pl_kafka_gid}}'
+
+- name: Kafka User 
+  user: 
+    name:  '{{pl_kafka_user}}'
+    group: '{{pl_kafka_group}}'
+    uid:   '{{pl_kafka_uid}}'
+    home:  '{{pl_kafka_home}}/kafka'
+    shell: /bin/bash
+
+- name: Kafka Floder Owner 
+  file: 
+    path:  '{{item.path}}'
+    owner: '{{item.owner}}'
+    group: '{{item.group}}'
+    mode: 0755 
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_kafka_home}}/kafka'     ,owner: '{{pl_kafka_user}}',group: '{{pl_kafka_group}}',state: 'directory' }
+    - { path: '{{pl_kafka_home}}/kafka/logs',owner: '{{pl_kafka_user}}',group: '{{pl_kafka_group}}',state: 'directory' }

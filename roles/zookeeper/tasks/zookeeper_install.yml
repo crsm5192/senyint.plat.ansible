@@ -1,0 +1,11 @@
+- name: ZooKeeper Source Packages
+  unarchive: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'zookeeper-{{pl_zookeeper_version}}.tar.gz',dest: '{{pl_zookeeper_home}}/zookeeper' }
+
+- name: JDK Check
+  stat: path='{{pl_zookeeper_home}}/zookeeper/jdk{{pl_jdk_version}}/bin/java'
+  register: jdk
+
+- import_tasks: jdk.yml
+  when: jdk.stat.exists == False

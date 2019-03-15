@@ -1,0 +1,19 @@
+- name: Plat Dscore Floder
+  file:
+    path:  '{{item.path}}'
+    state: '{{item.state}}'
+  with_items:
+    - { path: '{{pl_dscore_home}}/dscore/webapps', state: 'absent' }
+    - { path: '{{pl_dscore_home}}/dscore/webapps', state: 'directory' }
+  
+- name: Plat Dscore Tomcat Config
+  template: 
+    src:  '{{item.src}}' 
+    dest: '{{item.dest}}' 
+  with_items:
+    - { src: 'server.xml.j2',    dest: '{{pl_dscore_home}}/dscore/conf/server.xml' }
+    - { src: 'setenv.sh.j2',     dest: '{{pl_dscore_home}}/dscore/bin/setenv.sh' }
+    - { src: 'dscore.service.j2',dest: '/lib/systemd/system/dscore.service' }
+  
+- name: Plat Dscore Package
+  unarchive: src='ds-{{pl_ds_version}}.tar.gz' dest='{{pl_dscore_home}}/dscore/webapps/'
