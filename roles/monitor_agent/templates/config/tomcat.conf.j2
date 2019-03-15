@@ -1,2 +1,0 @@
-UserParameter=jmx.tomcat.discovery,python {{pl_mon_home}}/zabbix/etc/scripts/tomcat/tomcat.py --list 2>/dev/null
-UserParameter=jmx.tomcat.item[*],python {{pl_mon_home}}/zabbix/etc/scripts/tomcat/tomcat.py -b "$1" -k "$2" -p $3 2>/dev/null
