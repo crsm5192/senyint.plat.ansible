@@ -1,0 +1,130 @@
+# Cloud Service Engine
+#===Server ID==========================
+# Primary Server
+SERVER_ID:e6837147d33d43e1883da0308900f212
+# 0,1,2,3...
+WORKER_ID:0
+DATA_CENTER_ID:0
+#===DB=================================
+# MySQL SQLServer Oracle DB2
+DB:01
+DEFAULT_SCHEMA:a297dfacd7a84eab9656675f61750078
+#===cookie=============================
+#2 hours
+COOKIE_MAXAGE:7200
+# one week
+COOKIE_LONGAGE:604800
+# CAPTCHA COOKIE MAX AGE
+COOKIE_CAPTCHA:120
+# 7 days 604800,30 days 2592000
+USER_ENFORCE_TIMEOUT_IN:604800
+#===Captcha============================
+NEED_CAPTCHA:false
+NEED_CAPTCHA_CONST:CC
+#===JWT================================
+# SECRET
+JWT_SECRET:v|J*6W^T&y#m_terces@9$W-7d1hvHrhNqNGVVNZjTUopIdaegL3jEjWOPX284AOk
+# Issuer
+JWT_ISS:CSE
+# Audience
+JWT_AUD:CSE
+# EXPIRY SECONDS 1 year
+JWT_EXPIRY_SECONDS:31536000
+#===Proxy address======================
+PROXY_ADDRESS:http://{{pl_ds_nginx_proxy_server}}:{{pl_ds_nginx_proxy_port}}
+PROXY_ADDRESS_SCHEMA:http
+PROXY_ADDRESS_HOST:{{pl_ds_nginx_proxy_server}}
+PROXY_ADDRESS_PORT:{{pl_ds_nginx_proxy_port}}
+FORWARD_PROXY_ADDRESS_SCHEMA:http
+# 子网内的核心需要将eth0网卡的GATEWAY指定为nginx服务IP
+FORWARD_PROXY_ADDRESS_PORT:{{pl_ds_squid_port}}
+#===HTTP===============================
+# millisecond 60000ms=1min
+HTTP_TIMEOUT_DEFAULT:30000
+HTTP_MAXMULTITHREAD_CNT:100
+#===code===============================
+CODE:1200
+#===Total number of SQL Execution======
+SQLEXECNT:10000
+CACHEEXECNT:1000000
+FUNEXECNT:1000000
+LOOP_CNT:100000
+#===response Header - Access-Control-Allow-Origin
+ACAO_VALUE:*
+XCTO_VALUE:nosniff
+XXP_VALUE:1; mode=block
+# max-age=31536000; includeSubDomains – 告诉浏览器将域名缓存到STS list里面并且包含所有的子域名，时间是一年。HTTPS启用
+STS_VALUE:
+#===Common APPs========================
+COMM_APPS:ZYAPP_IDE,ZYAPP_MENU,ZYAPP_SYSMGT,ZYAPP_LOGIN,auth,c9e98ea6fc7148d186289e8c33776f8a,03229cbe4f4f11e48d6d6f51497a883b,d2c8511b47714faba5c71506a5029d94,26c0f25501d24c0993515d445e1215a5
+#===PL TBLs============================
+PL_TBLS:sys_tenant,sys_tenant_user,sys_base_tbl,sys_config,sys_server,sys_system,sys_sqls,sys_userinfo,sys_user_identity,mdm_personal_info,mdm_org,sys_eeb_run_conf,sys_eeb_work_node,sys_eeb_jobgroup,sys_eeb_varnish,sys_eeb_sche,sys_eeb_statistics,sys_eeb_detail
+#===Initialization=====================
+INIT_APP:26c0f25501d24c0993515d445e1215a5
+INIT_MOD:cacheinit
+INIT_API:total
+# 5 minutes 300000
+INIT_TIMEOUT:300000
+#===Login attempt======================
+HOLD_LOGIN_ATTEMPT_SECS:60
+HOLD_LOGIN_ATTEMPT_WARN:50
+#===Cache==============================
+#CACHE_KB_PERKEY=500
+CACHE_KB_PERKEY=0
+CACHE_PROVIDER=redis
+## Redis connection configuration
+## connection
+redis.host = {{pl_ds_redis_server}}
+redis.port = {{pl_ds_redis_port}}
+redis.timeout = 2000
+redis.password = {{pl_ds_redis_pwd}}
+redis.database = 0
+## properties
+redis.maxActive = 1000
+redis.maxIdle = 1000
+redis.maxWait = 100
+#redis.minEvictableIdleTimeMillis = 864000000
+redis.minIdle = 100
+#redis.numTestsPerEvictionRun = 10
+redis.lifo = false
+#redis.softMinEvictableIdleTimeMillis = 10
+redis.testOnBorrow = true
+redis.testOnReturn = true
+redis.testWhileIdle = true
+#redis.timeBetweenEvictionRunsMillis = 30000
+redis.blockWhenExhausted = true
+#===DEV/PROD env=======================
+ENV:DEV
+#===OAuth2=============================
+RESOURCE_SERVER_NAME:CSE-RS
+# 5 minutes
+AUTH_CODE_EXPIRES_IN:300
+# 2h: 7200, 30 days: 2592000, -1: never expires
+ACCESS_TOKEN_EXPIRES_IN:2592000
+#7days ACCESS_TOKEN_EXPIRES_IN:604800
+# 30 days (365 days 31536000)
+REFRESH_TOKEN_EXPIRES_IN:2592000
+# OAuth2.0 Login Page
+AUTH_LOGIN_PAGE_SCHEMA:http
+AUTH_LOGIN_PAGE_PATH:/ui/oauth_login.htm
+# OAuth2.0 Client bound and Scope confirmation Page
+#AUTH_CONN_SCOPE_PAGE_PATH:/ui/oauth_conn_scope.htm
+#===Log Level==========================
+#0:ALL,1:TRACE,2:DEBUG,3:INFO,4:WARN,5:ERROR,6:CRITICAL,7:ALERT,8:FATAL,9:OFF
+LOG_LEVEL:3
+LOG_LEVEL_BIZ:true
+REQUEST_ELAPSED_BOUNDARY:1000
+LOG_QUEUE_SIZE:100000
+LOG_THREAD_CORE_POOL_SIZE:2
+LOG_THREAD_MAX_POOL_SIZE:16
+LOG_THREAD_WORK_QUEUE_SIZE:10000
+#LOG_MQ_PROVIDER_PRODUCER:com.zr.ds.mq.kafka.KafkaProducer
+LOG_MQ_PROVIDER_PRODUCER:
+LOG_MQ_QUEUE_NAME_TOPIC:log_srv_init
+LOG_MQ_QUEUE_NAME_APP:app_log
+LOG_DATASET_LOGIN:DS.SYS.17.04
+LOG_DATASET_AUTH:DS.SYS.17.05
+LOG_DATASET_REQUEST:DS.SYS.17.06
+LOG_DATASET_ERROR:DS.SYS.17.02
+LOG_DATASET_SLOW:DS.SYS.17.09
+LOG_DATASET_OTHERS:DS.SYS.17.01

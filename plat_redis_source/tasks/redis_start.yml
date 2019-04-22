@@ -1,0 +1,16 @@
+- name: Plat Redis Firewall | 为redis开放防火墙限制
+  firewalld: port={{pl_redis_port}}/tcp permanent=true state=enabled
+  
+- name: PLAT Redis DB | 导入redis库文件
+  copy:
+    src:  dump.rdb
+    dest: '{{pl_redis_home}}/{{pl_role_type}}/{{pl_server_type}}/data/dump.rdb'
+  
+- name: Plat Redis Floder Owner | 修改redis目录用户
+  file: path='{{pl_redis_home}}/{{pl_role_type}}/{{pl_server_type}}' owner='{{pl_redis_user}}' group='{{pl_redis_user}}' recurse=yes  
+
+- name: Plat Redis Start | 启动redis
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',   state: 'reloaded' }
+    - { name: 'redis-server',state: 'started' }

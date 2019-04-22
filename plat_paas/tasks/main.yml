@@ -1,0 +1,335 @@
+- name: Plat Paas File | 创建paas文件
+  copy:
+    src:  'paas'
+    dest: '/etc/init.d/paas'
+    mode: 0755
+
+#filebeat
+- name: Plat Paas FileBeat Check | 检查是否安装 filebeat
+  stat:
+    path: '/usr/lib/systemd/system/filebeat.service'
+  register: filebeat
+
+- name: Plat Paas FileBeat Config | paas添加filebeat
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start filebeat' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting FileBeat..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop filebeat' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping FileBeat..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart filebeat' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting FileBeat..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}FileBeat:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color filebeat' }
+  when: filebeat.stat.exists == True
+
+#zabbix-agent
+- name: Plat Paas Zabbix-Agent Check | 检查是否安装zabbix-agent
+  stat:
+    path: '/usr/lib/systemd/system/zabbix-agent.service'
+  register: zabbix_agent
+
+- name: Plat Paas Zabbix-Agent Config | paas添加zabbix-agent
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start zabbix-agent' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Zabbix-Agent..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop zabbix-agent' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Zabbix-Agent..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart zabbix-agent' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Zabbix-Agent..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Zabbix-Agent:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color zabbix-agent' }
+  when: zabbix_agent.stat.exists == True
+
+#smb
+- name: Plat Paas Samba Check | 检查是否安装samba
+  stat:
+    path: '/usr/lib/systemd/system/smb.service'
+  register: smb
+
+- name: Plat Paas Samba Config | paas添加samba
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start smb' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Samba..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop smb' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Samba..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart smb' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Samba..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Samba:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color smb' }
+  when: smb.stat.exists == True
+
+#dscore
+- name: Plat Paas DsCore Check | 检查是否安装dscore
+  stat:
+    path: '/usr/lib/systemd/system/dscore.service'
+  register: dscore
+
+- name: Plat Paas DsCore Config | paas添加dsocre
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start dscore' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting DsCore..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop dscore' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping DsCore..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart dscore' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting DsCore..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}DsCore:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color dscore' }
+  when: dscore.stat.exists == True
+
+#empi
+- name: Plat Paas EMPI Check | 检查是否安装empi
+  stat:
+    path: '/usr/lib/systemd/system/empi.service'
+  register: empi
+
+- name: Plat Paas EMPI Config | paas添加dsocre
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start empi' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting EMPI..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop empi' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping EMPI..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart empi' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting EMPI..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}EMPI:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color empi' }
+  when: empi.stat.exists == True
+
+#solr
+- name: Plat Paas Solr Check | 检查是否安装solr
+  stat:
+    path: '/usr/lib/systemd/system/solr.service'
+  register: solr
+
+- name: Plat Paas Solr Config | paas添加dsocre
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start solr' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Solr..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop solr' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Solr..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart solr' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Solr..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Solr:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color solr' }
+  when: solr.stat.exists == True
+  
+#mongodb
+- name: Plat Paas MongoDB Check | 检查是否安装mongodb
+  stat:
+    path: '/usr/lib/systemd/system/mongodb.service'
+  register: mongodb
+
+- name: Plat Paas MongoDB Config | paas添加dsocre
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start mongodb' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting MongoDB..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop mongodb' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping MongoDB..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart mongodb' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting MongoDB..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}MongoDB:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color mongodb' }
+  when: mongodb.stat.exists == True
+
+#zookeeper
+- name: Plat Paas ZooKeeper Check | 检查是否安装zookeeper
+  stat:
+    path: '/usr/lib/systemd/system/zookeeper.service'
+  register: zookeeper
+
+- name: Plat Paas ZooKeeper Config | paas添加zookeeper
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start zookeeper' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting ZooKeeper..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop zookeeper' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping ZooKeeper..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart zookeeper' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting ZooKeeper..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}ZooKeeper:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color zookeeper' }
+  when: zookeeper.stat.exists == True
+
+#kafka
+- name: Plat Paas Kafka Check | 检查是否安装kafka
+  stat:
+    path: '/usr/lib/systemd/system/kafka.service'
+  register: kafka
+
+- name: Plat Paas Kafka Config | paas添加kafka
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start kafka' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Kafka..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop kafka' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Kafka..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart kafka' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Kafka..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Kafka:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color kafka' }
+  when: kafka.stat.exists == True
+  
+#node-ui
+- name: Plat Paas Node-UI Check | 检查是否安装node-ui
+  stat:
+    path: '/usr/lib/systemd/system/node-ui.service'
+  register: node_ui
+
+- name: Plat Paas Node-UI Config | paas添加node-ui
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start node-ui' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Node-UI..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop node-ui' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Node-UI..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart node-ui' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Node-UI..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Node-UI:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color node-ui' }
+  when: node_ui.stat.exists == True
+  
+#node-log-srv
+- name: Plat Paas Node-Log Check | 检查是否安装node-log
+  stat:
+    path: '/usr/lib/systemd/system/node-log-srv.service'
+  register: node_log_srv
+
+- name: Plat Paas Node-Log Config | paas添加node-log
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start node-log-srv' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Node-Log..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop node-log-srv' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Node-Log..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart node-log-srv' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Node-Log..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Node-Log:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color node-log-srv' }
+  when: node_log_srv.stat.exists == True
+
+#squid
+- name: Plat Paas Squid Check | 检查是否安装squid
+  stat:
+    path: '/usr/lib/systemd/system/squid.service'
+  register: squid
+
+- name: Plat Paas Squid Config | paas添加squid
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start squid' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Squid..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop squid' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Squid..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart squid' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Squid..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Squid:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color squid' }
+  when: squid.stat.exists == True
+
+#redis-server
+- name: Plat Paas Redis-Server Check | 检查是否安装redis
+  stat:
+    path: '/usr/lib/systemd/system/redis-server.service'
+  register: redis_server
+
+- name: Plat Paas Redis-Server Config | paas添加redis
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start redis-server' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Redis-Server..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop redis-server' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Redis-Server..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart redis-server' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Redis-Server..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Redis-Server:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color redis-server' }
+  when: redis_server.stat.exists == True
+  
+#mysqld
+- name: Plat Paas MysqlDB Check | 检查是否安装mysql
+  stat:
+    path: '/usr/lib/systemd/system/mysqld.service'
+  register: mysqld
+
+- name: Plat Paas MysqlDB Config | paas添加mysql
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start mysqld' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting MysqlDB..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop mysqld' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping MysqlDB..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart mysqld' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting MysqlDB..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}MysqlDB:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color mysqld' }
+  when: mysqld.stat.exists == True
+
+#nginx
+- name: Plat Paas Nginx Check | 检查是否安装nginx
+  stat:
+    path: '/usr/lib/systemd/system/nginx.service'
+  register: nginx
+
+- name: Plat Paas Nginx Config | paas添加nginx
+  lineinfile:
+    path: '/etc/init.d/paas'
+    insertafter: '{{item.insertafter}}'
+    line: '{{item.line}}'
+  with_items:
+    - { insertafter: 'service_start\(\)\{',   line: 'systemctl start nginx' }
+    - { insertafter: 'service_start\(\)\{',   line: 'echo "Starting Nginx..."' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'systemctl stop nginx' }
+    - { insertafter: 'service_stop\(\)\{',    line: 'echo "Stopping Nginx..."' }
+    - { insertafter: 'service_restart\(\)\{', line: 'systemctl restart nginx' }
+    - { insertafter: 'service_restart\(\)\{', line: 'echo "ReStarting Nginx..."' }
+    - { insertafter: 'service_status\(\)\{',  line: 'echo -e "${POINT}Nginx:\033[0m\n${MESAGE}\n${PID}"' } 
+    - { insertafter: 'service_status\(\)\{',  line: 'color nginx' }
+  when: nginx.stat.exists == True

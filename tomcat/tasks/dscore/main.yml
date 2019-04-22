@@ -1,0 +1,11 @@
+- import_tasks: dscore_deploy.yml
+  tags:
+    - dscore_deploy
+    
+- import_tasks: dscore_config.yml
+  tags:
+    - dscore_config
+    
+- import_tasks: dscore_keygen.yml
+  tags:
+    - dscore_keygen

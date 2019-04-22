@@ -1,0 +1,41 @@
+- name: Plat Nginx Make Compile Str | 编译nginx配置-部署参数
+  set_fact:
+    nginx_compile_str: "{{ nginx_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_compile }}"   
+    
+- name: Plat Nginx Make Mode Str | 编译nginx配置-部署模块
+  set_fact:
+    nginx_mode_str: "{{ nginx_mode_str | default('') }} {{ '--with-' + item }}"
+  with_items:
+    - "{{ nginx_mode }}"    
+    
+- name: Plat Nginx Make Lib Str | 编译nginx配置-部署库
+  set_fact:
+    nginx_lib_str: "{{ nginx_lib_str | default('') }} {{ '--with-' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ nginx_lib }}"   
+    
+- name: Plat Nginx Make EX Str | 编译nginx配置-部署参数补充
+  set_fact:
+    nginx_ex_str: "{{ nginx_ex_str | default('') }} {{ '--with-ld-opt=' + item }}"
+  with_items:
+    - "{{ nginx_ex }}"   
+  
+- name: Plat Nginx Make EX Moudle Str | 编译nginx配置-部署模块补充
+  set_fact:
+    nginx_ex_moudle_str: "{{ nginx_ex_moudle_str | default('') }} {{ '--add-module=' + item }}"
+  with_items:
+    - "{{ nginx_ex_moudle }}"    
+       
+- name: Plat Nginx Make Configure | 编译nginx前配置
+  command: ./configure {{ nginx_compile_str }} {{ nginx_mode_str }} {{ nginx_lib_str }} {{ nginx_ex_str }} {{ nginx_ex_moudle_str }}
+  args:
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
+
+- name: Plat Nginx Make Install | 编译安装nginx
+  make:
+    chdir: '{{pl_deploy_home}}/nginx-{{pl_nginx_version}}'
+    target: install
+    params:
+      NUM_THREADS: 4

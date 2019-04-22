@@ -1,0 +1,23 @@
+#group
+- name: Tomcat Group | 创建tomcat属组
+  group: 
+    name: '{{pl_tomcat_user}}' 
+    gid:  '{{pl_tomcat_id}}'
+#user
+- name: Tomcat User | 创建tomcat用户
+  user: 
+    name:  '{{pl_tomcat_user}}'
+    group: '{{pl_tomcat_user}}'    
+    uid:   '{{pl_tomcat_id}}' 
+    shell: /bin/bash
+#floder
+- name: Tomcat Floder | 创建tomcat目录
+  file: 
+    path:  '{{item}}' 
+    mode: 0755 
+    state: directory
+  with_items:
+    - '{{pl_deploy_home}}'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs'

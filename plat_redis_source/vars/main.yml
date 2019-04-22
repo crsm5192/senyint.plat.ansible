@@ -1,0 +1,12 @@
+#path
+pl_redis_home :  "{{ redis_home  | default('/home') }}"
+pl_role_type :   "{{ role_type   | default('redis') }}"
+pl_server_type : "{{ server_type | default('redis') }}"
+pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}"
+#user
+pl_redis_user : "{{ redis_user | default('redis') }}"
+pl_redis_id :   "{{ redis_id   | default('6379') }}"
+#install
+pl_redis_version: "{{ redis_version | default('3.2.12') }}"
+pl_redis_port :   "{{ redis_port    | default('6379') }}"
+pl_redis_pwd :    "{{ redis_pwd     | default('123456') }}"

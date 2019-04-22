@@ -4,3 +4,9 @@
 *.tgz
 *.py.j2
 *.xz
+*.sql
+*.jar
+*.repo
+system_config/files/default_ntp.conf
+system_config/files/jiaozhou_ntp.conf
+*.rdb

@@ -1,0 +1,28 @@
+- name: LuaJit2 Source Packages | 解压luajit软件包
+  unarchive: 
+    src: 'luajit2-{{pl_luajit2_version}}.tar.gz'
+    dest: '{{pl_deploy_home}}'
+
+- name: LuaJit2 Make Install | 编译安装luajit
+  make:
+    chdir: '{{pl_deploy_home}}/luajit2-{{pl_luajit2_version}}'
+    target: install
+ 
+- name: LuaJit2 Env | 将luajit配置环境变量
+  lineinfile: 
+    dest: /etc/profile
+    insertbefore: 'enset -f pathmunge' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes    
+  with_items:
+    - export LUAJIT_LIB=/usr/local/lib
+    - export LUAJIT_INC=/usr/local/include/luajit-2.1
+    
+- name: LuaJit2 Config | 部署luajit配置文件
+  copy: 
+   src: luajit.conf
+   dest: /etc/ld.so.conf.d/luajit.conf
+
+- name: LuaJit2 Config Source | 生效luajit配置文件
+  shell: /sbin/ldconfig

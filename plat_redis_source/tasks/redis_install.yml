@@ -1,0 +1,39 @@
+- name: Plat Redis Source Package | 解压redis软件包
+  unarchive: src='redis-{{pl_redis_version}}.tar.gz' dest='{{pl_deploy_home}}'
+
+#- name: Redis Make Test
+#  make:
+#    chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}'
+#    target: test
+#    params:
+#      NUM_THREADS: 4
+#  ignore_errors: yes
+
+- name: Redis Make | 编译redis
+  command: make -j 4 
+  args:
+    chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}'
+  async: 0
+  poll: 30
+  ignore_errors: yes 
+
+#- name: Redis Make Test | 编译验证redis
+#  command:  make -j4 test
+#  #command: taskset -c 1 make test
+#  args:
+#   chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}'
+#  async: 0
+#  poll: 30
+#  register: redis
+#  ignore_errors: yes
+
+#- name: Show debug info 
+#  debug: var=redis
+
+- name: Plat Redis Make Install | 编译安装redis
+  make:
+    chdir: '{{pl_deploy_home}}/redis-{{pl_redis_version}}/src'
+    target: install
+    params:
+      NUM_THREADS: 4 
+  ignore_errors: yes   

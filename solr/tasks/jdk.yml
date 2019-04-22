@@ -1,0 +1,11 @@
+- name: Solr JDK Source Package | 解压jdk源码包
+  unarchive: 
+    src:     'jdk-{{pl_jdk_version}}-linux-x64.tar.gz' 
+    dest:    '{{pl_solr_home}}/{{pl_role_type}}/{{pl_server_type}}'
+
+- name: Solr JDK Floder Owner | 修改jdk用户
+  file: 
+    path:  '{{pl_solr_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}' 
+    owner: '{{pl_solr_user}}'
+    group: '{{pl_solr_user}}'
+    recurse: yes

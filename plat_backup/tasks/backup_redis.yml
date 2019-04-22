@@ -1,0 +1,16 @@
+- name: Backup Redis Scripts | 部署redis备份脚本
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+    backup: yes
+  with_items:
+    - { src: 'backup_db_redis.sh.j2', dest: '{{pl_backup_home}}/scripts/backup_db_redis.sh' }
+    
+- name: Backup Redis Crontab | 加入redis备份定时任务
+  cron:
+    name: redis db bakup
+    hour: 0
+    minute: 0
+    user: root
+    job: '/bin/bash {{pl_backup_home}}/scripts/backup_db_redis.sh'
+    cron_file: /etc/crontab

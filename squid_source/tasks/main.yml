@@ -1,0 +1,11 @@
+- import_tasks: squid_prepare.yml
+  tags:
+    - squid_prepare
+
+- import_tasks: squid_install.yml
+  tags:
+    - squid_install
+    
+- import_tasks: squid_start.yml
+  tags:
+    - squid_start

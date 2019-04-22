@@ -1,0 +1,15 @@
+- import_tasks: samba_prepare.yml
+  tags:
+    - samba_prepare
+
+- import_tasks: samba_install.yml
+  tags:
+    - samba_install
+    
+- import_tasks: samba_config.yml
+  tags:
+    - samba_config
+
+- import_tasks: samba_start.yml
+  tags:
+    - samba_start

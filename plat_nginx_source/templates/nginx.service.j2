@@ -1,0 +1,16 @@
+[Unit]
+Description=Senyint Nginx Server
+After=network.target
+
+[Service]
+Type=forking
+PIDFile={{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/nginx.pid
+ExecStartPre={{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/nginx -t -q -g 'daemon on; master_process on;'
+ExecStart={{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/nginx -g 'daemon on; master_process on;'
+ExecReload={{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/nginx -g 'daemon on; master_process on;' -s reload
+ExecStop=-{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/start-stop-daemon --quiet --stop --retry QUIT/5 --pidfile {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/nginx.pid
+TimeoutStopSec=5
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target

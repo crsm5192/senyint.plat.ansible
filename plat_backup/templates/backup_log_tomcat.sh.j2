@@ -1,0 +1,10 @@
+#!/bin/sh
+log_dir={{pl_tomcat_log_path}}
+log_bakup_dir={{pl_backup_home}}/logfile/tomcat
+log_name=catalina.out
+date=`date -d "-1day" +"%Y%m%d"`
+mkdir -p $log_bakup_dir
+cd $log_dir
+tar zcvf $log_bakup_dir/$log_name.$date.tar.gz $log_name
+> $log_dir/$log_name
+exit

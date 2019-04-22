@@ -1,0 +1,22 @@
+- name: Kafka Group for kafka | 创建kafka属组
+  group: 
+    name: '{{pl_kafka_user}}'
+    gid:  '{{pl_kafka_id}}'
+
+- name: Kafka User | 创建kafka用户
+  user: 
+    name:  '{{pl_kafka_user}}'
+    group: '{{pl_kafka_user}}'
+    uid:   '{{pl_kafka_id}}'
+    shell: /bin/bash
+
+- name: Kafka Floder | 创建kafka目录
+  file: 
+    path:  '{{item}}'
+    mode: 0755 
+    state: 'directory'
+  with_items:
+    - '{{pl_kafka_home}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/logs'

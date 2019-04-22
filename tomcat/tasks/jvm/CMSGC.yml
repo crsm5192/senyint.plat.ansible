@@ -1,0 +1,21 @@
+- name: Tomcat Jvm G1GC | 配置tomcat回收器为CMS
+  lineinfile:
+    path: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/bin/setenv.sh'
+    #insertafter: '#jvm-gc'
+    line: '{{item}}'
+  with_items:
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -Xmx{{pl_tomcat_gcXmx}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -Xms{{pl_tomcat_gcXms}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:+UseG1GC"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:MaxGCPauseMillis={{pl_tomcat_g1gc_MaxGCPauseMillis}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:ParallelGCThreads={{pl_tomcat_g1gc_ParallelGCThreads}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:ConcGCThreads={{pl_tomcat_g1gc_ConcGCThreads}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1NewSizePercent={{pl_tomcat_g1gc_NewSizePercent}}"'
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1MaxNewSizePercent={{pl_tomcat_g1gc_MaxNewSizePercent}}"'   
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1HeapRegionSize={{pl_tomcat_g1gc_HeapRegionSize}}"'   
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1HeapWastePercent={{pl_tomcat_g1gc_HeapWastePercent}}"' 
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1ReservePercent={{pl_tomcat_g1gc_ReservePercent}}"' 
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:InitiatingHeapOccupancyPercent={{pl_tomcat_g1gc_InitiatingHeapOccupancyPercent}}"'    
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1MixedGCLiveThresholdPercent={{pl_tomcat_g1gc_MixedGCLiveThresholdPercent}}"' 
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1MixedGCCountTarget={{pl_tomcat_g1gc_MixedGCCountTarget}}"'    
+    - 'export CATALINA_OPTS="$CATALINA_OPTS -XX:G1OldCSetRegionThresholdPercent={{pl_tomcat_g1gc_OldCSetRegionThresholdPercent}}"'

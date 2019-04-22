@@ -1,0 +1,24 @@
+- name: Jemalloc Check | 检查jemalloc
+  stat: path='/usr/local/lib/libjemalloc.so.2'
+  register: jemalloc
+
+- import_tasks: jemalloc.yml
+  when: jemalloc.stat.exists == False
+
+- name: Luajit Check | 检查luajit
+  stat: path='usr/local/lib/libluajit-*.so.2'
+  register: luajit
+
+- import_tasks: luajit.yml
+  when: luajit.stat.exists == False
+      
+- name: Plat Nginx Source Packages | 解压nginx所需软件包
+  unarchive: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'nginx-{{pl_nginx_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }
+    - { src: 'pcre-{{pl_pcre_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
+    - { src: 'zlib-{{pl_zlib_version}}.tar.gz',                        dest: '{{pl_deploy_home}}' }
+    - { src: 'openssl-{{pl_openssl_version}}.tar.gz',                  dest: '{{pl_deploy_home}}' }
+    - { src: 'ngx_devel_kit-{{pl_ngx_devel_kit_version}}.tar.gz',      dest: '{{pl_deploy_home}}' }
+    - { src: 'lua-nginx-module-{{pl_lua_nginx_module_version}}.tar.gz',dest: '{{pl_deploy_home}}' }
+    - { src: 'naxsi-{{pl_naxsi_version}}.tar.gz',                      dest: '{{pl_deploy_home}}' }

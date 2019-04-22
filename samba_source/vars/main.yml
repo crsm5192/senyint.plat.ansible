@@ -1,0 +1,19 @@
+#smaba path
+pl_samba_home :  "{{ samba_home  | default('/home') }}"
+pl_role_type:    "{{ role_type   | default('samba') }}"
+pl_server_type:  "{{ server_type | default('samba') }}"
+pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}" 
+#samba user
+#pl_samba_user :  "{{ samba_user  | default('samba') }}"
+#pl_samba_uid :   "{{ samba_uid   | default('10445') }}"
+#pl_samba_group : "{{ samba_group | default('samba') }}"
+#pl_samba_gid :   "{{ samba_gid   | default('10445') }}"
+#samba_mount_user
+pl_samba_mount_user : "{{ samba_mount_user | default('plat') }}"
+pl_samba_mount_id :   "{{ samba_mount_id   | default('8080') }}"
+#samba deploy setting
+pl_samba_password :   "{{ samba_password   | default('1234567890') }}"
+pl_samba_port :       "{{ samba_port       | default('445') }}"
+pl_samba_version :    "{{ samba_version    | default('4.9.4') }}"
+pl_samba_mount_path : "{{ samba_mount_path | default('/home/plat/share_path') }}"
+pl_samba_workgroup :  "{{ samba_workgroup  | default('plat') }}"

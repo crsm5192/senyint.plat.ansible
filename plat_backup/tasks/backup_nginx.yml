@@ -1,0 +1,16 @@
+- name: Backup Nginx Scripts | 部署nginx备份脚本
+  template:
+    src:  '{{item.src}}'
+    dest: '{{item.dest}}'
+    backup: yes
+  with_items:
+    - { src: 'backup_log_nginx.sh.j2', dest: '{{pl_backup_home}}/scripts/backup_log_nginx.sh' }
+    
+- name: Backup Nginx Crontab | 加入nginx备份定时任务
+  cron:
+    name: nginx access log bakup
+    hour: 0
+    minute: 0
+    user: root
+    job: '/bin/bash {{pl_backup_home}}/scripts/backup_log_nginx.sh'
+    cron_file: /etc/crontab

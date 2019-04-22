@@ -1,0 +1,18 @@
+[Unit]
+Description=Kafka Server
+Documentation=http://kafka.apache.org/documentation.html
+Requires=network.target remote-fs.target
+After=network.target remote-fs.target nss-lookup.target zookeeper.service
+[Service]
+Type=forking
+User={{pl_kafka_user}}
+Group={{pl_kafka_user}}
+Environment=JAVA_HOME={{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}
+Environment=JMX_PORT={{pl_kafka_jmx_port}}
+Environment=KAFKA_HEAP_OPTS=-Xmx{{pl_kafka_xmx}} -Xms{{pl_kafka_xms}}
+ExecStart={{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/kafka_{{pl_kafka_version}}/bin/kafka-server-start.sh -daemon {{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/kafka_{{pl_kafka_version}}/config/server.properties
+ExecStop={{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/kafka_{{pl_kafka_version}}/bin/kafka-server-stop.sh
+Restart=always
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target

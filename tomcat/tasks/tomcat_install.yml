@@ -1,0 +1,34 @@
+#package
+- name: Tomcat Source Packages | 解压tomcat源码包
+  unarchive: 
+    src:   'tomcat/apache-tomcat-{{pl_tomcat_version}}.tar.gz'
+    dest:  '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}'
+
+#jdk   
+- name: Tomcat JDK Check | jdk检查
+  stat: 
+    path: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}'
+  register: jdk
+
+- import_tasks: jdk/main.yml
+  when: jdk.stat.exists == False
+#apr
+- name: Tomcat apr Check | apr检查
+  stat: 
+    path: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/lib/libtcnative-1.so'
+  register: apr
+
+- import_tasks: apr/main.yml
+  when: apr.stat.exists == False
+#config
+- name: Tomcat Config | 配置tomcat
+  template: 
+    src:  '{{item.src}}' 
+    dest: '{{item.dest}}' 
+  with_items:
+    - { src: 'server.xml.j2',         dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/conf/server.xml' }
+    - { src: 'logging.properties.j2', dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/conf/logging.properties' }
+    - { src: 'setenv.sh.j2',          dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/bin/setenv.sh' }
+    - { src: 'tomcat.service.j2',     dest: '/usr/lib/systemd/system/{{pl_server_type}}.service' }
+#jvm    
+- import_tasks: 'jvm/{{pl_tomcat_jvm_type}}.yml'

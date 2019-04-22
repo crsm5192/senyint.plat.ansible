@@ -1,0 +1,14 @@
+- name: Samba Service | 配置samba到系统服务
+  copy: src='{{pl_samba_home}}/{{pl_role_type}}/{{pl_server_type}}/lib/systemd/system/smb.service' dest='/usr/lib/systemd/system/smb.service' remote_src=yes
+  
+#- name: change floder owner
+#  file: path='{{pl_samba_home}}/{{pl_role_type}}/{{pl_server_type}}' owner='{{pl_samba_user}}' group='{{pl_samba_group}}' recurse=yes  
+    
+- name: Samba Firewall | 为samba开放防火墙配置
+  firewalld: port={{pl_samba_port}}/tcp permanent=true state=enabled
+
+- name: Samba Start | 启动samba
+  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
+  with_items:
+    - { name: 'firewalld',state: 'reloaded' }
+    - { name: 'smb',      state: 'started' }

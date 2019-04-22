@@ -1,0 +1,20 @@
+#filebeat path
+pl_filebeat_home : "{{ filebeat_home | default('/data/monitor') }}"
+pl_deploy_home :   "{{ deploy_home   | default('/home/deploy') }}" 
+#filebeat user
+pl_filebeat_user : "{{ filebeat_user | default('elastic') }}"
+pl_filebeat_id :   "{{ filebeat_id   | default('9200') }}"
+
+#filebeat deploy setting
+pl_filebeat_version : "{{ filebeat_version | default('6.5.4') }}"
+pl_filebeat_cluster : "{{ filebeat_cluster | default('测试服务器') }}"
+pl_filebeat_server :  "{{ filebeat_server  | default('test') }}"
+
+#logstash
+pl_logstash_server :  "{{ logstash_server  | default('127.0.0.1') }}"
+pl_logstash_port :    "{{ logstash_port    | default('5044') }}"
+
+#log_path
+pl_dscore_log_path :       "{{ dscore_log_path       | default('/home/plat/ds-log') }}"
+pl_nginx_access_log_path : "{{ nginx_access_log_path | default('/home/plat/nginx/logs') }}"
+pl_nginx_error_log_path :  "{{ nginx_error_log_path  | default('/home/plat/nginx/logs') }}"

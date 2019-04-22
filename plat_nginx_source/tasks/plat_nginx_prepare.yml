@@ -1,0 +1,25 @@
+- name: Plat Nginx Group | 创建nginx属组
+  group: 
+    name: '{{pl_nginx_user}}' 
+    gid:  '{{pl_nginx_id}}'
+
+- name: Plat Nginx User | 创建nginx用户
+  user: 
+    name:  '{{pl_nginx_user}}'
+    group: '{{pl_nginx_user}}'    
+    uid:   '{{pl_nginx_id}}' 
+    shell: /bin/bash
+
+- name: Plat Nginx Floder | 创建nginx目录
+  file: 
+    path: '{{item}}' 
+    mode: 0755 
+    state: directory
+  with_items:
+    - '{{pl_deploy_home}}'
+    - '{{pl_nginx_home}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/ssl'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d'

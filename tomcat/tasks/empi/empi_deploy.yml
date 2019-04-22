@@ -1,0 +1,21 @@
+- name: EMPI Package | 部署ds项目war包
+  unarchive: 
+    src: 'empi/empi-{{pl_empi_version}}.tar.gz' 
+    dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}'
+  
+- name: EMPI Files | 清理webapps及ds授权文件 
+  file:
+    path:  '{{item}}'
+    state: absent
+  with_items:
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/docs'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/examples'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/host-manager'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/manager'
+    - '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/ROOT' 
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/ds/WEB-INF/info'
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/ds/WEB-INF/info'
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/ds/WEB-INF/classes/key'
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/ds/WEB-INF/classes/key'
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/ds/WEB-INF/classes/pc'
+    #- '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apache-tomcat-{{pl_tomcat_version}}/webapps/ds/WEB-INF/classes/pc'

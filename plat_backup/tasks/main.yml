@@ -1,0 +1,56 @@
+- name: Backup Floder | 创建备份目录
+  file: 
+    path:  '{{item.path}}' 
+    state: '{{item.state}}'    
+    mode: 0755
+  with_items:
+    - { path: '{{pl_backup_home}}',         state: directory }
+    - { path: '{{pl_backup_home}}/scripts', state: directory }
+    - { path: '{{pl_backup_home}}/static',  state: directory }
+    - { path: '{{pl_backup_home}}/logfile', state: directory }
+    - { path: '{{pl_backup_home}}/database',state: directory }
+
+#nginx
+- name: Backup Nginx Check | 检查是否安装nginx
+  stat:
+    path: '/usr/lib/systemd/system/nginx.service'
+  register: nginx
+
+- import_tasks: backup_nginx.yml
+  when: nginx.stat.exists == True
+
+#dscore
+- name: Backup DsCore Check | 检查是否安装dscore
+  stat:
+    path: '/usr/lib/systemd/system/dscore.service'
+  register: dscore
+
+- import_tasks: backup_dscore.yml
+  when: dscore.stat.exists == True
+
+#mysql
+- name: Backup MysqlDB Check | 检查是否安装mysql
+  stat:
+    path: '/usr/lib/systemd/system/mysqld.service'
+  register: mysql
+
+- import_tasks: backup_mysql.yml
+  when: mysql.stat.exists == True
+
+#redis
+- name: Backup Redis Check | 检查是否安装redis
+  stat:
+    path: '/usr/lib/systemd/system/redis-server.service'
+  register: redis
+
+- import_tasks: backup_redis.yml
+  when: redis.stat.exists == True
+
+#node
+- name: Backup Node Check | 检查是否安装node
+  stat:
+    path: '/usr/lib/systemd/system/node-ui.service'
+  register: node
+
+- import_tasks: backup_node.yml
+  when: node.stat.exists == True

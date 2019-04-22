@@ -1,0 +1,30 @@
+- name: Jemalloc Check | 检查jemalloc
+  stat: path=/usr/local/lib/libjemalloc.so.2
+  register: jemalloc
+  
+- import_tasks: jemalloc.yml
+  when: jemalloc.stat.exists == false
+    
+- name: PLAT MySQL Source Package | 解压缩mysql软件包
+  unarchive: src=mysql-{{pl_mysql_version}}.tar.gz dest={{pl_deploy_home}}
+
+- name: PLAT MySQL Compile Str | 生成mysql配置参数
+  set_fact:
+    mysql_compile_str: "{{ mysql_compile_str | default('') }} {{ '-D' + item.option + '=' + item.value }}"
+  with_items:
+    - "{{ mysql_compile }}"  
+    
+- name: PLAT MySQL Install Configure  | 编译配置mysql
+  command: cmake . {{ mysql_compile_str }}
+  args:
+    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
+
+- name: PLAT MySQL Install | 编译安装mysql
+  make:
+    chdir: '{{pl_deploy_home}}/mysql-{{pl_mysql_version}}'
+    target: install
+    params:
+      NUM_THREADS: 4 
+      
+- name: change floder owner | 修改mysql文件用户
+  file: path='{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}' owner='{{pl_mysql_user}}' group='{{pl_mysql_user}}' recurse=yes

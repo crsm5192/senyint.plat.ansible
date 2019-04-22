@@ -1,0 +1,46 @@
+filebeat.prospectors:
+
+#nginx_access_start
+- type: log
+  paths:
+    - {{pl_nginx_access_log_path}}/access.log
+  encoding: utf-8
+  fields:
+    logtype: nginx_access_log
+    group:  {{pl_filebeat_cluster}}
+    server: {{pl_filebeat_server}}
+  fields_under_root: true
+  exclude_lines: ['"request_api": "/video/','.woff2']
+#nginx_access_end
+
+#nginx_error_start
+- type: log
+  paths:
+    - {{pl_nginx_error_log_path}}/error.log
+  encoding: utf-8
+  fields:
+    logtype: nginx_access_log
+    group:  {{pl_filebeat_cluster}}
+    server: {{pl_filebeat_server}}
+  fields_under_root: true
+#nginx_error_end
+
+#ds_start 
+- type: log
+  paths:
+    - {{pl_dscore_log_path}}/ds.log
+  encoding: utf-8
+  multiline:
+    pattern: '^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]|^>>'
+    negate: true
+    match: after
+  fields:
+    logtype: ds_log
+    group:  {{pl_filebeat_cluster}}
+    server: {{pl_filebeat_server}}
+  fields_under_root: true
+#ds_end
+
+#output
+output.logstash:
+  hosts: ["{{pl_logstash_server}}:{{pl_logstash_port}}"]

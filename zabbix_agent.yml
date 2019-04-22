@@ -1,3 +1,0 @@
-- hosts: test_zabbix_company
-  roles:
-    - zabbix_agent

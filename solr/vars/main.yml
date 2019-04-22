@@ -1,0 +1,22 @@
+#path
+pl_solr_home:   "{{ solr_home   | default('/home') }}"
+pl_role_type:   "{{ role_type   | default('solr') }}"
+pl_server_type: "{{ server_type | default('solr') }}"
+#user
+pl_solr_user: "{{ solr_user | default('solr') }}"
+pl_solr_id:   "{{ solr_id   | default('8983') }}"
+#version
+pl_solr_version: "{{ solr_version | default('8.0.0') }}"
+pl_jdk_version:  "{{ jdk_version  | default('1.8.0_191') }}"
+pl_solr_core: "{{ solr_core | default('solr') }}"
+pl_solr_host: "{{ solr_host | default('localhost') }}"
+pl_solr_port: "{{ solr_port | default('8983') }}"
+
+pl_solr_log_level: "{{ solr_log_level | default('INFO') }}"
+pl_solr_stop_wait: "{{ solr_stop_wait | default('180') }}"
+pl_solr_jvm_heap:  "{{ solr_jvm_heap  | default('512m') }}"
+pl_solr_jvm_Xms:   "{{ solr_jvm_Xms   | default('512m') }}"
+pl_solr_jvm_Xmx:   "{{ solr_jvm_Xmx   | default('512m') }}"
+pl_solr_jmx_port:  "{{ solr_jmx_port  | default('18983') }}"
+
+

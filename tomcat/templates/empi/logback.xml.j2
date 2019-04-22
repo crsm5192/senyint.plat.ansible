@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration>
+	<!--<property name="LOG_PATH" value="c\:/logs/ds" />-->
+	<!--<property name="LOG_PATH" value="/usr/local/tomcat7/logs/" />-->
+	<property name="LOG_PATH" value="{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/empi.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/empi.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>50MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="com.jfinal" level="ERROR" />
+	<logger name="org.apache" level="ERROR" />
+	<logger name="com.netflix" level="ERROR" />
+	<logger name="redis.clients.jedis" level="WARN" />
+	<logger name="org.mongodb" level="WARN" />
+
+	<root level="info">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="rollingFile" />
+	</root>
+</configuration>

@@ -1,0 +1,15 @@
+- name: PLAT MySQL DB File | 拷贝mysql数据库文件到服务器
+  copy:
+    src:  all-db.sql
+    dest: /tmp/all-db.sql
+
+- name: PLAT MySQL DB | 导入mysql数据库
+  mysql_db:
+    login_port:        '{{pl_mysql_port}}'
+    login_user:        'root'
+    login_password:    '{{pl_mysql_root_pwd}}'
+    login_unix_socket: '{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/sock/mysql.sock'
+    config_file:       '{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/etc/my.cnf'
+    state: import
+    name: all
+    target: /tmp/all-db.sql

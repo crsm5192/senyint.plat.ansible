@@ -1,0 +1,15 @@
+- import_tasks: zookeeper_prepare.yml
+  tags:
+    - zookeeper_prepare
+ 
+- import_tasks: zookeeper_install.yml
+  tags:
+    - zookeeper_install
+    
+- import_tasks: zookeeper_config.yml
+  tags:
+    - zookeeper_config
+    
+- import_tasks: zookeeper_start.yml
+  tags:
+    - zookeeper_start

@@ -1,0 +1,25 @@
+- name: Jemalloc Source Packages | 解压jemalloc软件包
+  unarchive: 
+    src: 'jemalloc-{{pl_jemalloc_version}}.tar.gz' 
+    dest: '{{pl_deploy_home}}'
+  
+- name: Jemalloc Make Config | 编译配置jemalloc
+  command: ./configure
+  args:
+    chdir: '{{pl_deploy_home}}/jemalloc-{{pl_jemalloc_version}}' 
+    
+- name: Jemalloc Make Install | 编译安装jemalloc
+  make:
+    chdir: '{{pl_deploy_home}}/jemalloc-{{pl_jemalloc_version}}'
+    target: install
+
+- name: Jemalloc Link | 创建jemalloc库软连接
+  file: src=/usr/local/lib/libjemalloc.so.2 dest=/usr/lib64/libjemalloc.so.1 state=link
+     
+- name: Jemalloc Config | 部署jemalloc配置文件
+  copy: 
+   src: jemalloc.conf
+   dest: /etc/ld.so.conf.d/jemalloc.conf
+
+- name: Jemalloc Config Source | 生效jemalloc配置文件
+  shell: /sbin/ldconfig

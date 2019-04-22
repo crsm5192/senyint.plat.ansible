@@ -1,0 +1,11 @@
+#!/bin/bash
+view_path={{pl_node_static_path}}
+backup_dir={{pl_backup_home}}/static/web4node
+date=`date -d "-1day" +"%Y%m%d"`
+archive_path=public
+
+mkdir -p $backup_dir
+cd $view_path
+tar -zcvf $backup_dir/$archive_path-$date.tar.gz $archive_path
+find $backup_dir -mtime +30 -type f -exec rm -rf {} \;
+exit

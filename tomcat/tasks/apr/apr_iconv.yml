@@ -1,0 +1,19 @@
+#apr-iconv 
+- name:  APR-Iconv Make config | 配置apr-iconv
+  command: ./configure --prefix={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr --with-apr={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/bin/apr-1-config
+  args:
+    chdir: '{{pl_deploy_home}}/apr-iconv-{{pl_tomcat_apr_iconv_version}}' 
+    
+- name:  APR-Iconv Make | 编译apr-iconv
+  command: make -j 4
+  args:
+    chdir: '{{pl_deploy_home}}/apr-iconv-{{pl_tomcat_apr_iconv_version}}'
+  async: 0
+  poll: 10
+
+- name:  APR-Iconv Make Install | 安装apr-iconv
+  command: make install
+  args:
+    chdir: '{{pl_deploy_home}}/apr-iconv-{{pl_tomcat_apr_iconv_version}}'
+  async: 0
+  poll: 10

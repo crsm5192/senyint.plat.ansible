@@ -1,0 +1,25 @@
+#!/bin/sh
+#tomcat-config
+export CATALINA_OPTS="$CATALINA_OPTS -Dfile.encoding=UTF-8"
+export CATALINA_OPTS="$CATALINA_OPTS -Duser.timezone=GMT+08"
+export CATALINA_OPTS="$CATALINA_OPTS -Djava.security.egd=file:/dev/./urandom"
+#apr-lib
+export CATALINA_OPTS="$JAVA_OPTS -Djava.library.path={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/lib"
+#pid
+export CATALINA_PID="{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/{{pl_server_type}}.pid"
+#jdk
+export JAVA_HOME={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}
+export JRE_HOME={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}/jre
+#tomcat-log
+export CATALINA_OUT={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/catalina.out
+#jmx
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.port={{pl_tomcat_jmx_port}}"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
+export CATALINA_OPTS="$CATALINA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
+#jvm-gc-log
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDetails"
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCDateStamps"
+export CATALINA_OPTS="$CATALINA_OPTS -Xloggc:{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/gc.log"
+export CATALINA_OPTS="$CATALINA_OPTS -XX:+PrintGCTimeStamps"
+#jvm-gc

@@ -1,3 +1,0 @@
-- hosts: test
-  roles:
-    - { role: zabbix_agent , zabbix_server: 192.168.228.201 }

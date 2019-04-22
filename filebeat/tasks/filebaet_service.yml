@@ -1,0 +1,19 @@
+- name: FileBeat Systemd | 将filebeat加入系统服务
+  template:
+    src:  'filebeat.service.j2'
+    dest: '/usr/lib/systemd/system/filebeat.service'
+ 
+- name: FileBeat Floder Owner | 修改filebeat目录用户
+  file: 
+    path:  '{{pl_filebeat_home}}/elastic' 
+    owner: '{{pl_filebeat_user}}' 
+    group: '{{pl_filebeat_user}}' 
+    recurse: yes  
+    
+- name: FileBeat Start | 启动filebeat
+  systemd: 
+    name:  '{{item.name}}'
+    state: '{{item.state}}'
+    enabled: yes
+  with_items:
+    - { name: 'filebeat', state: 'started' }

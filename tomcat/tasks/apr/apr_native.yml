@@ -1,0 +1,10 @@
+#native  
+- name: APR Tomcat Native Make config | 配置tomcat—native
+  command: ./configure --prefix={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr --with-apr={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/bin/apr-1-config --with-java-home={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}} --with-ssl={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/openssl
+  args:
+    chdir: '{{pl_deploy_home}}/tomcat-native-{{pl_tomcat_native_version}}-src/native' 
+
+- name: APR Tomcat Native Make Install | 编译安装tomcat—native
+  make:
+    chdir: '{{pl_deploy_home}}/tomcat-native-{{pl_tomcat_native_version}}-src/native'
+    target: install

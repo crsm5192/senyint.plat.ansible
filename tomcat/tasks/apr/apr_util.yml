@@ -1,0 +1,10 @@
+#apr-util 
+- name: APR-Util Make config | 配置apr-util
+  command: ./configure --prefix={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr --with-apr={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/bin/apr-1-config --with-apr-iconv={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr/bin/apriconv
+  args:
+    chdir: '{{pl_deploy_home}}/apr-util-{{pl_tomcat_apr_util_version}}' 
+
+- name: APR-Util Make Install | 编译安装apr-util
+  make:
+    chdir: '{{pl_deploy_home}}/apr-util-{{pl_tomcat_apr_util_version}}' 
+    target: install  

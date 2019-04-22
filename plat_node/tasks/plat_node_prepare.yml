@@ -1,0 +1,14 @@
+- name: Plat Node Group | 创建啊node属组
+  group: 
+    name: '{{pl_node_user}}'
+    gid:  '{{pl_node_id}}'
+
+- name: Plat Node User | 创建node用户
+  user: 
+    name:  '{{pl_node_user}}'
+    group: '{{pl_node_user}}'
+    uid:   '{{pl_node_id}}'
+    shell: /bin/bash
+
+- name: Plat Node change_logdb | 建立node 日志目录
+  file: path='{{pl_squid_home}}/{{pl_role_type}}/change_logdb'  owner='{{pl_node_user}}' group='{{pl_node_user}}' mode=0755 state=directory

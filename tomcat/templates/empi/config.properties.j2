@@ -1,0 +1,87 @@
+# Cloud Service Engine
+#===Server ID==========================
+# Primary Server
+SERVER_ID:bbabe4b787b9453980b08979ff3c97d6
+# 0,1,2,3...
+WORKER_ID:0
+DATA_CENTER_ID:0
+#===SOLR===============================
+SOLR_HOST:http://{{pl_empi_solr_server}}:{{pl_empi_solr_port}}/solr/
+#SOLR_HOST:http://10.20.27.200:8983/solr/
+SOLR_DEFAULT_CORE_NAME:{{pl_empi_solr_core_name}}
+SOLR_IS_CLOUD:false
+SOLR_ZK_HOST:{{pl_empi_zookeeper_host}}
+SOLR_MAX_ROWS:10
+#milliseconds
+SOLR_INDEX_WITHIN:5000
+#milliseconds
+SOLR_QUERY_TIME_ALLOWED:300
+SOLR_INDEX_TIME_ALLOWED:300
+#CircuitBreakerErrorThresholdPercentage
+SOLR_INDEX_CBTP:10
+#CircuitBreakerSleepWindowInMilliseconds
+SOLR_INDEX_CBSW:1000
+#(average response time * QPS) + a little more: 0.2 x 200 = 40 + 10
+SOLR_INDEX_CB_CORE_SIZE:10
+SOLR_INDEX_CB_QUERY_REJECTION_SIZE:5
+SOLR_MAX_WEIGHT:70
+SOLR_MIN_WEIGHT:30
+#===JOB===============================
+#===SECOND=============================
+INTERVAL_IN_SECOND_SYNC_INDEX_TO_ORACLE:10
+INTERVAL_IN_SECOND_SYNC_CACHE_TO_INDEX:10
+#===RECORD COUNT=======================
+SYNC_COUNT:50
+JOB_SWITCH:true
+#===MONGODB============================
+MONGO_URI:mongodb://{{pl_empi_mongodb_user}}:{{pl_empi_mongodb_password}}@{{pl_empi_mongodb_server}}:{{pl_empi_mongodb_port}}/{{pl_empi_mongodb_database}}
+#MONGO_URI:mongodb://empi:empi@10.20.27.200:27017/empi
+MONGO_DATABASE_NAME:{{pl_empi_mongodb_database}}
+MONGO_COLLECTION_NAME_LOG:log
+MONGO_COLLECTION_NAME_ORIGINALDATA:solrOriginalData
+MONGO_COLLECTION_NAME_SYSLOG:sysLog
+MONGO_COLLECTION_NAME_ADMINLOG:adminlog
+#===HTTP===============================
+#SYNCED_INDEX_TO_ORACLE_API_URL:http://127.0.0.1/ds/pub/sync_index_to_oracle
+SYNCED_INDEX_TO_ORACLE_API_URL:http://{{pl_empi_sync_index_to_oracle_server}}/ds/pub/sync_index_to_oracle
+#SYNCED_INDEX_TO_ORACLE_API_URL:http://10.20.21.108:9012/ds/pub/sync_index_to_oracle
+#SYNCED_INDEX_TO_ORACLE_API_URL:http://10.20.21.12:80/ds/pub/sync_index_to_oracle
+SYNCED_INDEX_TO_ORACLE_API_APP:app=a913d94aa1e5486ab6b3036b5abbec4e
+SYNCED_INDEX_TO_ORACLE_API_MOD:mod=ggws
+SYNCED_INDEX_TO_ORACLE_API_ORG:org=e4fac59d6fcb4be9905865a5f59534b6
+#===DEV/PROD env=======================
+ENV:DEV
+#===Proxy address======================
+#PROXY_ADDRESS:http://172.16.100.220:8088
+PROXY_ADDRESS:http://{{pl_empi_nginx_proxy_server}}:{{pl_empi_nginx_proxy_port}}
+PROXY_ADDRESS_SCHEMA:http
+#PROXY_ADDRESS_HOST:172.16.100.220
+PROXY_ADDRESS_HOST:{{pl_empi_nginx_proxy_server}}
+PROXY_ADDRESS_PORT:{{pl_empi_nginx_proxy_port}}
+FORWARD_PROXY_ADDRESS_SCHEMA:http
+FORWARD_PROXY_ADDRESS_PORT:{{pl_empi_squid_port}}
+#===response Header - Access-Control-Allow-Origin
+ACAO_VALUE:*
+XCTO_VALUE:nosniff
+XXP_VALUE:1; mode=block
+# max-age=31536000; includeSubDomains \u2013 \u544a\u8bc9\u6d4f\u89c8\u5668\u5c06\u57df\u540d\u7f13\u5b58\u5230STS list\u91cc\u9762\u5e76\u4e14\u5305\u542b\u6240\u6709\u7684\u5b50\u57df\u540d\uff0c\u65f6\u95f4\u662f\u4e00\u5e74\u3002HTTPS\u542f\u7528
+STS_VALUE:
+XRLR_VALUE:3
+#===Log Level==========================
+#0:ALL,1:TRACE,2:DEBUG,3:INFO,4:WARN,5:ERROR,6:CRITICAL,7:ALERT,8:FATAL,9:OFF
+LOG_LEVEL:3
+LOG_LEVEL_BIZ:true
+REQUEST_ELAPSED_BOUNDARY:1000
+LOG_QUEUE_SIZE:1000000
+LOG_THREAD_CORE_POOL_SIZE:2
+LOG_THREAD_MAX_POOL_SIZE:16
+LOG_THREAD_WORK_QUEUE_SIZE:10000
+LOG_MQ_PROVIDER_PRODUCER:com.zr.ds.mq.kafka.KafkaProducer
+LOG_MQ_QUEUE_NAME_TOPIC:log_srv_init
+LOG_MQ_QUEUE_NAME_APP:app_log
+LOG_DATASET_LOGIN:DS.SYS.17.04
+LOG_DATASET_AUTH:DS.SYS.17.05
+LOG_DATASET_REQUEST:DS.SYS.17.06
+LOG_DATASET_ERROR:DS.SYS.17.02
+LOG_DATASET_SLOW:DS.SYS.17.09
+LOG_DATASET_OTHERS:DS.SYS.17.01

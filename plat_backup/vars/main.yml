@@ -1,0 +1,13 @@
+#path
+pl_backup_home : "{{ backup_home | default('/data/backup') }}"
+#mysql
+pl_backup_mysql_user : "{{ backup_mysql_user | default('root') }}"
+pl_backup_mysql_pwd :  "{{ backup_mysql_pwd  | default('1234567890') }}"
+#redis
+pl_redis_db_path :    "{{ redis_db_path    | default('/home/plat/redis/data') }}"
+#nginx
+pl_nginx_log_path :   "{{ nginx_log_path   | default('/home/plat/nginx/logs') }}"
+#tomcat
+pl_tomcat_log_path :  "{{ tomcat_log_path  | default('/home/plat/dscore/logs') }}"
+#node
+pl_node_static_path : "{{ node_static_path | default('/home/plat/web4node') }}"

@@ -1,0 +1,40 @@
+#path
+pl_mysql_home:  "{{ mysql_home  | default('/home') }}"
+pl_role_type:   "{{ role_type   | default('mysql') }}"
+pl_server_type: "{{ server_type | default('mysql') }}"
+pl_deploy_home: "{{ deploy_home | default('/home/deploy') }}"
+#uer
+pl_mysql_user: "{{ mysql_user  | default('mysql') }}"
+pl_mysql_id:   "{{ mysql_id   | default('3306') }}"
+#soft_version
+pl_mysql_port:       "{{ mysql_port       | default('3306') }}"
+pl_mysql_version:    "{{ mysql_version    | default('5.6.42') }}"
+pl_jemalloc_version: "{{ jemalloc_version | default('5.1.0') }}"
+
+
+pl_mysql_db_user:  "{{ mysql_db_user     | default ('test') }}"
+pl_mysql_db_pwd:   "{{ mysql_db_pwd      | default ('test123456') }}"
+pl_mysql_root_pwd: "{{ mysql_root_pwd | default ('1234567890') }}"
+
+#install_config
+mysql_compile:
+  - { option: "CMAKE_INSTALL_PREFIX", value: "{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/mysql" }
+  - { option: "CMAKE_EXE_LINKER_FLAGS", value: '"-ljemalloc"' }
+  - { option: "MYSQL_UNIX_ADDR", value: "{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/sock/mysql.sock" }
+  - { option: "MYSQL_DATADIR", value: "{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/data" }
+  - { option: "SYSCONFDIR", value: "{{pl_mysql_home}}/{{pl_role_type}}/{{pl_server_type}}/etc" }
+  - { option: "WITH_EMBEDDED_SERVE", value: "1" }
+  - { option: "WITH_INNOBASE_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_MEMORY_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_PARTITION_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_FEDERATED_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_BLACKHOLE_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_MYISAM_STORAGE_ENGINE", value: "1" }
+  - { option: "WITH_DEBUG", value: "0" }
+  - { option: "WITH_SAFEMALLOC", value: "OFF" }
+  - { option: "ENABLE_LOCAL_INFILE", value: "1" }
+  - { option: "ENABLE_DTRACE", value: "0" }
+  - { option: "ENABLE_PROFILING", value: "1" }  
+  - { option: "DEFAULT_CHARSET", value: "utf8mb4" }
+  - { option: "DEFAULT_COLLATION", value: "utf8mb4_general_ci" }
+  - { option: "EXTRA_CHARSETS", value: "all" }

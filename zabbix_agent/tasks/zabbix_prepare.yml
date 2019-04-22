@@ -1,0 +1,45 @@
+- name: Zabbix Clear Other Version | 清除其他版本zabbix-agent
+  yum: name=zabbix-agent state=absent
+
+- name: Zabbix Group Add | 创建zabbix-agent属组
+  group: 
+    name: '{{pl_zabbix_agent_user}}' 
+    gid:  '{{pl_zabbix_agent_id}}'
+    state: present
+    
+- name: Zabbix User Add | 创建zabbix-agent用户
+  user: 
+    name:  '{{pl_zabbix_agent_user}}'
+    group: '{{pl_zabbix_agent_user}}'    
+    uid:   '{{pl_zabbix_agent_id}}' 
+    shell: /bin/bash
+    state: present 
+
+- name: Zabbix Install Floder | 创建zabbix-agent安装目录
+  file: 
+    path:  '{{item}}' 
+    state: 'directory'    
+    mode: 0755
+  with_items:
+    - '{{pl_deploy_home}}'
+    - '{{pl_zabbix_agent_home}}'
+
+- name: Zabbix Floder | 创建zabbix-agent目录
+  file: 
+    path:  '{{item.path}}' 
+    owner: '{{item.owner}}' 
+    group: '{{item.group}}'
+    state: '{{item.state}}'    
+    mode: 0755
+  with_items:
+    - { path: '{{pl_zabbix_agent_home}}/zabbix/run',    owner: '{{pl_zabbix_agent_user}}',group: '{{pl_zabbix_agent_user}}',state: directory }
+    - { path: '{{pl_zabbix_agent_home}}/zabbix/log',    owner: '{{pl_zabbix_agent_user}}',group: '{{pl_zabbix_agent_user}}',state: directory }
+    - { path: '{{pl_zabbix_agent_home}}/zabbix/scripts',owner: '{{pl_zabbix_agent_user}}',group: '{{pl_zabbix_agent_user}}',state: directory }
+    
+- name: Zabbix User Sudo | 为zabbix-agent用户添加sudo权限
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    #regexp: '## Allows members of the 'sys' group to run networking, software,'
+    insertbefore: "## Allows members of the 'sys' group to run networking, software,"
+    line: 'zabbix  ALL=(root)       NOPASSWD:/usr/bin/mysqladmin,/usr/bin/redis-cli'

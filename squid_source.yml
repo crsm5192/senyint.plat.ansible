@@ -1,7 +1,0 @@
-- hosts: mysql
-  vars:
-    home: /home/plat
-  roles:
-     #- install_support
-     - system_config
-     - squid_source

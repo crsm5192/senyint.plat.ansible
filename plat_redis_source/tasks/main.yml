@@ -1,0 +1,15 @@
+- import_tasks: redis_prepare.yml
+  tags:
+    - redis_prepare
+
+- import_tasks: redis_install.yml
+  tags:
+    - redis_install
+    
+- import_tasks: redis_config.yml
+  tags:
+    - redis_config
+    
+- import_tasks: redis_start.yml
+  tags:
+    - redis_start

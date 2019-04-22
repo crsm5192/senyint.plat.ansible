@@ -1,0 +1,13 @@
+#path
+pl_node_home : "{{ node_home   | default('/home') }}"
+pl_role_type:  "{{ role_type   | default('node') }}"
+#user
+pl_node_user :   "{{ node_user | default('plat') }}"
+pl_node_id :     "{{ node_id   | default('8080') }}"
+#config
+pl_node_version :      "{{ node_version | default('0.12.9') }}"
+pl_node_log_version :  "{{ node_log_version | default('20181226') }}"
+pl_node_ui_version :   "{{ node_ui_version | default('20181226') }}"
+pl_node_conf_version : "{{ node_conf_version | default('20181226') }}"
+pl_node_web_version :  "{{ node_web_version | default('20181226') }}"
+pl_node_port :         "{{ node_port | default('8011') }}"

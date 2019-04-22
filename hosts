@@ -1,0 +1,42 @@
+#测试入口服务器
+[test_plat_cluster_company]
+172.16.140.237 hostname=test.plat.237 ansible_ssh_user=root ansible_ssh_pass=root ansible_ssh_port=22 ipaddr=172.16.140.237 filebeat_server=入口237
+#测试入口服务器变量
+[test_plat_cluster_company:vars]
+#nginx中dscore集群地址
+dscore_host1=172.16.140.238
+dscore_host2=172.16.140.239
+dscore_host3=172.16.140.240
+#filebeat日志收集变量
+filebeat_cluster=测试-公司-集群
+#测试dscore集群服务器
+#empi
+empi_squid_server=172.16.140.237
+empi_zookeeper_host=172.16.140.238:2181,172.16.140.239:2181,172.16.140.240:2181
+empi_nginx_proxy_server=172.16.140.237
+empi_sync_index_to_oracle_server=172.16.140.237
+
+
+
+[test_dscore_cluster_company]
+172.16.140.238 hostname=test.dscore.238 ansible_ssh_user=root ansible_ssh_pass=root ansible_ssh_port=22 ipaddr=172.16.140.238  kafka_bro_id=0 zookeeper_cluster_id=1 filebeat_server=DsCore238
+172.16.140.239 hostname=test.dscore.239 ansible_ssh_user=root ansible_ssh_pass=root ansible_ssh_port=22 ipaddr=172.16.140.239  kafka_bro_id=1 zookeeper_cluster_id=2 filebeat_server=DsCore239
+172.16.140.240 hostname=test.dscore.240 ansible_ssh_user=root ansible_ssh_pass=root ansible_ssh_port=22 ipaddr=172.16.140.240  kafka_bro_id=2 zookeeper_cluster_id=3 filebeat_server=DsCore240
+#测试dscore集群变量
+[test_dscore_cluster_company:vars]
+#samba挂载服务器IP地址
+samba_mount_server=172.16.140.237
+#kafka中zookeeper注册中心地址集
+zookeeper_addr=172.16.140.238:2181,172.16.140.239:2181,172.16.140.240:2181
+#zookeeper节点IP
+zookeeper_node1=172.16.140.238
+zookeeper_node2=172.16.140.239
+zookeeper_node3=172.16.140.240
+#dscore集群中的服务器地址IP
+ds_nginx_proxy_server=172.16.140.237
+ds_mysql_server=172.16.140.237
+ds_redis_server=172.16.140.237
+ds_squid_server=172.16.140.237
+ds_kafka_server=172.16.140.238:9092,172.16.140.239:9092,172.16.140.240:9092
+#filebeat日志收集
+filebeat_cluster=测试-公司-集群

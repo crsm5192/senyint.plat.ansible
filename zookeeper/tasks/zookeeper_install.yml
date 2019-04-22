@@ -1,0 +1,11 @@
+- name: ZooKeeper Source Packages | 解压zookeeper软件包
+  unarchive: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - { src: 'zookeeper-{{pl_zookeeper_version}}.tar.gz',dest: '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}' }
+
+- name: JDK Check | 检查jdk
+  stat: path='{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}/bin/java'
+  register: jdk
+
+- import_tasks: jdk.yml
+  when: jdk.stat.exists == False

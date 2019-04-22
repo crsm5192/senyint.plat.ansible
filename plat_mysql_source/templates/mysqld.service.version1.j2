@@ -1,0 +1,11 @@
+[Unit]
+Description=Senyint MySQL Server
+After=network.target
+[Service]
+Type=forking
+ExecStart=/etc/init.d/mysqld start
+ExecStop=/etc/init.d/mysqld stop
+Restart=always
+PrivateTmp=true
+[Install]
+WantedBy=multi-user.target
