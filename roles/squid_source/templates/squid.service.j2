@@ -5,10 +5,10 @@ After=network.target network-online.target nss-lookup.target
 [Service]
 Type=forking
 User={{pl_squid_user}}
-Group={{pl_squid_group}}
-PIDFile={{pl_squid_home}}/squid/run/squid.pid
-ExecStartPre={{pl_squid_home}}/squid/sbin/squid --foreground -z
-ExecStart={{pl_squid_home}}/squid/sbin/squid -sYC
+Group={{pl_squid_user}}
+PIDFile={{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/run/squid.pid
+ExecStartPre={{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/squid --foreground -z
+ExecStart={{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/squid -sYC
 ExecReload=/bin/kill -HUP $MAINPID
 KillMode=mixed
 [Install]

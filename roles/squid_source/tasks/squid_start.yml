@@ -1,11 +1,12 @@
-- name: Squid Firewall 
+- name: Squid Firewall | 为squid开放防火墙限制
   firewalld: port={{pl_squid_port}}/tcp permanent=true state=enabled
   
-- name: Squid Floder Owner
-  file: path='{{pl_squid_home}}/squid' owner='{{pl_squid_user}}' group='{{pl_squid_group}}' recurse=yes  
+- name: Squid Floder Owner | 修改squid目录用户
+  file: path='{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}' owner='{{pl_squid_user}}' group='{{pl_squid_user}}' recurse=yes  
     
-- name: Squid Start
+- name: Squid Start | 启动squid
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }
     - { name: 'squid',    state: 'started' }
+  ignore_errors: yes

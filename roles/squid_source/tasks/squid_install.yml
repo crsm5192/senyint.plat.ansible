@@ -1,38 +1,38 @@
-- name: Squid Source Package
+- name: Squid Source Package | 解压缩squid软件包
   unarchive: src=squid-{{pl_squid_version}}.tar.gz dest={{pl_deploy_home}}
 
-- name: Squid Compile Str
+- name: Squid Compile Str | 配置squid编译参数
   set_fact:
     squid_compile_str: "{{ squid_compile_str | default('') }} {{ '--' + item.option + '=' + item.value }}"
   with_items:
     - "{{ squid_compile }}"   
 
-- name: Squid Mode Str
+- name: Squid Mode Str | 配置squid编译模块
   set_fact:
     squid_mode_str: "{{ squid_mode_str | default('') }} {{ '--enable-' + item }}"
   with_items:
     - "{{ squid_mode }}"
 
-- name: Squid EX Mode Str
+- name: Squid EX Mode Str | 配置squid编译补充模块
   set_fact:
     squid_ex_mode_str: "{{ squid_ex_mode_str | default('') }} {{ '--enable-' + item.option + '=' + item.value }}"
   with_items:
     - "{{ squid_ex_mode }}" 
     
-- name: Squid Make Configure 
+- name: Squid Make Configure  | 编译配置squid
   command: ./configure --with-large-files {{ squid_compile_str }} {{ squid_mode_str }} {{ squid_ex_mode_str }}
   args:
     chdir: '{{pl_deploy_home}}/squid-{{pl_squid_version}}'
 
-- name: Squid Make Install
+- name: Squid Make Install | 编译安装squid
   make:
     chdir: '{{pl_deploy_home}}/squid-{{pl_squid_version}}'
     target: install
     params:
       NUM_THREADS: 4
 
-- name: Squid Config
+- name: Squid Config | 生成squid配置文件
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'squid.conf.j2',     dest: '{{pl_squid_home}}/squid/etc/squid.conf' }
+    - { src: 'squid.conf.j2',     dest: '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/etc/squid.conf' }
     - { src: 'squid.service.j2'  ,dest: '/usr/lib/systemd/system/squid.service' }

@@ -1,26 +1,25 @@
-- name: Plat Nginx Group
+- name: Plat Nginx Group | 创建nginx属组
   group: 
-    name: '{{pl_ngx_group}}' 
-    gid:  '{{pl_ngx_gid}}'
+    name: '{{pl_nginx_user}}' 
+    gid:  '{{pl_nginx_id}}'
 
-- name: Plat Nginx User
+- name: Plat Nginx User | 创建nginx用户
   user: 
-    name:  '{{pl_ngx_user}}'
-    group: '{{pl_ngx_group}}'    
-    uid:   '{{pl_ngx_uid}}' 
-    home:  '{{pl_ngx_home}}/nginx'
+    name:  '{{pl_nginx_user}}'
+    group: '{{pl_nginx_user}}'    
+    uid:   '{{pl_nginx_id}}' 
     shell: /bin/bash
 
-- name: Plat Nginx Floder
+- name: Plat Nginx Floder | 创建nginx目录
   file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
+    path: '{{item}}' 
     mode: 0755 
     state: directory
   with_items:
-    - { path: '{{pl_deploy_home}}/support',                 owner: 'root',           group: 'root' }
-    - { path: '{{pl_ngx_home}}/nginx',                      owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
-    - { path: '{{pl_ngx_home}}/nginx/conf/conf.d',    owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
-    - { path: '{{pl_ngx_home}}/nginx/conf/conf.d/ssl',owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
-    - { path: '{{pl_ngx_home}}/nginx/conf/vhost.d',   owner: '{{pl_ngx_user}}',group: '{{pl_ngx_group}}' }
+    - '{{pl_deploy_home}}'
+    - '{{pl_nginx_home}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/ssl'
+    - '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d'

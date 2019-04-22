@@ -1,13 +1,13 @@
-- name: Kafka Firewall
+- name: Kafka Firewall | 在防火墙中开放kafka端口
   firewalld: port={{item}}/tcp permanent=true state=enabled
   with_items:
     - '{{pl_kafka_port}}'
     - '{{pl_kafka_jmx_port}}'
   
-- name: Kafka Floder Owner
-  file: path='{{pl_kafka_home}}/kafka' owner='{{pl_kafka_user}}' group='{{pl_kafka_group}}' recurse=yes
+- name: Kafka Floder Owner | 修改kafka文件用户
+  file: path='{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}' owner='{{pl_kafka_user}}' group='{{pl_kafka_user}}' recurse=yes
 
-- name: Kafka Start
+- name: Kafka Start | 启动kafka
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }

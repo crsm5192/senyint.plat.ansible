@@ -1,24 +1,24 @@
-- name: Zabbix JDK Source Package
+- name: Zabbix JDK Source Package | 解压jdk软件包
   unarchive: 
     src:     '{{item.src}}' 
     dest:    '{{item.dest}}'
     owner:   '{{pl_zabbix_agent_user}}' 
-    group:   '{{pl_zabbix_agent_group}}'
+    group:   '{{pl_zabbix_agent_user}}'
   with_items:
     - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz', dest: '{{pl_zabbix_agent_home}}/zabbix' }
 
-- name: Zabbix JDK Floder Owner
+- name: Zabbix JDK Floder Owner | 修改jdk软件包用户
   file: 
     path:  '{{item.path}}' 
     owner: '{{pl_zabbix_agent_user}}' 
-    group: '{{pl_zabbix_agent_group}}' 
+    group: '{{pl_zabbix_agent_user}}' 
     recurse: yes
   with_items:
     - { path: '{{pl_zabbix_agent_home}}/zabbix/jdk{{pl_jdk_version}}' }
 
-- name: Zabbix JDK Env
+- name: Zabbix JDK Env | 为zabbix-agent配置jdk环境变量
   lineinfile:
-    path: '{{pl_zabbix_agent_home}}/zabbix/.bash_profile'
+    path: '/home/zabbix/.bash_profile'
     line: '{{item}}'
     insertbefore: 'export PATH'
   with_items:  

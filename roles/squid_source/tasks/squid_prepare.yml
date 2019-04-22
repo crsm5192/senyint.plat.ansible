@@ -1,31 +1,30 @@
-- name: Squid Group
+- name: Squid Group | 创建squid属组
   group: 
-    name: '{{pl_squid_group}}' 
-    gid:  '{{pl_squid_gid}}'
+    name: '{{pl_squid_user}}' 
+    gid:  '{{pl_squid_id}}'
 
-- name: Squid User
+- name: Squid User | 创建squid用户
   user: 
     name:  '{{pl_squid_user}}'
-    group: '{{pl_squid_group}}'    
-    uid:   '{{pl_squid_uid}}' 
-    home:  '{{pl_squid_home}}/squid' 
+    group: '{{pl_squid_user}}'
+    uid:   '{{pl_squid_id}}'
     shell: /bin/bash
 
-- name: Squid Clean Other Version
+- name: Squid Clean Other Version | 清楚预装squid
   yum: name=squid state=absent
 
-- name: Squid Floder Owner 
+- name: Squid Floder |创建squid目录
   file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
+    path:  '{{item}}'
     mode: 0755
-    state: '{{item.state}}'
+    state: 'directory'
   with_items:
-    - { path: '{{pl_deploy_home}}',     owner: 'root',       group: 'root',state: directory }
-    - { path: '{{pl_squid_home}}/squid',      owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory }
-    - { path: '{{pl_squid_home}}/squid/log',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
-    - { path: '{{pl_squid_home}}/squid/run',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
-    - { path: '{{pl_squid_home}}/squid/etc',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory } 
-    - { path: '{{pl_squid_home}}/squid/var',  owner: '{{pl_squid_user}}',group: '{{pl_squid_group}}',state: directory }   
+    - '{{pl_deploy_home}}'
+    - '{{pl_squid_home}}'
+    - '{{pl_squid_home}}/{{pl_role_type}}'
+    - '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/log'
+    - '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/run'
+    - '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/etc'
+    - '{{pl_squid_home}}/{{pl_role_type}}/{{pl_server_type}}/var'
  

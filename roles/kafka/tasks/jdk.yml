@@ -1,17 +1,17 @@
-- name: Kafka JDK Source Package
+- name: Kafka JDK Source Package | 解压jdk软件包
   unarchive: 
     src:     '{{item.src}}' 
     dest:    '{{item.dest}}'
     owner:   '{{pl_kafka_user}}' 
-    group:   '{{pl_kafka_group}}'
+    group:   '{{pl_kafka_user}}'
   with_items:
-    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',   dest: '{{pl_kafka_home}}/kafka' }
+    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',   dest: '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}' }
 
-- name: Kafka JDK Floder Owner
+- name: Kafka JDK Floder Owner | 修改jdk用户
   file: 
     path: '{{item.path}}' 
     owner: '{{pl_kafka_user}}' 
-    group: '{{pl_kafka_group}}' 
+    group: '{{pl_kafka_user}}' 
     recurse: yes
   with_items:
-    - { path: '{{pl_kafka_home}}/kafka/jdk{{pl_jdk_version}}' }
+    - { path: '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}' }

@@ -1,23 +1,22 @@
-- name: Kafka Group for kafka
+- name: Kafka Group for kafka | 创建kafka属组
   group: 
-    name: '{{pl_kafka_group}}'
-    gid:  '{{pl_kafka_gid}}'
+    name: '{{pl_kafka_user}}'
+    gid:  '{{pl_kafka_id}}'
 
-- name: Kafka User 
+- name: Kafka User | 创建kafka用户
   user: 
     name:  '{{pl_kafka_user}}'
-    group: '{{pl_kafka_group}}'
-    uid:   '{{pl_kafka_uid}}'
-    home:  '{{pl_kafka_home}}/kafka'
+    group: '{{pl_kafka_user}}'
+    uid:   '{{pl_kafka_id}}'
     shell: /bin/bash
 
-- name: Kafka Floder Owner 
+- name: Kafka Floder | 创建kafka目录
   file: 
-    path:  '{{item.path}}'
-    owner: '{{item.owner}}'
-    group: '{{item.group}}'
+    path:  '{{item}}'
     mode: 0755 
-    state: '{{item.state}}'
+    state: 'directory'
   with_items:
-    - { path: '{{pl_kafka_home}}/kafka'     ,owner: '{{pl_kafka_user}}',group: '{{pl_kafka_group}}',state: 'directory' }
-    - { path: '{{pl_kafka_home}}/kafka/logs',owner: '{{pl_kafka_user}}',group: '{{pl_kafka_group}}',state: 'directory' }
+    - '{{pl_kafka_home}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/logs'

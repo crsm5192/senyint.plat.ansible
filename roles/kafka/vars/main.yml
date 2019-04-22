@@ -1,10 +1,10 @@
 #path
-pl_kafka_home : "{{ home | default('/home/plat') }}"
+pl_kafka_home : "{{ kafka_home  | default('/home') }}"
+pl_role_type:   "{{ role_type   | default('kafka') }}"
+pl_server_type: "{{ server_type | default('kafka') }}"
 #user
-pl_kafka_user :   "{{ kafka_user  | default('kafka') }}"
-pl_kafka_uid :    "{{ kafka_uid   | default('9092') }}"
-pl_kafka_group :  "{{ kafka_group | default('kafka') }}"
-pl_kafka_gid :    "{{ kafka_gid   | default('9092') }}"
+pl_kafka_user : "{{ kafka_user | default('kafka') }}"
+pl_kafka_id :   "{{ kafka_id   | default('9092') }}"
 #config
 pl_kafka_version :  "{{ kafka_version  | default('2.11-0.10.1.1') }}"
 pl_kafka_port :     "{{ kafka_port     | default('9092') }}"

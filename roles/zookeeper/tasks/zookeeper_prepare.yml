@@ -1,26 +1,24 @@
-- name: ZooKeeper Group
+- name: ZooKeeper Group | 创建jzookeeper属组
   group: 
-    name: '{{pl_zookeeper_group}}' 
-    gid:  '{{pl_zookeeper_gid}}'
+    name: '{{pl_zookeeper_user}}' 
+    gid:  '{{pl_zookeeper_id}}'
 
-- name: ZooKeeper User
+- name: ZooKeeper User | 创建zookeeper用户
   user: 
     name:  '{{pl_zookeeper_user}}'
-    group: '{{pl_zookeeper_group}}'    
-    uid:   '{{pl_zookeeper_uid}}' 
-    home:  '{{pl_zookeeper_home}}/zookeeper' 
+    group: '{{pl_zookeeper_user}}'    
+    uid:   '{{pl_zookeeper_id}}' 
     shell: /bin/bash
 
-- name: ZooKeeper Floder Owner
+- name: ZooKeeper Floder | 创建zookeeper目录
   file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
+    path:  '{{item}}' 
     mode: 0755 
-    state: '{{item.state}}'
+    state: 'directory'
   with_items:
-    - { path: '{{pl_zookeeper_home}}/zookeeper',          owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
-    - { path: '{{pl_zookeeper_home}}/zookeeper/zkdata',   owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
-    - { path: '{{pl_zookeeper_home}}/zookeeper/zkdatalog',owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
-    - { path: '{{pl_zookeeper_home}}/zookeeper/logs',     owner: '{{pl_zookeeper_user}}',group: '{{pl_zookeeper_group}}',state: 'directory' }
-   
+    - '{{pl_zookeeper_home}}'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zkdata'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zkdatalog'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/logs'

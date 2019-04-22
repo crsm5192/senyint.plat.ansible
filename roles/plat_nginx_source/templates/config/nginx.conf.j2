@@ -1,8 +1,8 @@
-user                      {{pl_ngx_user}} {{pl_ngx_group}};
+user                      {{pl_nginx_user}} {{pl_nginx_user}};
 worker_processes {{ansible_processor_vcpus}};
 worker_rlimit_nofile                  204800;
-error_log {{pl_ngx_home}}/nginx/logs/error.log warn;
-pid                 {{pl_ngx_home}}/nginx/nginx.pid;
+error_log {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/error.log warn;
+pid                 {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/nginx.pid;
 
 events {
     use                epoll;
@@ -44,5 +44,5 @@ http {
     open_file_cache_valid               30s;
     open_file_cache max=102400 inactive=20s;
 
-    include {{pl_ngx_home}}/nginx/conf/conf.d/*.conf;
+    include {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/*.conf;
 }

@@ -1,15 +1,16 @@
-- name: ZooKeeper Firewall
+- name: ZooKeeper Firewall | 为zookeeper开放防火墙
   firewalld: port={{item}}/tcp permanent=true state=enabled
   with_items:
     - '{{pl_zookeeper_port}}'
     - '{{pl_zookeeper_jmx_port}}'
+    - '{{pl_zookeeper_reg_start_port}}-{{pl_zookeeper_reg_end_port}}'
   
-- name: ZooKeeper Floder Owner 
-  file: path='{{item}}' owner='{{pl_zookeeper_user}}' group='{{pl_zookeeper_group}}' recurse=yes
+- name: ZooKeeper Floder Owner | 变更zookeeper目录用户
+  file: path='{{item}}' owner='{{pl_zookeeper_user}}' group='{{pl_zookeeper_user}}' recurse=yes
   with_items:
-    - '{{pl_zookeeper_home}}/zookeeper'
+    - '{{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}'
 
-- name: ZooKeeper Start 
+- name: ZooKeeper Start | 启动zookeeper
   systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
   with_items:
     - { name: 'firewalld',state: 'reloaded' }

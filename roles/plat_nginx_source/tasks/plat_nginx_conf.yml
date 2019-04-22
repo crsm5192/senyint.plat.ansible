@@ -1,48 +1,48 @@
-- name: Plat Nginx Config (nginx.conf)
+- name: Plat Nginx Config (nginx.conf) | 配置nging文件-基础配置
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'config/nginx.conf.j2',  dest: '{{pl_ngx_home}}/nginx/conf/nginx.conf' }
-    - { src: 'config/proxy.conf.j2',  dest: '{{pl_ngx_home}}/nginx/conf/proxy.conf' }
-    - { src: 'config/client.conf.j2', dest: '{{pl_ngx_home}}/nginx/conf/conf.d/client.conf' }
-    - { src: 'config/gzip.conf.j2',   dest: '{{pl_ngx_home}}/nginx/conf/conf.d/gzip.conf' }
-    - { src: 'config/fastcgi.conf.j2',dest: '{{pl_ngx_home}}/nginx/conf/conf.d/fastcgi.conf' }
-    - { src: 'config/map.conf.j2',    dest: '{{pl_ngx_home}}/nginx/conf/conf.d/map.conf' }
+    - { src: 'config/nginx.conf.j2',  dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/nginx.conf' }
+    - { src: 'config/proxy.conf.j2',  dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/proxy.conf' }
+    - { src: 'config/client.conf.j2', dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/client.conf' }
+    - { src: 'config/gzip.conf.j2',   dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/gzip.conf' }
+    - { src: 'config/fastcgi.conf.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/fastcgi.conf' }
+    - { src: 'config/map.conf.j2',    dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/map.conf' }
 
-- name: Plat Nginx Config (server.conf)
+- name: Plat Nginx Config (server.conf) | 配置nging文件-server配置
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'server/80.conf.j2', dest: '{{pl_ngx_home}}/nginx/conf/conf.d/80.conf' }
-    - { src: 'server/443.conf.j2',dest: '{{pl_ngx_home}}/nginx/conf/conf.d/443.conf' }
+    - { src: 'server/80.conf.j2', dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/80.conf' }
+    - { src: 'server/443.conf.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/443.conf' }
 
-- name: Plat Nginx Config (location.conf)
+- name: Plat Nginx Config (location.conf) | 配置nging文件-location配置
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'location/default.conf.j2',   dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/default.conf' }
-    - { src: 'location/druid.conf.j2',     dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/druid.conf' }
-    - { src: 'location/dscore.conf.j2',    dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/dscore.conf' }
-    - { src: 'location/empi.conf.j2',      dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/empi.conf' }
-    - { src: 'location/img_server.conf.j2',dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/img_server.conf' }
-    - { src: 'location/node.conf.j2',      dest: '{{pl_ngx_home}}/nginx/conf/vhost.d/node.conf' }
+    - { src: 'location/default.conf.j2',   dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/default.conf' }
+    - { src: 'location/druid.conf.j2',     dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/druid.conf' }
+    - { src: 'location/dscore.conf.j2',    dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/dscore.conf' }
+    - { src: 'location/empi.conf.j2',      dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/empi.conf' }
+    - { src: 'location/img_server.conf.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/img_server.conf' }
+    - { src: 'location/node.conf.j2',      dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/node.conf' }
     
-- name: Plat Nginx Config (upstream.conf) 
+- name: Plat Nginx Config (upstream.conf) | 配置nging文件-upstream配置
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'upstream/up_druid.conf.j2',     dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_druid.conf' }
-    - { src: 'upstream/up_dscore.conf.j2',    dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_dscore.conf' }
-    - { src: 'upstream/up_empi.conf.j2',      dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_empi.conf' }
-    - { src: 'upstream/up_img_server.conf.j2',dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_img_server.conf' }
-    - { src: 'upstream/up_trs.conf.j2',       dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_trs.conf' }
-    - { src: 'upstream/up_node.conf.j2',      dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_node.conf' }    
+    - { src: 'upstream/up_druid.conf.j2',     dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_druid.conf' }
+    - { src: 'upstream/up_dscore.conf.j2',    dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_dscore.conf' }
+    - { src: 'upstream/up_empi.conf.j2',      dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_empi.conf' }
+    - { src: 'upstream/up_img_server.conf.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_img_server.conf' }
+    - { src: 'upstream/up_trs.conf.j2',       dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_trs.conf' }
+    - { src: 'upstream/up_node.conf.j2',      dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_node.conf' }    
 
-- name: Plat Nginx Config (ssl.conf) 
+- name: Plat Nginx Config (ssl.conf) | 配置nging文件-ssl密钥
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'ssl/senyint.com.crt.j2',dest: '{{pl_ngx_home}}/nginx/conf/conf.d/ssl/senyint.com.crt' }
-    - { src: 'ssl/senyint.com.key.j2',dest: '{{pl_ngx_home}}/nginx/conf/conf.d/ssl/senyint.com.key' }
+    - { src: 'ssl/senyint.com.crt.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/ssl/senyint.com.crt' }
+    - { src: 'ssl/senyint.com.key.j2',dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/ssl/senyint.com.key' }
 
-- name: Plat Nginx Config (ds_cluster2)
+- name: Plat Nginx Config (ds_cluster2) | 将ds服务器加入nginx配置（2节点）
   lineinfile: 
-    dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_dscore.conf' 
+    dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_dscore.conf' 
     insertafter: 'server {{pl_dscore_host}}:8080;' 
     line: '{{item}}' 
     state: present 
@@ -51,9 +51,9 @@
     - 'server {{dscore_host2}}:8080;'  
   when: dscore_host2 is defined 
 
-- name: Plat Nginx Config (ds_cluster3)
+- name: Plat Nginx Config (ds_cluster3) | 将ds服务器加入nginx配置（3节点）
   lineinfile: 
-    dest: '{{pl_ngx_home}}/nginx/conf/conf.d/up_dscore.conf' 
+    dest: '{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/conf.d/up_dscore.conf' 
     insertafter: 'server {{dscore_host2}}:8080;' 
     line: '{{item}}' 
     state: present 

@@ -1,73 +1,15 @@
-- name: add group for tomcat
-  group: 
-    name: '{{pl_group}}' 
-    gid:  '{{pl_gid}}'
+- import_tasks: tomcat_prepare.yml
+  tags:
+    - tomcat_prepare
 
-- name: add user for tomcat
-  user: 
-    name:  '{{pl_user}}'
-    group: '{{pl_group}}'    
-    uid:   '{{pl_uid}}' 
-    home:  '{{pl_home}}' 
-    shell: /bin/bash
-
-- name: make floder for use 
-  file: 
-    path:  '{{item.path}}' 
-    owner: '{{item.owner}}' 
-    group: '{{item.group}}' 
-    mode: 0755 
-    state: directory
-  with_items:
-    - { path: '{{pl_deploy_home}}',owner: 'root',       group: 'root' }
-    - { path: '{{pl_home}}',       owner: '{{pl_user}}',group: '{{pl_group}}' }
-    - { path: '{{pl_home}}/ds-log',owner: '{{pl_user}}',group: '{{pl_group}}' }
-
-- name: extract tomcat source packages
-  unarchive: src='{{item.src}}' dest='{{item.dest}}'
-  with_items:
-    - { src: 'apache-tomcat-{{pl_tomcat_version}}.tar.gz',dest: '{{pl_home}}' }
-    - { src: 'jdk-{{pl_jdk_version}}-linux-x64.tar.gz',dest: '{{pl_home}}' }
-
-- name: change floder owner
-  file: path='{{pl_home}}/jdk{{pl_jdk_version}}' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
+- import_tasks: tomcat_install.yml
+  tags:
+    - tomcat_install
     
-- name: rename floder tomcat
-  command: mv {{pl_home}}/apache-tomcat-{{pl_tomcat_version}} {{pl_home}}/dscore
-  
-- name: check tomcat-native
-  shell: ls /usr/local/apr/lib/libtcnative-1.so
-  ignore_errors: yes
-  register: tomcat_native_status
-
-- import_tasks: make_tomcat_native.yml
-  when: tomcat_native_status is failed 
-
-- name: mk floger tomcat
-  file:
-    path:  '{{item.path}}'
-    state: '{{item.state}}'
-  with_items:
-    - { path: '{{pl_home}}/dscore/webapps', state: 'absent' }
-    - { path: '{{pl_home}}/dscore/webapps', state: 'directory' }
-  
-- name: config tomcat
-  template: 
-    src:  '{{item.src}}' 
-    dest: '{{item.dest}}' 
-  with_items:
-    - { src: 'server.xml.j2',    dest: '{{pl_home}}/dscore/conf/server.xml' }
-    - { src: 'setenv.sh.j2',     dest: '{{pl_home}}/dscore/bin/setenv.sh' }
-    - { src: 'dscore.service.j2',dest: '/lib/systemd/system/dscore.service' }
+- import_tasks: '{{pl_server_type}}/main.yml'
+  tags:
+    - tomcat_project
     
-- name: fire wall tomcat
-  firewalld: port={{pl_tomcat_port}}/tcp permanent=true state=enabled
-  
-- name: change floder owner
-  file: path='{{pl_home}}/dscore' owner='{{pl_user}}' group='{{pl_group}}' recurse=yes  
-    
-- name: start tomcat
-  systemd: name='{{item.name}}' state='{{item.state}}' enabled=yes
-  with_items:
-    - { name: 'firewalld',state: 'reloaded' }
-    - { name: 'dscore',   state: 'started' }
+- import_tasks: tomcat_start.yml
+  tags:
+    - tomcat_start

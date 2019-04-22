@@ -1,18 +1,18 @@
-- name: add group for mount
+- name: add group for mount | 创建samba挂载属组
   group: 
-    name: '{{pl_samba_mount_group}}' 
-    gid:  '{{pl_samba_mount_gid}}'
+    name: '{{pl_samba_mount_user}}' 
+    gid:  '{{pl_samba_mount_id}}'
     state: present
 
-- name: add user for mount
+- name: add user for mount | 创建挂载用户
   user: 
     name:  '{{pl_samba_mount_user}}'
-    group: '{{pl_samba_mount_group}}'    
-    uid:   '{{pl_samba_mount_uid}}' 
+    group: '{{pl_samba_mount_user}}'    
+    uid:   '{{pl_samba_mount_id}}' 
     shell: /bin/bash
     state: present
 
-- name: make floder for use 
+- name: make floder for use | 创建挂载目录
   file: 
     path:  '{{item.path}}' 
     owner: '{{item.owner}}' 
@@ -20,10 +20,10 @@
     mode: 0755
     state: '{{item.state}}'
   with_items:
-    - { path: '{{pl_samba_mounted_path}}', owner: '{{pl_samba_mount_user}}', group: '{{pl_samba_mount_group}}', state: directory } 
+    - { path: '{{pl_samba_mounted_path}}', owner: '{{pl_samba_mount_user}}', group: '{{pl_samba_mount_user}}', state: directory } 
     
 #- name: mount samba 
-#  shell: mount.cifs //{{pl_samba_mount_server}}/{{pl_samba_workgroup}} {{pl_samba_mounted_path}} -o uid={{pl_samba_mount_uid}},user={{pl_samba_mount_user}},pass={{pl_samba_password}}
+#  shell: mount.cifs //{{pl_samba_mount_server}}/{{pl_samba_workgroup}} {{pl_samba_mounted_path}} -o uid={{pl_samba_mount_id}},user={{pl_samba_mount_user}},pass={{pl_samba_password}}
 
 #- name: mount samba when restart
 #  lineinfile:
@@ -34,12 +34,12 @@
 #  with_items:
 #    -  '//{{pl_samba_mount_server}}/{{pl_samba_workgroup}}    {{pl_samba_mounted_path}}     cifs     defaults,uid=8080,username={{pl_samba_mount_user}},password={{pl_samba_password}}   0 0'
 
-- name: mount samba
+- name: mount samba | 挂载远程samba目录
   mount:
     src: '//{{pl_samba_mount_server}}/{{pl_samba_workgroup}}'
     path: '{{pl_samba_mounted_path}}'
     state: mounted
-    opts: 'uid={{pl_samba_mount_uid}},username={{pl_samba_mount_user}},password={{pl_samba_password}},port={{pl_samba_port}}'
+    opts: 'uid={{pl_samba_mount_id}},username={{pl_samba_mount_user}},password={{pl_samba_password}},port={{pl_samba_port}}'
     fstype: cifs
     boot: yes
     
@@ -50,4 +50,4 @@
 #    state: present 
 #    backup: yes 
 #  with_items:
-#    -  'mount.cifs //{{pl_samba_mount_server}}/{{pl_samba_workgroup}} {{pl_samba_mounted_path}} -o uid={{pl_samba_mount_uid}},user={{pl_samba_mount_user}},pass={{pl_samba_password}}'
+#    -  'mount.cifs //{{pl_samba_mount_server}}/{{pl_samba_workgroup}} {{pl_samba_mounted_path}} -o uid={{pl_samba_mount_id}},user={{pl_samba_mount_user}},pass={{pl_samba_password}}'

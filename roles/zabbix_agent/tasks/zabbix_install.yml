@@ -1,24 +1,29 @@
-- name: Zabbix Source Packages
+- name: Zabbix Source Packages | 解压zabbix-agent软件包
   unarchive: 
     src: 'zabbix-{{pl_zabbix_version}}.tar.gz'
     dest: '{{pl_deploy_home}}'
 
-- name: Zabbix Configure For Make
+- name: Zabbix Configure For Make | 编译配置zabbix-agent
   command: ./configure --prefix={{pl_zabbix_agent_home}}/zabbix --sysconfdir={{pl_zabbix_agent_home}}/zabbix/etc --with-ldap --with-openssl --enable-ipv6 --enable-agent
   args:
     chdir: '{{pl_deploy_home}}/zabbix-{{pl_zabbix_version}}'
    
-- name: Zabbix Make Install
+- name: Zabbix Make Install | 编译安装zabbix-agent
   make:
     chdir: '{{pl_deploy_home}}/zabbix-{{pl_zabbix_version}}'
     target: install
     params:
       NUM_THREADS: 4
-
-- name: Zabbix Scripts
-  copy: 
-    src:  'scripts/' 
-    dest: '{{pl_zabbix_agent_home}}/zabbix/scripts'
-
+ 
+- name: Zabbix Agent JDK Check | 检查jdk
+  stat:
+    path: '{{pl_zabbix_agent_home}}/zabbix/jdk{{pl_jdk_version}}/bin/java'
+  register: JDK
+  
 - import_tasks: zabbix_jdk.yml
-  tags: Zabbix JDK
+  when: JDK.stat.exists == False
+  
+- name: Zabbix CMD Jar | 复制jvm监控所需cmd jar文件
+  copy:
+    src: 'cmdline-jmxclient-0.10.3.jar'
+    dest: '{{pl_zabbix_agent_home}}/zabbix/scripts/cmdline-jmxclient-0.10.3.jar'

@@ -1,8 +1,8 @@
-- name: Samba Source Package
+- name: Samba Source Package | 解压samba配置文件
   unarchive: src=samba-{{pl_samba_version}}.tar.gz dest={{pl_deploy_home}}
 
-- name: Samba Make Configure 
-  command: ./configure --prefix={{pl_samba_home}}/samba --systemd-install-services
+- name: Samba Make Configure  | 编译配置samba
+  command: ./configure --prefix={{pl_samba_home}}/{{pl_role_type}}/{{pl_server_type}} --systemd-install-services
 #  become_user: '{{pl_samba_user}}'
   args:
     chdir: '{{pl_deploy_home}}/samba-{{pl_samba_version}}'
@@ -14,7 +14,7 @@
 #    params:
 #      NUM_THREADS: 4
   
-- name: Samba Make Install
+- name: Samba Make Install 编译安装samba
   shell: make -j 4 && make install
 #  become_user: '{{pl_samba_user}}'
   args:

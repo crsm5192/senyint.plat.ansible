@@ -1,11 +1,11 @@
 #user
-pl_ngx_user : "{{ ngx_user  | default('www') }}"
-pl_ngx_uid :  "{{ ngx_uid   | default('80') }}"
-pl_ngx_group: "{{ ngx_group | default('www') }}"
-pl_ngx_gid :  "{{ ngx_id    | default('80') }}"
+pl_nginx_user : "{{ nginx_user  | default('www') }}"
+pl_nginx_id :   "{{ nginx_uid   | default('80') }}"
 #path
-pl_ngx_home :    "{{ ngx_home    | default('/home/plat') }}"
-pl_deploy_home : "{{ deploy_home | default('/home/deploy') }}"
+pl_nginx_home:  "{{ nginx_home    | default('/home') }}"
+pl_role_type:   "{{ role_type   | default('nginx') }}"
+pl_server_type: "{{ server_type | default('nginx') }}"
+pl_deploy_home: "{{ deploy_home | default('/home/deploy') }}"
 #version
 pl_nginx_version :            "{{ nginx_version            | default('1.14.2') }}"
 pl_pcre_version :             "{{ pcre_version             | default('8.42') }}"
@@ -25,19 +25,19 @@ pl_node_host :       "{{ node_host       | default('localhost') }}"
 pl_img_server_host : "{{ img_server_host | default('localhost') }}"
 #install config
 nginx_compile:
-  - { option: "prefix",                     value: "{{pl_ngx_home}}/nginx" }
-  - { option: "sbin-path",                  value: "{{pl_ngx_home}}/nginx/sbin/nginx" }
-  - { option: "conf-path",                  value: "{{pl_ngx_home}}/nginx/conf/nginx.conf" }
-  - { option: "error-log-path",             value: "{{pl_ngx_home}}/nginx/logs/error.log" }
-  - { option: "pid-path",                   value: "{{pl_ngx_home}}/nginx/nginx.pid" }
-  - { option: "lock-path",                  value: "{{pl_ngx_home}}/nginx/nginx.lock" }
-  - { option: "user",                       value: "{{pl_ngx_user}}" }
-  - { option: "group",                      value: "{{pl_ngx_group}}" }
-  - { option: "http-client-body-temp-path", value: "{{pl_ngx_home}}/nginx/client_body " }
-  - { option: "http-proxy-temp-path",       value: "{{pl_ngx_home}}/nginx/proxy" }
-  - { option: "http-fastcgi-temp-path",     value: "{{pl_ngx_home}}/nginx/fastcgi" }
-  - { option: "http-uwsgi-temp-path",       value: "{{pl_ngx_home}}/nginx/uwsgi" }
-  - { option: "http-scgi-temp-path",        value: "{{pl_ngx_home}}/nginx/scgi" }
+  - { option: "prefix",                     value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}" }
+  - { option: "sbin-path",                  value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/sbin/nginx" }
+  - { option: "conf-path",                  value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/nginx.conf" }
+  - { option: "error-log-path",             value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/error.log" }
+  - { option: "pid-path",                   value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/nginx.pid" }
+  - { option: "lock-path",                  value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/nginx.lock" }
+  - { option: "user",                       value: "{{pl_nginx_user}}" }
+  - { option: "group",                      value: "{{pl_nginx_user}}" }
+  - { option: "http-client-body-temp-path", value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/client_body " }
+  - { option: "http-proxy-temp-path",       value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/proxy" }
+  - { option: "http-fastcgi-temp-path",     value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/fastcgi" }
+  - { option: "http-uwsgi-temp-path",       value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/uwsgi" }
+  - { option: "http-scgi-temp-path",        value: "{{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/scgi" }
 
 nginx_mode:
   - http_ssl_module  

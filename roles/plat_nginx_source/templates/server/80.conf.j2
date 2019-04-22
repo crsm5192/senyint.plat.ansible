@@ -3,7 +3,7 @@ server {
     listen 8088 backlog=1024;
     server_name    localhost;
     charset            UTF-8;		
-    access_log   {{pl_ngx_home}}/nginx/logs/access.log json buffer=32k flush=5s;	
+    access_log   {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/logs/access.log json buffer=32k flush=5s;	
     rewrite ^/zy/(.*)$ /ui/saas/bc02994ec23341708e54c97f6b3f9f48/$1 last; 
-    include                         {{pl_ngx_home}}/nginx/conf/vhost.d/*.conf;	
+    include                         {{pl_nginx_home}}/{{pl_role_type}}/{{pl_server_type}}/conf/vhost.d/*.conf;	
 }

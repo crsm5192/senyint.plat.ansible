@@ -1,17 +1,17 @@
-- name: Kafka Source Packages
+- name: Kafka Source Packages | 解压kafka软件包
   unarchive: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'kafka_{{pl_kafka_version}}.tgz'         ,dest: '{{pl_kafka_home}}/kafka' }
+    - { src: 'kafka_{{pl_kafka_version}}.tgz',dest: '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}' }
 
-- name: JDK Check
-  stat: path='{{pl_kafka_home}}/kafka/jdk{{pl_jdk_version}}/bin/java'
+- name: JDK Check | 检查JDK
+  stat: path='{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}/bin/java'
   register: jdk
 
 - import_tasks: jdk.yml
   when: jdk.stat.exists == False
  
-- name: Kafka Config
+- name: Kafka Config | 修改kafka配置文件
   template: src='{{item.src}}' dest='{{item.dest}}'
   with_items:
-    - { src: 'server.properties.j2',dest: '{{pl_kafka_home}}/kafka/kafka_{{pl_kafka_version}}/config/server.properties' }
+    - { src: 'server.properties.j2',dest: '{{pl_kafka_home}}/{{pl_role_type}}/{{pl_server_type}}/kafka_{{pl_kafka_version}}/config/server.properties' }
     - { src: 'kafka.service.j2',    dest: '/lib/systemd/system/kafka.service' }

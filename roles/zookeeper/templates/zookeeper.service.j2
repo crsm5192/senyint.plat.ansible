@@ -6,12 +6,19 @@ After=network.target remote-fs.target
 [Service]
 Type=forking
 User={{pl_zookeeper_user}}
-Group={{pl_zookeeper_group}}
-Environment=JAVA_HOME={{pl_zookeeper_home}}/zookeeper/jdk{{pl_jdk_version}}
+Group={{pl_zookeeper_user}}
+Environment=JAVA_HOME={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/jdk{{pl_jdk_version}}
 Environment=JMXPORT={{pl_zookeeper_jmx_port}}
-Environment=ZOO_LOG_DIR={{pl_zookeeper_home}}/zookeeper/logs
-ExecStart={{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh start
-ExecStop={{pl_zookeeper_home}}/zookeeper/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh stop
+Environment=ZOO_LOG_DIR={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/logs
+#Environment=ZOOBIN={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/bin
+#Environment=ZOOBINDIR={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/bin
+#Environment=ZOOKEEPER_PREFIX={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}
+
+ExecStart={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh start {{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg
+ExecStop={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/bin/zkServer.sh stop {{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}/conf/zoo.cfg
+#WorkingDirectory={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/zookeeper-{{pl_zookeeper_version}}
+
+
 Restart=always
 PrivateTmp=true
 [Install]

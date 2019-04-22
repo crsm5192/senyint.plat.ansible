@@ -2,15 +2,15 @@ Description=Plat Node-Log-Srv
 After=network.target remote-fs.target nss-lookup.target
 [Service]
 Type=simple
-Environment=HOME={{pl_node_home}}
-Environment=PATH={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin
+Environment=HOME={{pl_squid_home}}/{{pl_role_type}}
+Environment=PATH={{pl_squid_home}}/{{pl_role_type}}/node-v{{pl_node_version}}-linux-x64/bin
 User={{pl_node_user}}
-Group={{pl_node_group}}
-ExecStart={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_node_home}}/node-log-srv/index.js
-ExecStop={{pl_node_home}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_node_home}}/node-log-srv/stop.js
+Group={{pl_node_user}}
+ExecStart={{pl_squid_home}}/{{pl_role_type}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_squid_home}}/{{pl_role_type}}/node-log-srv/index.js
+ExecStop={{pl_squid_home}}/{{pl_role_type}}/node-v{{pl_node_version}}-linux-x64/bin/node {{pl_squid_home}}/{{pl_role_type}}/node-log-srv/stop.js
 Restart=always
-PIDFile={{pl_node_home}}/node-log-srv/pid
-WorkingDirectory={{pl_node_home}}/node-log-srv
+PIDFile={{pl_squid_home}}/{{pl_role_type}}/node-log-srv/pid
+WorkingDirectory={{pl_squid_home}}/{{pl_role_type}}/node-log-srv
 PrivateTmp=true
 [Install]
 WantedBy=multi-user.target

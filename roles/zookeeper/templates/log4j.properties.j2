@@ -1,9 +1,9 @@
 zookeeper.root.logger=INFO, CONSOLE
 zookeeper.console.threshold=INFO
-zookeeper.log.dir={{pl_zookeeper_home}}/zookeeper/logs
+zookeeper.log.dir={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/logs
 zookeeper.log.file=zookeeper.log
 zookeeper.log.threshold=DEBUG
-zookeeper.tracelog.dir={{pl_zookeeper_home}}/zookeeper/logs
+zookeeper.tracelog.dir={{pl_zookeeper_home}}/{{pl_role_type}}/{{pl_server_type}}/logs
 zookeeper.tracelog.file=zookeeper_trace.log
 
 log4j.rootLogger=${zookeeper.root.logger}
