@@ -1,16 +1,16 @@
 #nginx编译安装前准备
-- import_tasks: plat_nginx_prepare.yml
+- import_tasks: nginx_prepare.yml
   tags:
-    - plat_nginx_prepare
+    - nginx_prepare
 #nginx编译安装
-- import_tasks: plat_nginx_make.yml
+- import_tasks: nginx_make.yml
   tags:
-    - plat_nginx_make
+    - nginx_make
 #nginx生成配置文件
-- import_tasks: plat_nginx_conf.yml
+- import_tasks: nginx_conf.yml
   tags:
-    - plat_nginx_conf
+    - nginx_conf
 #nginx安装任务完成
-- import_tasks: plat_nginx_start.yml
+- import_tasks: nginx_start.yml
   tags:
-    - plat_nginx_start
+    - nginx_start
