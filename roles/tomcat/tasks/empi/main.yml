@@ -1,8 +1,0 @@
-- import_tasks: empi_deploy.yml
-  tags:
-    - empi_deploy
-    
-- import_tasks: empi_config.yml
-  tags:
-    - empi_config
-   

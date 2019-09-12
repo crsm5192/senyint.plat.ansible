@@ -1,9 +1,0 @@
-- name: APR OpenSSL Make config | 编译配置openssl
-  command: ./config --prefix={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/openssl
-  args:
-    chdir: '{{pl_deploy_home}}/openssl-{{pl_tomcat_openssl_version}}' 
-
-- name: APR OpenSSL Make Install | 编译安装openssl
-  make:
-    chdir: '{{pl_deploy_home}}/openssl-{{pl_tomcat_openssl_version}}' 
-    target: install 

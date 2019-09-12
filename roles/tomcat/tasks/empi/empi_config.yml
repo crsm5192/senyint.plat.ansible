@@ -1,8 +1,0 @@
-- name: EMPI Config | 修改empi配置文件
-  template: 
-    src:  '{{item.src}}' 
-    dest: '{{item.dest}}' 
-  with_items:
-    - { src: 'empi/config.properties.j2', dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/empi/WEB-INF/classes/config.properties' }
-    - { src: 'empi/scripts.j2',           dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/empi/WEB-INF/classes/scripts' }
-    - { src: 'empi/logback.xml.j2',       dest: '{{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/empi/WEB-INF/classes/logback.xml' }

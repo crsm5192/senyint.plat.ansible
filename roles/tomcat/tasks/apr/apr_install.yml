@@ -1,9 +1,0 @@
-- name: Tomcat APR Make config | 编译配置apr
-  command: ./configure --prefix={{pl_tomcat_home}}/{{pl_role_type}}/{{pl_server_type}}/apr
-  args:
-    chdir: '{{pl_deploy_home}}/apr-{{pl_tomcat_apr_version}}' 
-
-- name: Tomcat APR Make Install | 编译安装apr
-  make:
-    chdir: '{{pl_deploy_home}}/apr-{{pl_tomcat_apr_version}}' 
-    target: install
