@@ -1,0 +1,38 @@
+[home_test_master]
+home_test_master01 hostname=master01.test  ansible_ssh_host=192.168.71.101
+
+[home_test_client]
+home_test_client02 hostname=client02.test ansible_ssh_host=192.168.71.102
+home_test_client03 hostname=client03.test ansible_ssh_host=192.168.71.103
+
+[home_test_all]
+home_test_master01 hostname=master01.test ansible_ssh_host=192.168.71.101
+home_test_client02 hostname=client02.test ansible_ssh_host=192.168.71.102
+home_test_client03 hostname=client03.test ansible_ssh_host=192.168.71.103
+
+[company_test_master]
+company_test_master01 hostname=master01.test ansible_ssh_host=192.168.228.101 kubernetes_kubelet_name=master01.test
+
+[company_test_client]
+company_test_client02 hostname=client02.test ansible_ssh_host=192.168.228.102 kubernetes_kubelet_name=client02.test
+company_test_client03 hostname=client03.test ansible_ssh_host=192.168.228.103 kubernetes_kubelet_name=client03.test
+
+[company_test_all]
+company_test_master01 hostname=master01.test ansible_ssh_host=192.168.228.101 etcd_name=etcd1 3333etcd_address=192.168.228.101
+company_test_client02 hostname=client02.test ansible_ssh_host=192.168.228.102 etcd_name=etcd2 3333etcd_address=192.168.228.102
+company_test_client03 hostname=client03.test ansible_ssh_host=192.168.228.103 etcd_name=etcd3 3333etcd_address=192.168.228.103
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
