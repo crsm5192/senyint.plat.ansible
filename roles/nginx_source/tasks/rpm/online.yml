@@ -1,0 +1,30 @@
+#安装nginx编译中所需要的rpm软件
+- name: 安装EPEL软件源
+  yum:
+    name: epel-release
+    state: present
+- name: 安装RPM软件包
+  yum:
+    state: present
+    name:
+      - gcc 
+      - gcc-c++
+      - automake 
+      - autoconf 
+      - libtool 
+      - make
+      - libxml2
+      - libxml2-devel
+      - libxslt
+      - libxslt-devel
+      - GeoIP 
+      - GeoIP-devel 
+      - GeoIP-data
+      - gd
+      - gd-devel
+      - perl 
+      - perl-devel 
+      - perl-ExtUtils-Embed
+      - lua-devel
+      - libXau
+      - libXext

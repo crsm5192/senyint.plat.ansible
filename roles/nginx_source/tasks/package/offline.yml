@@ -1,0 +1,19 @@
+#下载nginx源码包
+- name: 获取Nginx安装文件
+  get_url:
+    url: "{{pl_netdisk_url}}/netdav/Packages_Source/{{item}}"
+    url_username: "{{pl_netdisk_user}}"
+    url_password: "{{pl_netdisk_pass}}"
+    dest: /home/deploy
+    timeout: 30
+  with_items:
+    - 'Nginx/nginx-{{pl_nginx_version}}.tar.gz'
+    - 'Pcre/pcre-{{pl_pcre_version}}.tar.gz'
+    - 'Zlib/zlib-{{pl_zlib_version}}.tar.gz'
+    - 'Openssl/openssl-{{pl_openssl_version}}.tar.gz'
+    - 'NGX_Devel_Kit/ngx_devel_kit-{{pl_ngx_devel_kit_version}}.tar.gz'
+    - 'Lua-Nginx-Module/lua-nginx-module-{{pl_lua_nginx_module_version}}.tar.gz'
+    - 'Naxsi/naxsi-{{pl_naxsi_version}}.tar.gz'
+    - 'Jemalloc/jemalloc-{{pl_jemalloc_version}}.tar.gz'
+    - 'LuaJit/luajit2-{{pl_luajit2_version}}.tar.gz'
+    - 'Nginx-Dav-Ext-Module/nginx-dav-ext-module-{{pl_nginx_dav_ext_module_version}}.tar.gz'

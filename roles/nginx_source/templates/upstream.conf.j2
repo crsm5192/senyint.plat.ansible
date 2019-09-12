@@ -1,0 +1,55 @@
+#node
+upstream nodeuiide {
+  server {{pl_node_host}}:8011;
+}   
+upstream nodemobileuiide {
+  server {{pl_node_host}}:8011;
+}
+upstream nodemobileui {
+  server {{pl_node_host}}:8011;
+}
+upstream nodecron {
+  server {{pl_node_host}}:8011;
+}
+upstream nodetemplate {
+  server {{pl_node_host}}:8011;
+}
+upstream nodeempi {
+  server {{pl_node_host}}:8014;
+}
+upstream nodeeeb {
+  server {{pl_node_host}}:8012;
+}
+upstream nodewechat {
+  server {{pl_node_host}}:8011;
+}
+upstream nodethingtcp {
+  server {{pl_node_host}}:8016;
+}
+upstream nodethinghttp {
+  server {{pl_node_host}}:8017;
+}
+#empi
+upstream prod_empi {
+  server {{pl_empi_host}}:8483;
+}
+upstream empi {
+  server {{pl_empi_host}}:8096;
+}
+#image
+upstream imgServer {
+  server {{pl_image_host}};
+}
+upstream up_imgServer {
+  server {{pl_image_host}}:8080;
+}
+#tomcat
+upstream trs {
+  server {{pl_trs_host}}:8080;
+}
+upstream druid {
+  server {{pl_druid_host}}:8080;
+}
+upstream tomcats {
+  server {{pl_dscore_host}}:8080;
+}

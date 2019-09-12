@@ -1,0 +1,23 @@
+#version
+pl_nginx_version: "{{ nginx_version | default('1.14.2') }}"
+pl_pcre_version: "{{ pcre_version | default('8.42') }}"
+pl_zlib_version: "{{ zlib_version | default('1.2.11') }}"
+pl_openssl_version: "{{ openssl_version | default('1.1.1a') }}"
+pl_lua_nginx_module_version: "{{ lua_nginx_module_version | default('0.10.13') }}"
+pl_luajit2_version: "{{ luajit2_version | default('2.1-20190115') }}"
+pl_ngx_devel_kit_version: "{{ ngx_devel_kit_version | default('0.3.1rc1') }}"
+pl_jemalloc_version: "{{ jemalloc_version | default('5.1.0') }}"
+pl_naxsi_version: "{{ naxsi_version | default('0.56') }}"
+pl_nginx_dav_ext_module_version: "{{ nginx_dav_ext_module_version | default('3.0.0') }}"
+#host
+pl_trs_host: "{{ trs_host | default('localhost') }}"
+pl_druid_host: "{{ druid_host | default('localhost') }}"
+pl_dscore_host: "{{ dscore_host | default('localhost') }}"
+pl_empi_host:  "{{ empi_host | default('localhost') }}"
+pl_node_host:  "{{ node_host | default('localhost') }}"
+pl_image_host: "{{ image_host | default('localhost') }}"
+#netdisk
+pl_netdisk_user: "{{ netdisk_user | default('test_uesr') }}"
+pl_netdisk_pass: "{{ netdisk_pass | default('test_password') }}"
+pl_netdisk_url: "{{ netdisk_url | default('http://www.example.com') }}"
+pl_setup_type: "{{ setup_type | default('online') }}"

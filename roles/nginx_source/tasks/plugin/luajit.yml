@@ -1,0 +1,21 @@
+#编译安装luajit2
+- name: 编译LuaJit2
+  make:
+    chdir: '/home/deploy/luajit2-{{pl_luajit2_version}}'
+    target: install
+- name: 将LuaJit2配置环境变量
+  lineinfile: 
+    dest: /etc/profile
+    insertbefore: 'enset -f pathmunge' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes  
+  with_items:
+    - 'export LUAJIT_LIB=/usr/local/lib'
+    - 'export LUAJIT_INC=/usr/local/include/luajit-2.1'
+- name: 生效LuaJit2配置文件
+  shell: "{{item}}"
+  with_items:
+    - 'echo "/usr/local/lib" > /etc/ld.so.conf.d/luajit.conf'
+    - 'source /etc/profile'
+    - '/sbin/ldconfig'

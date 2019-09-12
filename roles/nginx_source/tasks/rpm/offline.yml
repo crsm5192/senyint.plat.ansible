@@ -1,0 +1,37 @@
+#下载并安装nginx编译中所需要的rpm软件
+- name: 创建离线下载目录
+  file: 
+    path: "{{item.path}}"
+    state: "{{item.state}}"
+  with_items:
+    - { path: '/home/deploy', state: directory }
+    - { path: '/home/deploy/nginx_env', state: directory }
+    - { path: '/home/deploy/nginx_env/nginx_env_list', state: absent }
+- name: 获取Nginx环境list 1/2
+  get_url:
+    url: "{{pl_netdisk_url}}/netdav/ENV_Files_RPM/Nginx_ENV"
+    url_username: "{{pl_netdisk_user}}"
+    url_password: "{{pl_netdisk_pass}}"
+    dest: "/home/deploy/nginx_env/nginx_env_list"
+- name: 获取Nginx环境list 2/2
+  shell: cat nginx_env_list|grep href|grep rpm|awk -F\> '{print $4}'|awk -F\< '{print $1}'
+  args:
+    chdir: '/home/deploy/nginx_env'
+  register: nginx_env_list
+- name: 获取Nginx环境文件
+  get_url: 
+    url: "{{pl_netdisk_url}}/netdav/ENV_Files_RPM/Nginx_ENV/{{item}}"
+    url_username: "{{pl_netdisk_user}}"
+    url_password: "{{pl_netdisk_pass}}"
+    dest: "/home/deploy/nginx_env"
+    timeout: 30
+  with_items:
+    - '{{nginx_env_list.stdout_lines}}'
+- name: 安装Nginx环境文件
+  shell: /usr/bin/yum localinstall -y *.rpm
+  args:
+    chdir: '/home/deploy/nginx_env'
+- name: 删除Nginx环境文件
+  file:
+    path: "/home/deploy/nginx_env"
+    state: absent

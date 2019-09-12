@@ -1,0 +1,19 @@
+#编译安装jemalloc
+- name: 编译配置Jemalloc
+  command: ./configure
+  args:
+    chdir: '/home/deploy/jemalloc-{{pl_jemalloc_version}}' 
+- name: 编译安装Jemalloc
+  make:
+    chdir: '/home/deploy/jemalloc-{{pl_jemalloc_version}}'
+    target: install
+- name: 软连接Jemalloc库文件
+  file: 
+    src: /usr/local/lib/libjemalloc.so.2 
+    dest: /usr/lib64/libjemalloc.so.1 
+    state: link
+- name: 生效Jemalloc配置文件
+  shell: "{{item}}"
+  with_items:
+    - 'echo "/usr/local/lib" > /etc/ld.so.conf.d/jemalloc.conf'
+    - '/sbin/ldconfig'

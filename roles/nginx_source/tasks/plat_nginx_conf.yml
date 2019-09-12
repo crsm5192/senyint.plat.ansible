@@ -1,0 +1,44 @@
+#配置nginx服务
+- name: 生成Nginx文件 1/2
+  copy: 
+    src: "{{item.src}}" 
+    dest: "{{item.dest}}" 
+    owner: nginx
+    group: nginx
+  with_items:
+      - { src: 'proxy.conf', dest: '/home/plat/nginx/conf/proxy.conf' }
+      - { src: 'senyint.com.key', dest: '/home/plat/nginx/conf/ssl/senyint.com.key' }
+      - { src: 'senyint.com.crt', dest: '/home/plat/nginx/conf/ssl/senyint.com.crt' }
+      - { src: 'nginx.conf', dest: '/home/plat/nginx/conf/nginx.conf' }
+      - { src: 'https.conf', dest: '/home/plat/nginx/conf/conf.d/https.conf' }
+      - { src: 'location.conf', dest: '/home/plat/nginx/conf/location.conf' }
+      - { src: 'default.conf', dest: '/home/plat/nginx/conf/conf.d/default.conf' }
+      - { src: 'nginx.service' ,dest: '/usr/lib/systemd/system/nginx.service' }
+- name: 生成Nginx文件 2/2
+  template: 
+    src: "{{item.src}}"
+    dest: "{{item.dest}}"
+    owner: nginx
+    group: nginx
+  with_items:
+      - { src: 'upstream.conf.j2', dest: '/home/plat/nginx/conf/conf.d/upstream.conf' }
+- name: 将ds服务器加入nginx配置（2节点）
+  lineinfile: 
+    dest: '/home/plat/nginx/conf/conf.d/upstream.conf' 
+    insertafter: 'server {{pl_dscore_host}}:8080;' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
+  with_items:
+      - 'server {{dscore_host2}}:8080;'  
+  when: dscore_host2 is defined 
+- name: 将ds服务器加入nginx配置（3节点）
+  lineinfile: 
+    dest: '/home/plat/nginx/conf/conf.d/upstream.conf' 
+    insertafter: 'server {{dscore_host2}}:8080;' 
+    line: '{{item}}' 
+    state: present 
+    backup: yes 
+  with_items:
+      - 'server {{dscore_host3}}:8080;' 
+  when: dscore_host3 is defined
